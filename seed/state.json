@@ -1,0 +1,279 @@
+{
+ "v": 1,
+ "shul": {
+  "nameHe": "שיח השדה",
+  "nameEn": "Siach HaSadeh",
+  "lat": 31.7795,
+  "lng": 35.3015,
+  "candleMins": 30,
+  "havdalahMode": "tzeit",
+  "havdalahMins": 40,
+  "defaultLang": "he",
+  "kindHe": "בית כנסת",
+  "kindEn": "Synagogue",
+  "taglineHe": "בית כנסת וקהילה בשכונת צמח השדה, מעלה אדומים",
+  "taglineEn": "A synagogue and community in the Tzemach HaSadeh neighborhood of Ma'ale Adumim",
+  "addressHe": "הצפצפה 4, מעלה אדומים",
+  "addressEn": "4 HaTzaftzefa St., Ma'ale Adumim",
+  "directionsHe": "בחנייה מאחורי \"יינות ביתן\"",
+  "directionsEn": "In the parking lot behind Yeinot Bitan",
+  "aboutHe": "",
+  "aboutEn": "",
+  "rabbiHe": "",
+  "rabbiEn": "",
+  "gabbaiHe": "",
+  "gabbaiEn": "",
+  "phone": "",
+  "email": "",
+  "whatsapp": "",
+  "nusachHe": "",
+  "nusachEn": "",
+  "siteUrl": ""
+ },
+ "times": [
+  {
+   "id": "t1",
+   "group": "weekday",
+   "nameHe": "שחרית",
+   "nameEn": "Shacharit",
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "mode": "fixed",
+   "time": "07:00",
+   "base": "sunset",
+   "offset": 0,
+   "round": "none",
+   "noteHe": "",
+   "noteEn": "",
+   "teacherHe": "",
+   "teacherEn": "",
+   "hidden": false
+  },
+  {
+   "id": "t2",
+   "group": "weekday",
+   "nameHe": "ערבית",
+   "nameEn": "Arvit",
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mode": "fixed",
+   "time": "21:00",
+   "base": "sunset",
+   "offset": 0,
+   "round": "none",
+   "noteHe": "",
+   "noteEn": "",
+   "teacherHe": "",
+   "teacherEn": "",
+   "hidden": false
+  },
+  {
+   "id": "t3",
+   "group": "shabbat",
+   "nameHe": "מנחה ערב שבת",
+   "nameEn": "Mincha, Erev Shabbat",
+   "days": [
+    5
+   ],
+   "mode": "relative",
+   "time": "",
+   "base": "candles",
+   "offset": 0,
+   "round": "none",
+   "noteHe": "",
+   "noteEn": "",
+   "teacherHe": "",
+   "teacherEn": "",
+   "hidden": false
+  },
+  {
+   "id": "t4",
+   "group": "shabbat",
+   "nameHe": "קבלת שבת",
+   "nameEn": "Kabbalat Shabbat",
+   "days": [
+    5
+   ],
+   "mode": "relative",
+   "time": "",
+   "base": "candles",
+   "offset": 20,
+   "round": "none",
+   "noteHe": "",
+   "noteEn": "",
+   "teacherHe": "",
+   "teacherEn": "",
+   "hidden": false
+  },
+  {
+   "id": "t5",
+   "group": "shabbat",
+   "nameHe": "שחרית שבת",
+   "nameEn": "Shabbat Shacharit",
+   "days": [
+    6
+   ],
+   "mode": "fixed",
+   "time": "08:30",
+   "base": "sunset",
+   "offset": 0,
+   "round": "none",
+   "noteHe": "",
+   "noteEn": "",
+   "teacherHe": "",
+   "teacherEn": "",
+   "hidden": false
+  }
+ ],
+ "notices": [
+  {
+   "kind": "timed",
+   "titleHe": "",
+   "titleEn": "",
+   "bodyHe": "",
+   "bodyEn": "",
+   "image": {
+    "src": "seed/flyer-1.jpg"
+   },
+   "start": "2026-11-06",
+   "end": "2026-11-13",
+   "days": [],
+   "web": true,
+   "screen": true,
+   "shabbat": false,
+   "secs": "",
+   "hidden": false,
+   "id": "nmw4nk7pho4t2"
+  },
+  {
+   "kind": "timed",
+   "titleHe": "",
+   "titleEn": "",
+   "bodyHe": "",
+   "bodyEn": "",
+   "image": {
+    "src": "seed/flyer-2.jpg"
+   },
+   "start": "2026-11-06",
+   "end": "2026-11-13",
+   "days": [],
+   "web": true,
+   "screen": true,
+   "shabbat": false,
+   "secs": "",
+   "hidden": false,
+   "id": "nmw4nj93ffsw2"
+  },
+  {
+   "kind": "timed",
+   "titleHe": "",
+   "titleEn": "",
+   "bodyHe": "חברי יקרים, \nהנכם מוזמנים למפגש השני בסדרת ההרצאות המרתקת על חקר המוח!\nמה הקשר בין המוח, הגוף והנפש? והאם אנחנו באמת מבינים כיצד פועל הקשר ביניהם?\n מרצה: ד״ר יואב מה טוב, חוקר מוח מהאוניברסיטה העברית בירושלים.\n✨ מוח, גוף ונפש – השאלה הקשה בעולם המדע\nהאם הגוף והנפש הם שתי ישויות נפרדות, או שמא הם אחד? כיצד הפעילות המתרחשת במוח משפיעה על הרגשות שלנו, על המחשבות ועל האופי שלנו?\nבהרצאה נגלה דוגמאות מפתיעות לקשר שבין הגוף לנפש, ונכיר תופעות וטכנולוגיות שנשמעות כמו מדע בדיוני – אך כבר קיימות בעולם שלנו!\n📅 יום רביעי | 4.11.2026 🕢 שעה 19:30 📍 מוזיאון קסטל,   משך ההרצאה: שעה וחצי 💳 מחיר כרטיס: 60 ₪\n🎟️ ההרצאה כלולה במנוי הקתדרה.\n🔗 לפרטים ולרכישת כרטיסים: https://mama.smarticket.co.il/event/6126\nמחכים לכם \n צוות קתדרה! 🌷\nmama.smarticket.co.il",
+   "bodyEn": "",
+   "image": null,
+   "start": "2026-11-06",
+   "end": "2026-11-13",
+   "days": [],
+   "web": true,
+   "screen": true,
+   "shabbat": false,
+   "secs": "",
+   "hidden": false,
+   "id": "nmw4nibpqt1sf"
+  },
+  {
+   "id": "n1",
+   "kind": "standard",
+   "titleHe": "נא להשתיק את הטלפון",
+   "titleEn": "Please silence your phone",
+   "bodyHe": "בית הכנסת הוא מקום תפילה. תודה!",
+   "bodyEn": "The shul is a place of prayer. Thank you!",
+   "image": null,
+   "start": "",
+   "end": "",
+   "days": [],
+   "web": false,
+   "screen": true,
+   "shabbat": false,
+   "secs": "",
+   "hidden": false
+  }
+ ],
+ "sponsors": [],
+ "mazal": [
+  {
+   "textHe": "המון מזל טוב  למיכל וראובן בן חיים היקרים, להולדת הנכד! \nבן לעינב ומושיקו ואח  לעלמה.\n שתרוו ממנו ומכל המשפחה רוב נחת, בריאות, ואושר.🍸",
+   "textEn": "",
+   "start": "2026-11-06",
+   "end": "2026-11-20",
+   "hidden": false,
+   "id": "mmw4ngddfxcgb"
+  },
+  {
+   "textHe": "משפחת בן חיים היקרה,\nמיכל וראובן \nמזל טוב ענק להולדת הנכד.\nתרבה השמחה במעונכם\n🎉🍓🎂🍬💃🍷🎊",
+   "textEn": "",
+   "start": "2026-11-06",
+   "end": "2026-11-20",
+   "hidden": false,
+   "id": "mmw4nfqtjd1sx"
+  },
+  {
+   "textHe": "מזל טוב לרגל הולדת הנכד למיכל וראובן. 🥂\nוהבן לעינב ומושיקו. 👼\nאח ל- עלמה. 👩‍❤️‍👨\nהרבה אושר שמחה ונחת. 🎉🎊\nכן יירבו השמחות במשפחתיכם.",
+   "textEn": "",
+   "start": "2026-11-06",
+   "end": "2026-11-20",
+   "hidden": false,
+   "id": "mmw4nf1vmom2b"
+  }
+ ],
+ "refuah": [],
+ "yahrzeit": [],
+ "donate": {
+  "bitPhone": "",
+  "bitLink": "",
+  "payboxLink": "",
+  "otherLink": "",
+  "otherLabelHe": "",
+  "otherLabelEn": "",
+  "bankHe": "",
+  "bankEn": "",
+  "noteHe": "",
+  "noteEn": ""
+ },
+ "urgent": {
+  "on": false,
+  "textHe": "",
+  "textEn": "",
+  "until": ""
+ },
+ "display": {
+  "lang": "he",
+  "slideSecs": 12,
+  "shabbatMode": "still",
+  "zmanim": [
+   "alot",
+   "netz",
+   "shmaMGA",
+   "shma",
+   "tfilla",
+   "chatzot",
+   "minchaGedola",
+   "plag",
+   "shkia",
+   "tzeit"
+  ],
+  "showDonate": true,
+  "showQr": true
+ }
+}
