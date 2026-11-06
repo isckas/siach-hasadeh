@@ -1,0 +1,45 @@
+rules_version = '2';
+// Siach HaSadeh site — who can do what.
+//  * Everyone (website visitors, the shul TV) can READ the site content and flyers. No login.
+//  * Only admins can WRITE content. Admins sign in with Google.
+//  * Only owners can add/remove admins. The built-in owner below can never be locked out.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.firebase.sign_in_provider == 'google.com';
+    }
+    function myEmail() { return request.auth.token.email.lower(); }
+    function isBuiltInOwner() { return signedIn() && myEmail() in ['isaac.kass@gmail.com']; }
+    function adminPath() { return /databases/$(database)/documents/admins/$(myEmail()); }
+    function isAdmin() { return isBuiltInOwner() || (signedIn() && exists(adminPath())); }
+    function isOwner() { return isBuiltInOwner() || (signedIn() && exists(adminPath()) && get(adminPath()).data.role == 'owner'); }
+
+    match /site/{docId} {
+      allow read: if true;
+      allow write: if docId == 'state' && isAdmin()
+        && request.resource.data.rev is int
+        && request.resource.data.updatedBy == myEmail();
+    }
+    match /images/{imageId} {
+      allow read: if true;
+      allow create, update: if isAdmin()
+        && request.resource.data.data is string
+        && request.resource.data.data.size() < 1048000
+        && request.resource.data.data.matches('^data:image/.*');
+      allow delete: if isAdmin();
+    }
+    match /admins/{email} {
+      allow read: if isAdmin();
+      allow create, update: if isOwner()
+        && email == email.lower()
+        && request.resource.data.role in ['admin', 'owner'];
+      allow delete: if isOwner() && email != myEmail();
+    }
+    match /log/{id} {
+      allow read: if isAdmin();
+      allow create: if isAdmin() && request.resource.data.by == myEmail();
+    }
+  }
+}
