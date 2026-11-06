@@ -136,10 +136,10 @@ function dayInfo(iso,shul){
   try{
     var loc=new H.Location(+shul.lat||31.7795,+shul.lng||35.3015,true,TZ,"Ma'ale Adumim",'IL');
     var dt=civil(iso),z=new H.Zmanim(loc,dt,false),hd=new H.HDate(dt);
-    var opts={start:dt,end:dt,location:loc,il:true,candlelighting:true,candleLightingMins:(+shul.candleMins||30),sedrot:true,omer:true};
+    var opts={start:dt,end:dt,location:loc,il:true,candlelighting:true,candleLightingMins:(+shul.candleMins||30),sedrot:true,omer:true,shabbatMevarchim:true};
     if(shul.havdalahMode==='mins')opts.havdalahMins=(+shul.havdalahMins||40);else opts.havdalahDeg=8.5;
     var evs=[];try{evs=H.HebrewCalendar.calendar(opts);}catch(e){}
-    var F=H.flags,mask=F.CHAG|F.MINOR_HOLIDAY|F.MAJOR_FAST|F.MINOR_FAST|F.ROSH_CHODESH|F.MODERN_HOLIDAY|F.CHOL_HAMOED|F.SPECIAL_SHABBAT|F.EREV;
+    var F=H.flags,mask=F.CHAG|F.MINOR_HOLIDAY|F.MAJOR_FAST|F.MINOR_FAST|F.ROSH_CHODESH|F.MODERN_HOLIDAY|F.CHOL_HAMOED|F.SPECIAL_SHABBAT|F.EREV|(F.SHABBAT_MEVARCHIM||0);
     var candles=null,havdalah=null,parsha=null,omer=null,hol=[],chol=false,chag=false,rc=false;
     evs.forEach(function(e){
       if(e instanceof H.CandleLightingEvent)candles=e.eventTime;
@@ -148,6 +148,7 @@ function dayInfo(iso,shul){
       else if(e instanceof H.OmerEvent)omer=e;
       else if(!(e instanceof H.TimedEvent)&&(e.getFlags()&mask)){hol.push(e);var f=e.getFlags();if(f&F.CHOL_HAMOED)chol=true;if(f&F.CHAG)chag=true;if(f&F.ROSH_CHODESH)rc=true;}
     });
+    if(havdalah&&shul.havdalahMode!=='mins'){var tz85=z.tzeit(8.5);if(tz85&&!isNaN(tz85.getTime()))havdalah=new Date(Math.ceil(tz85.getTime()/60000)*60000);}
     var zm={alot:z.alotHaShachar(),misheyakir:z.misheyakir(),netz:z.neitzHaChama(),shmaMGA:z.sofZmanShmaMGA(),shma:z.sofZmanShma(),tfillaMGA:z.sofZmanTfillaMGA(),tfilla:z.sofZmanTfilla(),chatzot:z.chatzot(),minchaGedola:z.minchaGedola(),minchaKetana:z.minchaKetana(),plag:z.plagHaMincha(),shkia:z.shkiah(),tzeit:z.tzeit(8.5)};
     r={iso:iso,hd:hd,zm:zm,candles:candles,havdalah:havdalah,parsha:parsha,omer:omer,hol:hol,chol:chol,chag:chag,rc:rc,loc:loc};
   }catch(e){r=null;}
