@@ -5,7 +5,7 @@
   "nameEn": "Siach HaSadeh",
   "lat": 31.7795,
   "lng": 35.3015,
-  "candleMins": 30,
+  "candleMins": 35,
   "havdalahMode": "tzeit",
   "havdalahMins": 40,
   "defaultLang": "he",
@@ -89,7 +89,7 @@
    "mode": "relative",
    "time": "",
    "base": "candles",
-   "offset": 0,
+   "offset": 20,
    "round": "none",
    "noteHe": "",
    "noteEn": "",
@@ -114,7 +114,7 @@
    "noteEn": "",
    "teacherHe": "",
    "teacherEn": "",
-   "hidden": false
+   "hidden": true
   },
   {
    "id": "t5",
@@ -125,7 +125,7 @@
     6
    ],
    "mode": "fixed",
-   "time": "08:30",
+   "time": "08:15",
    "base": "sunset",
    "offset": 0,
    "round": "none",
@@ -134,9 +134,83 @@
    "teacherHe": "",
    "teacherEn": "",
    "hidden": false
+  },
+  {
+   "group": "shabbat",
+   "days": [
+    6
+   ],
+   "mode": "fixed",
+   "time": "09:45",
+   "base": "sunset",
+   "offset": 0,
+   "round": "none",
+   "noteHe": "",
+   "noteEn": "",
+   "teacherHe": "",
+   "teacherEn": "",
+   "hidden": false,
+   "id": "t6",
+   "nameHe": "תפילת ילדים",
+   "nameEn": "Children's Tefillah"
+  },
+  {
+   "group": "shabbat",
+   "days": [
+    6
+   ],
+   "mode": "relative",
+   "time": "",
+   "base": "sunset",
+   "offset": -35,
+   "round": "near5",
+   "noteHe": "",
+   "noteEn": "",
+   "teacherHe": "",
+   "teacherEn": "",
+   "hidden": false,
+   "id": "t7",
+   "nameHe": "מנחה בשבת",
+   "nameEn": "Shabbat Mincha"
+  },
+  {
+   "group": "shabbat",
+   "days": [
+    6
+   ],
+   "mode": "relative",
+   "time": "",
+   "base": "havdalah",
+   "offset": -3,
+   "round": "none",
+   "noteHe": "",
+   "noteEn": "",
+   "teacherHe": "",
+   "teacherEn": "",
+   "hidden": false,
+   "id": "t8",
+   "nameHe": "ערבית מוצאי שבת",
+   "nameEn": "Arvit, Motzei Shabbat"
   }
  ],
  "notices": [
+  {
+   "id": "nkiddush-chs",
+   "kind": "timed",
+   "titleHe": "שבת מברכין · קידוש \"במת ראש חודש\"",
+   "titleEn": "Shabbat Mevarchim · \"Rosh Chodesh Stage\" Kiddush",
+   "bodyHe": "עם חיים הלר\nבנושא: \"איך לחיות בבית מלון קטן\"",
+   "bodyEn": "With Chaim Heller\nTopic: \"How to live in a small hotel\"",
+   "image": null,
+   "start": "2026-11-06",
+   "end": "2026-11-07",
+   "days": [],
+   "web": true,
+   "screen": true,
+   "shabbat": true,
+   "secs": "",
+   "hidden": false
+  },
   {
    "kind": "timed",
    "titleHe": "",
@@ -183,7 +257,7 @@
    "bodyEn": "",
    "image": null,
    "start": "2026-11-06",
-   "end": "2026-11-13",
+   "end": "2026-11-04",
    "days": [],
    "web": true,
    "screen": true,
