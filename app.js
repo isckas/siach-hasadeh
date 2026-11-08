@@ -268,7 +268,8 @@ var IMGDATA={},IMGP={};
 function imgSrc(img){if(!img)return '';if(img.data)return img.data;if(img.src)return img.src;if(img.fid)return IMGDATA[img.fid]||'';return '';}
 function loadImage(fid){
   if(IMGDATA[fid])return Promise.resolve(IMGDATA[fid]);if(IMGP[fid])return IMGP[fid];if(!FB.db)return Promise.resolve('');
-  IMGP[fid]=FB.db.collection('images').doc(fid).get().then(function(snap){
+  var ref=FB.db.collection('images').doc(fid);
+  IMGP[fid]=ref.get({source:'cache'}).then(function(s){return s.exists?s:ref.get();},function(){return ref.get();}).then(function(snap){
     var d=snap.exists?snap.data().data:'';
     if(d&&/^data:image\//.test(d)){IMGDATA[fid]=d;[].forEach.call(document.querySelectorAll('img[data-fid="'+fid+'"]'),function(el){el.src=d;el.removeAttribute('data-fid');});return d;}
     delete IMGP[fid];return '';
@@ -959,7 +960,17 @@ function signIn(choose){
 
 /* ---------- offline ---------- */
 function netBadge(){var n=document.getElementById('tv-net');if(n)n.hidden=navigator.onLine!==false;}
-window.addEventListener('online',netBadge);window.addEventListener('offline',netBadge);
+var offlineSince=navigator.onLine===false?Date.now():0;
+window.addEventListener('offline',function(){if(!offlineSince)offlineSince=Date.now();netBadge();});
+window.addEventListener('online',function(){
+  netBadge();var was=offlineSince;offlineSince=0;
+  if(!was||Date.now()-was<120000)return;
+  setTimeout(function(){
+    if(navigator.onLine===false||route()!=='display'||ui.previewDraft)return;
+    if(isShabbatNow(screenState().shul))return;
+    location.reload();
+  },20000);
+});
 if('serviceWorker' in navigator&&window.isSecureContext&&!window.SHUL_EMULATOR){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
 
 /* ---------- boot ---------- */
