@@ -324,3 +324,12 @@ html.tv-mode body::before{background:var(--tv-bg)}
 @media (prefers-reduced-motion:reduce){.doc-chev{transition:none}}
 section[id^="sec-"]{scroll-margin-top:88px}
 @media (max-width:760px){section[id^="sec-"]{scroll-margin-top:136px}}
+/* offline + clock warnings on the TV */
+.tv-net{display:inline-flex;align-items:center;gap:.8vmin;padding:.4vmin 1.4vmin;border-radius:999px;background:var(--tv-chip);color:var(--tv-gold);font-weight:600;font-size:1.9vmin}
+.tv-net::before{content:"";width:1.2vmin;height:1.2vmin;border-radius:50%;background:currentColor}
+.tv-net[hidden]{display:none}
+.tv.tv-clockbad{grid-template-columns:1fr;grid-template-rows:1fr;grid-template-areas:none;place-items:center;text-align:center}
+.tv-clockbad>div{display:grid;gap:2vmin;justify-items:center;max-width:70vmin}
+.tv-clockbad svg{width:8vmin;height:8vmin;color:var(--tv-sage)}
+.tv-clockbad h1{font-family:var(--f-display);font-size:5vmin;color:var(--tv-ink)}
+.tv-clockbad p{font-size:2.6vmin;color:var(--tv-mute)}

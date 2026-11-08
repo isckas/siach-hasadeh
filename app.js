@@ -17,6 +17,7 @@ var lang=(function(){try{return localStorage.getItem('shul-lang')||state.shul.de
 /* ---------- strings ---------- */
 var L={
   kind:['בית כנסת','Synagogue'], city:['מעלה אדומים',"Ma'ale Adumim"],
+  offline_tv:['אין חיבור לאינטרנט · מוצג המידע השמור','Offline · showing saved information'], clock_bad:['השעון של המסך לא מכוון','The screen\'s clock is not set'], clock_bad2:['כוונו תאריך ושעה בהגדרות המכשיר (או חברו אותו לאינטרנט לרגע). הזמנים יחזרו להופיע מיד.','Set the date and time in the device settings (or connect it to the internet for a moment). The times will come back right away.'],
   nav_docs:['פרוטוקולים','Minutes'], docs:['פרוטוקולים ומסמכים','Minutes & documents'], docs_lead:['פרוטוקולים והחלטות של העמותה, בעברית ובתרגום לאנגלית.','The association\'s minutes and decisions, in Hebrew with an English translation.'], tab_docs:['פרוטוקולים ומסמכים','Minutes & documents'], add_doc:['הוספת מסמך','Add document'], f_date:['תאריך','Date'], f_link:['קישור לקובץ המקורי (לא חובה)','Link to the original file (optional)'], doc_original:['המסמך המקורי (PDF)','Original document (PDF)'], docs_hint:['פרוטוקולים, תקנון ומסמכים לקהילה. שורה שמתחילה ב-## הופכת לכותרת, ו-**טקסט** מודגש.','Minutes, bylaws and documents for the community. A line starting with ## becomes a heading; **text** is bold.'], doc_lang:['שפת המסמך','Document language'],
   nav_times:['תפילות','Prayer times'], nav_zmanim:['זמני היום','Zmanim'], nav_notices:['הודעות','Notices'], nav_community:['השבוע בקהילה','This week'], nav_shiurim:['שיעורים','Shiurim'], nav_donate:['תרומות','Donate'], nav_contact:['הגעה וקשר','Contact'],
   board:['ניהול','Board'], screen_view:['תצוגת מסך','Screen view'], site_view:['לאתר','Back to site'],
@@ -442,7 +443,9 @@ function secContact(S){
 function TL(S,k,vars){var m=S.display.lang;return m==='both'?both(k,vars):esc(t(k,vars,m==='en'?'en':'he'));}
 function TP(S,o,b){var m=S.display.lang;if(m==='both'){var h=pick(o,b,'he'),e=o[b+'En'];return esc(h)+(e&&e!==h?'<span class="en">'+esc(e)+'</span>':'');}return esc(pick(o,b,m==='en'?'en':'he'));}
 function tvLang(S){return S.display.lang==='en'?'en':'he';}
+function clockOk(){return new Date().getFullYear()>=2026;}
 function renderDisplay(S){
+  if(!clockOk())return '<div class="tv tv-clockbad"><div>'+SPRIG+'<h1>'+TL(S,'clock_bad')+'</h1><p>'+TL(S,'clock_bad2')+'</p></div></div>';
   var P=jp(),still=S.display.shabbatMode==='still'&&isShabbatNow(S.shul);ui.stillFlag=still;
   return (ui.previewDraft?'<div class="preview-bar">'+esc(t('preview_on'))+'<button class="btn sm" data-act="endpreview">'+esc(t('back_edit'))+'</button></div>':'')+
     '<button class="tv-fs" data-act="fs">'+esc(t('fullscreen',null,tvLang(S)))+'</button>'+
@@ -464,7 +467,7 @@ function tvSide(S,still){
 }
 function tvFoot(S){
   var lg=tvLang(S),iso=jp().iso,wk=weekInfo(iso,S.shul),url=siteUrl(S),q=S.display.showQr&&url?qrSvg(url):'';
-  return '<div class="fl">'+(q?'<div class="qr">'+q+'</div><span>'+TL(S,'scan_site')+'</span>':'<span>'+esc(pick(S.shul,'address',lg))+'</span>')+'</div>'+
+  return '<div class="fl">'+(q?'<div class="qr">'+q+'</div><span>'+TL(S,'scan_site')+'</span>':'<span>'+esc(pick(S.shul,'address',lg))+'</span>')+'<span class="tv-net" id="tv-net"'+(navigator.onLine===false?'':' hidden')+'>'+TL(S,'offline_tv')+'</span></div>'+
     '<div class="shab">'+(wk.candles?'<span>'+TL(S,'candles')+' '+esc(fmtShort(wk.fri))+' <b class="tn">'+hm(wk.candles)+'</b></span>':'')+(wk.havdalah?'<span>'+TL(S,'havdalah')+' <b class="tn">'+hm(wk.havdalah)+'</b></span>':'')+'</div>';
 }
 function slidesFor(S){
@@ -883,7 +886,8 @@ setInterval(function(){
   var r=route(),P=jp();
   if(r==='display'){
     var S=screenState();
-    if(P.hh===3&&P.mm===30&&P.ss<2&&!ui.previewDraft&&!isShabbatNow(S.shul)){location.reload();return;}
+    if(P.hh===3&&P.mm===30&&P.ss<2&&!ui.previewDraft&&navigator.onLine!==false&&!isShabbatNow(S.shul)){location.reload();return;}
+    if(!clockOk()!==!!document.querySelector('.tv-clockbad')){render();return;}
     var still=S.display.shabbatMode==='still'&&isShabbatNow(S.shul);
     if(still!==ui.stillFlag){render();return;}
     if(still)return;
@@ -952,6 +956,11 @@ function signIn(choose){
   });};
   if(choose&&FB.user)FB.auth.signOut().then(go);else go();
 }
+
+/* ---------- offline ---------- */
+function netBadge(){var n=document.getElementById('tv-net');if(n)n.hidden=navigator.onLine!==false;}
+window.addEventListener('online',netBadge);window.addEventListener('offline',netBadge);
+if('serviceWorker' in navigator&&window.isSecureContext&&!window.SHUL_EMULATOR){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
 
 /* ---------- boot ---------- */
 if(window.SHUL_EMULATOR)window.T={ui:ui,render:render,get draft(){return draft;},get state(){return state;},setLang:function(l){lang=l;render();}};/* test hook, local emulator only */
