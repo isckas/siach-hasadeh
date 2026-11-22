@@ -63,7 +63,7 @@ var L={
   f_kind:['סוג ההודעה','Notice type'], k_standard:['קבועה (תמיד מוצגת)','Standard (always on)'], k_ongoing:['שוטפת (חוזרת / עד תאריך)','Ongoing (recurring / until a date)'], k_timed:['לזמן מוגבל (אירוע, מודעה)','Timed (event, flyer)'],
   f_titleHe:['כותרת (עברית)','Title (Hebrew)'], f_titleEn:['כותרת (אנגלית)','Title (English)'], f_bodyHe:['טקסט (עברית)','Text (Hebrew)'], f_bodyEn:['טקסט (אנגלית)','Text (English)'], f_image:['מודעה / תמונה','Flyer / image'], f_start:['מתאריך','From'], f_end:['עד תאריך (כולל)','Until (inclusive)'], f_ndays:['להציג רק בימים','Show only on days'], f_web:['להציג באתר','Show on website'], f_screen:['להציג במסך','Show on screen'], f_shabbat:['להשאיר במסך בשבת','Keep on screen during Shabbat'], f_secs:['שניות בשקופית (ריק = ברירת מחדל)','Seconds on screen (blank = default)'],
   img_pick:['העלאת תמונה','Upload image'], img_remove:['הסרה','Remove'], img_hint:['JPG או PNG בכל גודל — המודעה מותאמת אוטומטית למסך ולא נחתכת, ומודעה רחבה מוצגת על כל המסך. מודעת PDF — שמרו כתמונה והעלו.','JPG or PNG of any size. Flyers are fitted to the TV automatically and never cropped; wide flyers fill the whole screen while they show. For a PDF flyer, save it as an image and upload that.'],
-  f_flyerFull:['מודעה רחבה תוצג על כל המסך כשזה מגדיל אותה','Show a wide flyer on the whole screen when that makes it bigger'], img_only:['אפשר להעלות רק תמונות (JPG/PNG).','Only image files (JPG/PNG) can be uploaded.'], img_toobig:['התמונה גדולה מדי גם אחרי דחיסה. נסו תמונה קטנה יותר.','The image is still too large after compressing. Try a smaller image.'], img_fail:['העלאת התמונה נכשלה.','The image upload failed.'], uploading:['מעלה…','Uploading…'],
+  f_flyerFull:['מודעה רחבה תוצג על כל המסך כשזה מגדיל אותה','Show a wide flyer on the whole screen when that makes it bigger'], f_textSize:['גודל הטקסט במסך','Text size on the screen'], ts_normal:['רגיל (מסך 50 אינץ\' ומעלה)','Normal (50" screens and up)'], ts_large:['גדול (מסך 43 אינץ\', או צפייה מרחוק)','Large (43" screen, or seen from far away)'], ts_xl:['גדול מאוד','Extra large'], img_only:['אפשר להעלות רק תמונות (JPG/PNG).','Only image files (JPG/PNG) can be uploaded.'], img_toobig:['התמונה גדולה מדי גם אחרי דחיסה. נסו תמונה קטנה יותר.','The image is still too large after compressing. Try a smaller image.'], img_fail:['העלאת התמונה נכשלה.','The image upload failed.'], uploading:['מעלה…','Uploading…'],
   f_type:['סוג החסות','Sponsorship'], f_byHe:['בחסות (עברית)','Sponsored by (Hebrew)'], f_byEn:['בחסות (אנגלית)','Sponsored by (English)'], f_forHe:['לרגל / לעילוי נשמת (עברית)','In honor of / in memory of (Hebrew)'], f_forEn:['לרגל / לעילוי נשמת (אנגלית)','In honor of / in memory of (English)'],
   f_textHe:['נוסח (עברית)','Text (Hebrew)'], f_textEn:['נוסח (אנגלית)','Text (English)'], f_name:['שם (למשל: פלוני בן פלונית)','Name (e.g. Ploni ben Plonit)'], f_until:['עד תאריך (לא חובה)','Until (optional)'],
   f_hday:['יום בחודש העברי','Hebrew day'], f_hmonth:['חודש עברי','Hebrew month'], f_hyear:['שנה עברית (לא חובה, למשל 5780)','Hebrew year (optional, e.g. 5780)'], f_relHe:['קרבה / הערה (עברית)','Relation / note (Hebrew)'], f_relEn:['קרבה / הערה (אנגלית)','Relation / note (English)'],
@@ -111,7 +111,7 @@ function normalize(S){
   ['times','notices','sponsors','mazal','refuah','yahrzeit','docs'].forEach(function(k){if(!Array.isArray(S[k]))S[k]=[];});
   S.donate=Object.assign({},S.donate||{});
   S.urgent=Object.assign({on:false,textHe:'',textEn:'',until:''},S.urgent||{});
-  S.display=Object.assign({lang:'he',slideSecs:12,shabbatMode:'still',zmanim:['alot','netz','shmaMGA','shma','tfilla','chatzot','minchaGedola','plag','shkia','tzeit'],showDonate:true,showQr:true,flyerFull:true},S.display||{});
+  S.display=Object.assign({lang:'he',slideSecs:12,shabbatMode:'still',zmanim:['alot','netz','shmaMGA','shma','tfilla','chatzot','minchaGedola','plag','shkia','tzeit'],showDonate:true,showQr:true,flyerFull:true,textSize:'normal'},S.display||{});
   return S;
 }
 
@@ -445,12 +445,13 @@ function TL(S,k,vars){var m=S.display.lang;return m==='both'?both(k,vars):esc(t(
 function TP(S,o,b){var m=S.display.lang;if(m==='both'){var h=pick(o,b,'he'),e=o[b+'En'];return esc(h)+(e&&e!==h?'<span class="en">'+esc(e)+'</span>':'');}return esc(pick(o,b,m==='en'?'en':'he'));}
 function tvLang(S){return S.display.lang==='en'?'en':'he';}
 function clockOk(){return new Date().getFullYear()>=2026;}
+var TSCALE={large:1.15,xl:1.3};
 function renderDisplay(S){
   if(!clockOk())return '<div class="tv tv-clockbad"><div>'+SPRIG+'<h1>'+TL(S,'clock_bad')+'</h1><p>'+TL(S,'clock_bad2')+'</p></div></div>';
-  var P=jp(),still=S.display.shabbatMode==='still'&&isShabbatNow(S.shul);ui.stillFlag=still;
+  var P=jp(),still=S.display.shabbatMode==='still'&&isShabbatNow(S.shul);ui.stillFlag=still;ui.tvScale=TSCALE[S.display.textSize]||1;
   return (ui.previewDraft?'<div class="preview-bar">'+esc(t('preview_on'))+'<button class="btn sm" data-act="endpreview">'+esc(t('back_edit'))+'</button></div>':'')+
     '<button class="tv-fs" data-act="fs">'+esc(t('fullscreen',null,tvLang(S)))+'</button>'+
-    '<div class="tv">'+urgentHtml(S,P.iso,true)+'<aside class="tv-side" id="tv-side">'+tvSide(S,still)+'</aside><main class="tv-stage" id="tv-stage" aria-live="polite">'+(still?stillBoard(S):'')+'</main><footer class="tv-foot" id="tv-foot">'+tvFoot(S)+'</footer></div>';
+    '<div class="tv" style="--fz:'+Math.min(ui.tvScale,1.1)+'">'+urgentHtml(S,P.iso,true)+'<aside class="tv-side" id="tv-side">'+tvSide(S,still)+'</aside><main class="tv-stage" id="tv-stage" aria-live="polite">'+(still?stillBoard(S):'')+'</main><footer class="tv-foot" id="tv-foot">'+tvFoot(S)+'</footer></div>';
 }
 function tvSide(S,still){
   var now=new Date(),P=jp(now),di=dayInfo(P.iso,S.shul),wk=weekInfo(P.iso,S.shul),lg=tvLang(S),bothM=S.display.lang==='both';
@@ -530,16 +531,16 @@ function preload(src){if(!src)return null;var im=IMGC[src];if(!im){im=new Image(
 function fitText(el){
   if(!el)return;
   var boxes=[el].concat([].slice.call(el.querySelectorAll('.fitcol,.still-grid>div')));
-  var over=function(){for(var i=0;i<boxes.length;i++){if(boxes[i].scrollHeight>boxes[i].clientHeight+2)return true;}return false;};
-  var f=1;el.style.setProperty('--fit','1');
-  while(f>0.36&&over()){f-=0.04;el.style.setProperty('--fit',f.toFixed(2));}
+  var over=function(){for(var i=0;i<boxes.length;i++){if(boxes[i].scrollHeight>boxes[i].clientHeight+2||boxes[i].scrollWidth>boxes[i].clientWidth+2)return true;}return false;};
+  var f=ui.tvScale||1;el.style.setProperty('--fit',f.toFixed(2));
+  while(f>0.3&&over()){f-=0.03;el.style.setProperty('--fit',f.toFixed(2));}
 }
 /* Shrink the info column evenly until every list fits (e.g. when the urgent banner takes a row). */
 function fitSide(){
   var side=document.getElementById('tv-side');if(!side||!side.offsetParent)return;
-  var over=function(){if(side.scrollHeight>side.clientHeight+2)return true;var b=side.querySelectorAll('.tv-block');for(var i=0;i<b.length;i++){if(b[i].scrollHeight>b[i].clientHeight+2)return true;}return false;};
-  var z=1;side.style.setProperty('--sz','1');
-  while(z>0.6&&over()){z-=0.03;side.style.setProperty('--sz',z.toFixed(2));}
+  var over=function(){if(side.scrollHeight>side.clientHeight+2||side.scrollWidth>side.clientWidth+2)return true;var b=side.querySelectorAll('.tv-block,.tv-next');for(var i=0;i<b.length;i++){if(b[i].scrollHeight>b[i].clientHeight+2||b[i].scrollWidth>b[i].clientWidth+2)return true;}return false;};
+  var z=ui.tvScale||1;side.style.setProperty('--sz',z.toFixed(2));
+  while(z>0.55&&over()){z-=0.03;side.style.setProperty('--sz',z.toFixed(2));}
 }
 function fitFlyer(S,im){
   var tv=document.querySelector('.tv'),stage=document.getElementById('tv-stage');if(!tv||!stage)return;
@@ -684,7 +685,7 @@ var YZ_F=[{k:'nameHe',type:'text'},{k:'nameEn',type:'text'},{k:'hday',type:'numb
 var DONATE_F=[{k:'leadHe',type:'textarea'},{k:'leadEn',type:'textarea'},{k:'bitPhone',type:'tel'},{k:'bitLink',type:'url'},{k:'payboxPhone',type:'tel'},{k:'payboxLink',type:'url'},{k:'otherLink',type:'url'},{k:'otherLabelHe',type:'text'},{k:'otherLabelEn',type:'text'},{k:'bankHe',type:'textarea'},{k:'bankEn',type:'textarea'},{k:'noteHe',l:'f_dnoteHe',type:'text'},{k:'noteEn',l:'f_dnoteEn',type:'text'}];
 var URGENT_F=[{k:'on',type:'check',full:1},{k:'textHe',type:'textarea'},{k:'textEn',type:'textarea'},{k:'until',type:'date'}];
 var SHUL_F=[{k:'nameHe',l:'f_shulName',type:'text'},{k:'nameEn',type:'text'},{k:'taglineHe',type:'text'},{k:'taglineEn',type:'text'},{k:'addressHe',type:'text'},{k:'addressEn',type:'text'},{k:'directionsHe',type:'text'},{k:'directionsEn',type:'text'},{k:'aboutHe',type:'textarea'},{k:'aboutEn',type:'textarea'},{k:'rabbiHe',type:'text'},{k:'rabbiEn',type:'text'},{k:'gabbaiHe',type:'text'},{k:'gabbaiEn',type:'text'},{k:'nusachHe',type:'text'},{k:'nusachEn',type:'text'},{k:'phone',type:'tel'},{k:'email',type:'email'},{k:'whatsapp',type:'url'},{k:'siteUrl',type:'url',full:1},{k:'candleMins',type:'number'},{k:'havdalahMode',type:'select',opts:[['tzeit','hv_tzeit'],['mins','hv_mins']],re:1},{k:'havdalahMins',type:'number',show:function(x){return x.havdalahMode==='mins';}},{k:'defaultLang',type:'select',opts:[['he','dl_he'],['en','dl_en']]},{k:'lat',type:'number'},{k:'lng',type:'number'}];
-var SCREEN_F=[{k:'lang',l:'f_dlang',type:'select',opts:[['he','dl_he'],['en','dl_en'],['both','dl_both']]},{k:'slideSecs',type:'number'},{k:'shabbatMode',type:'select',opts:[['still','sm_still'],['normal','sm_normal']],full:1},{k:'zmanim',type:'zm',full:1},{k:'showDonate',type:'check'},{k:'showQr',type:'check'},{k:'flyerFull',type:'check',full:1}];
+var SCREEN_F=[{k:'lang',l:'f_dlang',type:'select',opts:[['he','dl_he'],['en','dl_en'],['both','dl_both']]},{k:'textSize',type:'select',opts:[['normal','ts_normal'],['large','ts_large'],['xl','ts_xl']]},{k:'slideSecs',type:'number'},{k:'shabbatMode',type:'select',opts:[['still','sm_still'],['normal','sm_normal']],full:1},{k:'zmanim',type:'zm',full:1},{k:'showDonate',type:'check'},{k:'showQr',type:'check'},{k:'flyerFull',type:'check',full:1}];
 
 function fieldDir(k){return /He$/.test(k)?'rtl':(/En$/.test(k)||/(Link|Url|url|phone|Phone|email|whatsapp|lat|lng)$/.test(k)?'ltr':'auto');}
 function fields(col,id,obj,F){

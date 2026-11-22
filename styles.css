@@ -229,10 +229,10 @@ html.tv-mode body::before{background:var(--tv-bg)}
 .tv-stage{grid-area:stage;position:relative;min-height:0;background:var(--tv-panel);border:1px solid var(--tv-line);border-radius:1.6vmin;overflow:hidden;display:flex;box-shadow:0 1px 2px rgba(27,36,30,.06),0 6px 20px rgba(27,36,30,.06)}
 .tv.full .tv-side{display:none}
 .tv.full .tv-stage{grid-area:side / side / stage / stage}
-.slide{--fit:1;flex:1;min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;padding:4vmin 4.4vmin;gap:calc(2vmin*var(--fit));animation:sIn .7s ease both}
+.slide{--fit:1;--fp:min(1,var(--fit));flex:1;min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;padding:calc(4vmin*var(--fp)) calc(4.4vmin*var(--fp));gap:calc(2vmin*var(--fit));animation:sIn .7s ease both}
 @keyframes sIn{from{opacity:0;transform:translateY(1.2vmin)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.slide{animation:none}}
-.slide .kick{font-size:2.1vmin;color:var(--tv-sage);font-weight:600;letter-spacing:.08em}
+.slide .kick{font-size:calc(2.1vmin*var(--fit));color:var(--tv-sage);font-weight:600;letter-spacing:.08em}
 .slide h2{font-size:calc(6.2vmin*var(--fit));font-weight:700;color:var(--tv-ink);overflow-wrap:anywhere}
 .slide .body{font-size:calc(3.3vmin*var(--fit));line-height:1.45;white-space:pre-line;color:var(--tv-ink);overflow-wrap:anywhere}
 .slide.img{padding:0;background:var(--tv-panel)}
@@ -248,10 +248,10 @@ html.tv-mode body::before{background:var(--tv-bg)}
 .slide .sp{display:grid;gap:calc(2vmin*var(--fit));font-size:calc(3.4vmin*var(--fit))}
 .slide .sp>div{white-space:pre-line;overflow-wrap:anywhere}
 .slide .sp div span{display:block;font-size:calc(2.2vmin*var(--fit));color:var(--tv-sage);font-weight:600}
-.slide .pays{display:flex;gap:4vmin;flex-wrap:wrap;align-items:flex-start;margin-top:1vmin}
+.slide .pays{display:flex;gap:calc(4vmin*var(--fp));flex-wrap:wrap;align-items:flex-start;margin-top:calc(1vmin*var(--fp))}
 .slide .pays figure{margin:0;display:grid;gap:1vmin;justify-items:center;font-size:calc(2.8vmin*var(--fit));font-weight:600}
 .slide .pays .qr{width:calc(22vmin*var(--fit));height:calc(22vmin*var(--fit));border:0;border-radius:1vmin;padding:1vmin}
-.slide .payrow{display:flex;gap:5vmin;flex-wrap:wrap;align-items:center;margin-top:1vmin}
+.slide .payrow{display:flex;gap:calc(5vmin*var(--fp));flex-wrap:wrap;align-items:center;margin-top:calc(1vmin*var(--fp))}
 .slide .payrow .pays{margin-top:0}
 .slide .paylines{display:grid;gap:calc(2.2vmin*var(--fit));flex:1;min-width:28vmin}
 .slide .paylines>div{display:grid;gap:.4vmin}
@@ -264,7 +264,7 @@ html.tv-mode body::before{background:var(--tv-bg)}
 .tv-dots{position:absolute;inset-block-end:1.6vmin;inset-inline-end:2vmin;display:flex;gap:.8vmin}
 .tv-dots i{width:1vmin;height:1vmin;border-radius:50%;background:var(--tv-line)}
 .tv-dots i.on{background:var(--tv-gold)}
-.tv-foot{grid-area:foot;display:flex;align-items:center;gap:2.4vmin;justify-content:space-between;font-size:2.2vmin;color:var(--tv-mute)}
+.tv-foot{grid-area:foot;zoom:var(--fz,1);display:flex;align-items:center;gap:2.4vmin;justify-content:space-between;font-size:2.2vmin;color:var(--tv-mute)}
 .tv-foot .qr{width:8vmin;height:8vmin;padding:.6vmin;border:0;border-radius:.8vmin}
 .tv-foot .fl{display:flex;gap:1.8vmin;align-items:center}
 .tv-foot .shab{display:flex;gap:3vmin}
@@ -276,7 +276,7 @@ html.tv-mode body::before{background:var(--tv-bg)}
 .still-grid h3{font-size:calc(3vmin*var(--fit));margin-bottom:.8vmin}
 .still-grid p{font-size:calc(2.4vmin*var(--fit));white-space:pre-line;overflow-wrap:anywhere}
 @media (orientation:portrait){
-  .tv{grid-template-columns:1fr;grid-template-rows:auto auto minmax(0,1fr) auto;grid-template-areas:"urg" "side" "stage" "foot"}
+  .tv{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr) minmax(0,1.15fr) auto;grid-template-areas:"urg" "side" "stage" "foot"}
   .tv-side{display:grid;grid-template-columns:1fr 1fr;gap:1.6vmin}
   .tv-side .tv-brand,.tv-side .tv-next,.tv-side .tv-chips{grid-column:1/-1}
   .tv-clock{font-size:11vmin}
