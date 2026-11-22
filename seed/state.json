@@ -314,8 +314,11 @@
  "refuah": [],
  "yahrzeit": [],
  "donate": {
+  "leadHe": "",
+  "leadEn": "",
   "bitPhone": "",
   "bitLink": "",
+  "payboxPhone": "",
   "payboxLink": "",
   "otherLink": "",
   "otherLabelHe": "",
