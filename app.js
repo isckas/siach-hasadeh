@@ -19,7 +19,7 @@ var L={
   kind:['בית כנסת','Synagogue'], city:['מעלה אדומים',"Ma'ale Adumim"],
   offline_tv:['אין חיבור לאינטרנט · מוצג המידע השמור','Offline · showing saved information'], clock_bad:['השעון של המסך לא מכוון','The screen\'s clock is not set'], clock_bad2:['כוונו תאריך ושעה בהגדרות המכשיר (או חברו אותו לאינטרנט לרגע). הזמנים יחזרו להופיע מיד.','Set the date and time in the device settings (or connect it to the internet for a moment). The times will come back right away.'],
   nav_docs:['פרוטוקולים','Minutes'], docs:['פרוטוקולים ומסמכים','Minutes & documents'], docs_lead:['פרוטוקולים והחלטות של העמותה, בעברית ובתרגום לאנגלית.','The association\'s minutes and decisions, in Hebrew with an English translation.'], tab_docs:['פרוטוקולים ומסמכים','Minutes & documents'], add_doc:['הוספת מסמך','Add document'], f_date:['תאריך','Date'], f_link:['קישור לקובץ המקורי (לא חובה)','Link to the original file (optional)'], doc_original:['המסמך המקורי (PDF)','Original document (PDF)'], docs_hint:['פרוטוקולים, תקנון ומסמכים לקהילה. שורה שמתחילה ב-## הופכת לכותרת, ו-**טקסט** מודגש.','Minutes, bylaws and documents for the community. A line starting with ## becomes a heading; **text** is bold.'], doc_lang:['שפת המסמך','Document language'],
-  nav_times:['תפילות','Prayer times'], nav_zmanim:['זמני היום','Zmanim'], nav_notices:['הודעות','Notices'], nav_community:['השבוע בקהילה','This week'], nav_shiurim:['שיעורים','Shiurim'], nav_donate:['תרומות','Donate'], nav_contact:['הגעה וקשר','Contact'],
+  nav_times:['תפילות','Prayer times'], nav_zmanim:['זמני היום','Zmanim'], nav_notices:['הודעות','Notices'], nav_community:['מזל טוב','Mazal tov'], nav_simchas:['שמחות','Simchas'], nav_shiurim:['שיעורים','Shiurim'], nav_donate:['תרומות','Donate'], nav_contact:['הגעה וקשר','Contact'],
   board:['ניהול','Board'], screen_view:['תצוגת מסך','Screen view'], site_view:['לאתר','Back to site'],
   today:['היום','Today'], next:['התפילה הבאה','Next tefillah'], in_min:['בעוד {n} דק׳','in {n} min'], in_hm:['בעוד {h}:{m} ש׳','in {h}h {m}m'], tomorrow:['מחר','tomorrow'], none_today:['אין עוד תפילות היום','No more tefillot today'],
   weekday:['ימי חול','Weekdays'], shabbat:['שבת','Shabbat'], shiurim:['שיעורים','Shiurim'], shiur:['שיעור','Shiur'],
@@ -30,7 +30,7 @@ var L={
   prev_day:['יום קודם','Previous day'], next_day:['יום הבא','Next day'], back_today:['היום','Today'],
   zm_alot:['עלות השחר','Dawn (Alot)'], zm_misheyakir:['זמן ציצית ותפילין','Earliest tallit'], zm_netz:['הנץ החמה','Sunrise'], zm_shmaMGA:['סוף ק״ש מג״א','Latest Shema (MGA)'], zm_shma:['סוף ק״ש גר״א','Latest Shema (GRA)'], zm_tfillaMGA:['סוף תפילה מג״א','Latest Shacharit (MGA)'], zm_tfilla:['סוף תפילה גר״א','Latest Shacharit (GRA)'], zm_chatzot:['חצות היום','Midday'], zm_minchaGedola:['מנחה גדולה','Earliest Mincha'], zm_minchaKetana:['מנחה קטנה','Mincha Ketana'], zm_plag:['פלג המנחה','Plag HaMincha'], zm_shkia:['שקיעה','Sunset'], zm_tzeit:['צאת הכוכבים','Nightfall'],
   notices:['הודעות ומודעות','Notices & flyers'], no_notices:['אין הודעות כרגע.','No notices right now.'], until:['עד {d}','until {d}'], from:['מ־{d}','from {d}'], every:['כל {d}','every {d}'],
-  community:['השבוע בקהילה','This week in the community'], sponsors:['חסויות והקדשות','Sponsors & dedications'], mazal:['מזל טוב','Mazal Tov'], yahrzeit:['יארצייט — לעילוי נשמת','Yahrzeits — l\'ilui nishmat'], refuah:['לרפואה שלמה','Refuah Shleima'],
+  community:['מזל טוב ויארצייט','Mazal tov & yahrzeits'], community_lead:['השבוע בקהילה','This week in the community'], simchas:['לוח שמחות','Upcoming simchas'], simchas_lead:['שמחות קרובות בקהילה','Upcoming celebrations in the community'], no_simchas:['עוד לא נרשמו שמחות קרובות.','No upcoming simchas listed yet.'], simcha:['שמחה','Simcha'], yz_short:['יארצייט','Yahrzeit'], no_shiurim:['עוד לא נרשמו שיעורים.','No shiurim listed yet.'], hg_title:['תרומה לבית הכנסת','Donate to the shul'], hg_more:['העברה בנקאית ודרכים נוספות','Bank transfer and other ways'], tz_join:['הצטרפות לקבוצה','Join the group'], sponsors:['חסויות והקדשות','Sponsors & dedications'], mazal:['מזל טוב','Mazal Tov'], yahrzeit:['יארצייט — לעילוי נשמת','Yahrzeits — l\'ilui nishmat'], refuah:['לרפואה שלמה','Refuah Shleima'],
   no_sponsor_kiddush:['הקידוש השבוע עדיין פנוי להקדשה.','This week\'s Kiddush is still open for sponsorship.'], sponsor_cta:['להקדשת קידוש','Sponsor the Kiddush'],
   sp_kiddush:['קידוש','Kiddush'], sp_seudah:['סעודה שלישית','Seudah Shlishit'], sp_learning:['יום לימוד','Day of learning'], sp_tefillot:['תפילות השבוע','This week\'s tefillot'], sp_general:['הקדשה','Dedication'],
   sp_by:['בחסות','Sponsored by'],
@@ -51,7 +51,7 @@ var L={
   checking:['בודק הרשאות…','Checking your access…'],
   unsaved:['{n} שינויים שלא נשמרו','{n} unsaved changes'], unsaved1:['שינוי אחד שלא נשמר','1 unsaved change'], all_saved:['הכל שמור ומפורסם','Everything is saved and published'], publish:['שמירה ופרסום','Save & publish'], publishing:['מפרסם…','Publishing…'], discard:['ביטול שינויים','Discard changes'], discard2:['לחצו שוב לביטול','Click again to discard'],
   published:['פורסם. האתר והמסך מתעדכנים.','Published. The site and screen are updating.'], conflict:['מישהו שמר באותו רגע. השינויים שלו שולבו עם שלכם — לחצו שוב "שמירה ופרסום".','Someone saved at the same moment. Their changes were merged with yours — press "Save & publish" again.'], save_failed:['השמירה נכשלה. בדקו את החיבור לאינטרנט ונסו שוב.','Saving failed. Check the internet connection and try again.'], perm_denied:['אין הרשאה לשמור. ודאו שאתם מחוברים עם חשבון מנהל.','You don\'t have permission to save. Make sure you\'re signed in with an admin account.'],
-  add_time:['הוספת תפילה או שיעור','Add a tefillah or shiur'], add_notice:['הוספת הודעה או מודעה','Add a notice or flyer'], add_sponsor:['הוספת חסות','Add a sponsor'], add_mazal:['הוספת מזל טוב','Add a Mazal Tov'], add_refuah:['הוספת שם','Add a name'], add_yahrzeit:['הוספת יארצייט','Add a yahrzeit'],
+  add_time:['הוספת תפילה או שיעור','Add a tefillah or shiur'], add_notice:['הוספת הודעה או מודעה','Add a notice or flyer'], add_sponsor:['הוספת חסות','Add a sponsor'], add_mazal:['הוספת מזל טוב','Add a Mazal Tov'], add_refuah:['הוספת שם','Add a name'], add_yahrzeit:['הוספת יארצייט','Add a yahrzeit'], add_simcha:['הוספת שמחה','Add a simcha'], add_shiur:['הוספת שיעור','Add a shiur'], tab_shiurim:['שיעורים','Shiurim'], shiurim_hint:['שיעורים מופיעים באתר בחלק "שיעורים", ובמסך מתחת לזמני התפילות של היום (רק בימים שבהם הם מתקיימים).','Shiurim show in the Shiurim section of the website, and on the screen under today\'s prayer times on the days they run.'],
   duplicate:['שכפול','Duplicate'], del:['מחיקה','Delete'], del2:['לחצו שוב למחיקה','Click again to delete'], empty_list:['עדיין אין פריטים. הוסיפו את הראשון.','Nothing here yet. Add the first one.'],
   st_on:['מוצג','Showing'], st_soon:['מתחיל {d}','Starts {d}'], st_past:['הסתיים','Expired'], st_hidden:['מוסתר','Hidden'], st_always:['קבוע','Always on'],
   f_nameHe:['שם (עברית)','Name (Hebrew)'], f_nameEn:['שם (אנגלית)','Name (English)'], f_group:['סוג','Type'], f_days:['ימים','Days'], f_mode:['שעה','Time'], f_time:['שעה קבועה','Fixed time'], f_base:['ביחס ל','Relative to'], f_offset:['דקות (+ אחרי / − לפני)','Minutes (+ after / − before)'], f_round:['עיגול','Rounding'], f_teacherHe:['מוסר השיעור (עברית)','Teacher (Hebrew)'], f_teacherEn:['מוסר השיעור (אנגלית)','Teacher (English)'], f_noteHe:['הערה (עברית)','Note (Hebrew)'], f_noteEn:['הערה (אנגלית)','Note (English)'], f_hidden:['להסתיר זמנית','Hide for now'],
@@ -67,7 +67,7 @@ var L={
   f_type:['סוג החסות','Sponsorship'], f_byHe:['בחסות (עברית)','Sponsored by (Hebrew)'], f_byEn:['בחסות (אנגלית)','Sponsored by (English)'], f_forHe:['לרגל / לעילוי נשמת (עברית)','In honor of / in memory of (Hebrew)'], f_forEn:['לרגל / לעילוי נשמת (אנגלית)','In honor of / in memory of (English)'],
   f_textHe:['נוסח (עברית)','Text (Hebrew)'], f_textEn:['נוסח (אנגלית)','Text (English)'], f_name:['שם (למשל: פלוני בן פלונית)','Name (e.g. Ploni ben Plonit)'], f_until:['עד תאריך (לא חובה)','Until (optional)'],
   f_hday:['יום בחודש העברי','Hebrew day'], f_hmonth:['חודש עברי','Hebrew month'], f_hyear:['שנה עברית (לא חובה, למשל 5780)','Hebrew year (optional, e.g. 5780)'], f_relHe:['קרבה / הערה (עברית)','Relation / note (Hebrew)'], f_relEn:['קרבה / הערה (אנגלית)','Relation / note (English)'],
-  f_bitPhone:['מספר טלפון לביט','Bit phone number'], f_bitLink:['קישור תשלום בביט (לעסקים/עמותות)','Bit payment link (business/nonprofit)'], f_payboxLink:['קישור לקבוצת/דף פייבוקס','PayBox group or payment link'], f_payboxPhone:['מספר טלפון לפייבוקס','PayBox phone number'], f_leadHe:['טקסט פתיחה (עברית)','Intro text (Hebrew)'], f_leadEn:['טקסט פתיחה (אנגלית)','Intro text (English)'], f_otherLink:['קישור תרומה נוסף (נדרים פלוס וכד׳)','Other donation link (Nedarim Plus etc.)'], f_otherLabelHe:['שם הכפתור (עברית)','Button label (Hebrew)'], f_otherLabelEn:['שם הכפתור (אנגלית)','Button label (English)'], f_bankHe:['פרטי העברה בנקאית (עברית)','Bank details (Hebrew)'], f_bankEn:['פרטי העברה בנקאית (אנגלית)','Bank details (English)'], f_dnoteHe:['הערה (למשל: קבלה לפי סעיף 46)','Note (e.g. Section 46 receipt)'], f_dnoteEn:['הערה (אנגלית)','Note (English)'],
+  f_bitPhone:['מספר טלפון לביט','Bit phone number'], f_bitLink:['קישור תשלום בביט (לעסקים/עמותות)','Bit payment link (business/nonprofit)'], f_payboxLink:['קישור לקבוצת/דף פייבוקס','PayBox group or payment link'], f_payboxPhone:['מספר טלפון לפייבוקס','PayBox phone number'], f_leadHe:['טקסט פתיחה (עברית)','Intro text (Hebrew)'], f_leadEn:['טקסט פתיחה (אנגלית)','Intro text (English)'], f_tzTitleHe:['קופה נוספת: שם (עברית)','Second fund: name (Hebrew)'], f_tzTitleEn:['קופה נוספת: שם (אנגלית)','Second fund: name (English)'], f_tzTextHe:['קופה נוספת: טקסט קצר (עברית)','Second fund: short text (Hebrew)'], f_tzTextEn:['קופה נוספת: טקסט קצר (אנגלית)','Second fund: short text (English)'], f_tzLink:['קופה נוספת: קישור לקבוצת פייבוקס','Second fund: PayBox group link'], f_detailsHe:['פרטים: שעה ומקום (עברית)','Details: time and place (Hebrew)'], f_detailsEn:['פרטים: שעה ומקום (אנגלית)','Details: time and place (English)'], f_showZmanim:['להציג את זמני היום במסך','Show the zmanim on the screen'], f_otherLink:['קישור תרומה נוסף (נדרים פלוס וכד׳)','Other donation link (Nedarim Plus etc.)'], f_otherLabelHe:['שם הכפתור (עברית)','Button label (Hebrew)'], f_otherLabelEn:['שם הכפתור (אנגלית)','Button label (English)'], f_bankHe:['פרטי העברה בנקאית (עברית)','Bank details (Hebrew)'], f_bankEn:['פרטי העברה בנקאית (אנגלית)','Bank details (English)'], f_dnoteHe:['הערה (למשל: קבלה לפי סעיף 46)','Note (e.g. Section 46 receipt)'], f_dnoteEn:['הערה (אנגלית)','Note (English)'],
   donate_hint:['הקישורים מוצגים כ"כפתור" באתר וכקוד QR במסך. בדקו כל קישור בטלפון לפני הפרסום.','Links appear as buttons on the site and as QR codes on the screen. Test each link on a phone before publishing.'],
   f_on:['להציג את ההודעה הדחופה','Show the urgent banner'], urgent_hint:['פס אדום בראש האתר והמסך. מתאים לביטול תפילה, שינוי מקום או הנחיות פיקוד העורף.','A red bar at the top of the site and screen. Use it for a cancelled minyan, a change of location or Home Front Command instructions.'],
   f_shulName:['שם (עברית)','Name (Hebrew)'], f_taglineHe:['תיאור קצר (עברית)','Short description (Hebrew)'], f_taglineEn:['תיאור קצר (אנגלית)','Short description (English)'], f_addressHe:['כתובת (עברית)','Address (Hebrew)'], f_addressEn:['כתובת (אנגלית)','Address (English)'], f_directionsHe:['הכוונה (עברית)','Directions (Hebrew)'], f_directionsEn:['הכוונה (אנגלית)','Directions (English)'], f_aboutHe:['על בית הכנסת (עברית)','About (Hebrew)'], f_aboutEn:['על בית הכנסת (אנגלית)','About (English)'], f_rabbiHe:['רב (עברית)','Rabbi (Hebrew)'], f_rabbiEn:['רב (אנגלית)','Rabbi (English)'], f_gabbaiHe:['גבאי (עברית)','Gabbai (Hebrew)'], f_gabbaiEn:['גבאי (אנגלית)','Gabbai (English)'], f_nusachHe:['נוסח (עברית)','Nusach (Hebrew)'], f_nusachEn:['נוסח (אנגלית)','Nusach (English)'], f_phone:['טלפון','Phone'], f_email:['אימייל','Email'], f_whatsapp:['קישור לקבוצת וואטסאפ','WhatsApp group link'], f_siteUrl:['הקישור הציבורי לאתר (לקוד ה-QR במסך)','Public link to this site (for the screen QR code)'], f_lat:['קו רוחב','Latitude'], f_lng:['קו אורך','Longitude'], f_candleMins:['הדלקת נרות: דקות לפני השקיעה','Candle lighting: minutes before sunset'], f_havdalahMode:['צאת השבת לפי','Shabbat ends by'], hv_tzeit:['צאת הכוכבים (8.5°)','Nightfall (8.5°)'], hv_mins:['דקות אחרי השקיעה','Minutes after sunset'], f_havdalahMins:['דקות אחרי השקיעה','Minutes after sunset'], f_defaultLang:['שפת ברירת המחדל באתר','Default website language'],
@@ -76,7 +76,7 @@ var L={
   screen_hint:['כדי להציג על הטלוויזיה: פתחו בדפדפן המסך (או ב-Yodeck כ"דף אינטרנט") את הכתובת הזו. המסך לא צריך כניסה, ומתעדכן לבד כששומרים שינויים.','To show on the TV, open this address in the screen\'s browser (or as a Yodeck "Web page"). The screen needs no sign-in and updates by itself when changes are saved.'],
   open_screen:['פתיחת תצוגת המסך','Open the screen view'], preview_edits:['תצוגה מקדימה של המסך עם השינויים','Preview the screen with my edits'], preview_on:['תצוגה מקדימה — לא פורסם','Preview — not published'], back_edit:['חזרה לעריכה','Back to editing'],
   ov_screen:['על המסך עכשיו','On the screen now'], ov_slides:['שקופיות','slides'], ov_notices:['הודעות פעילות','active notices'], ov_expiring:['מסתיימים השבוע','ending this week'], ov_quick:['פעולות מהירות','Quick actions'], ov_clean:['הסרת פריטים שפג תוקפם','Remove expired items'], ov_cleaned:['הוסרו {n} פריטים. לחצו "שמירה ופרסום".','Removed {n} items. Press "Save & publish".'], ov_nothing:['אין פריטים שפג תוקפם.','Nothing has expired.'], ov_setup:['חיבור המסך בבית הכנסת','Connecting the shul screen'], ov_link_missing:['הוסיפו את הקישור הציבורי בלשונית "פרטי בית הכנסת" כדי שיופיע קוד QR במסך.','Add the public link under "Shul details" so a QR code shows on the screen.'],
-  sub_mazal:['מזל טוב','Mazal Tov'], sub_refuah:['לרפואה שלמה','Refuah Shleima'], sub_yahrzeit:['יארצייט','Yahrzeits'], yahrzeit_hint:['היארצייט מחושב לפי התאריך העברי ומוצג אוטומטית בשבוע שבו הוא חל.','The yahrzeit is calculated from the Hebrew date and shows automatically in the week it falls.'],
+  sub_mazal:['מזל טוב','Mazal Tov'], sub_refuah:['לרפואה שלמה','Refuah Shleima'], sub_yahrzeit:['יארצייט','Yahrzeits'], sub_simchas:['לוח שמחות','Simchas calendar'], simchas_hint:['שמחות קרובות מופיעות באתר לפי התאריך ויורדות לבד אחרי שהתאריך עבר. שמחות של השבוע מופיעות גם במסך.','Upcoming simchas show on the website by date and drop off by themselves once the date has passed. This week\'s also show on the screen.'], yahrzeit_hint:['היארצייט מחושב לפי התאריך העברי ומוצג אוטומטית בשבוע שבו הוא חל.','The yahrzeit is calculated from the Hebrew date and shows automatically in the week it falls.'],
   daily:['כל יום','Daily'], none:['—','—'],
   f_nstart:['מתאריך (לא חובה)','From (optional)'], f_nend:['תאריך הסרה (לא חובה — ריק = ללא הגבלה)','Take down after (optional — blank = no end date)'], f_mstart:['תאריך פרסום','Posted on'], f_mend:['יורד אוטומטית אחרי (שבועיים)','Comes down after (2 weeks)'],
   signin_title:['כניסת חברי ועד','Board sign-in'], signin_body:['הכניסה מיועדת למנהלי האתר בלבד. האתר הציבורי והמסך בבית הכנסת לא דורשים כניסה.','Sign-in is only for the site\'s admins. The public website and the shul screen need no login.'], signin_btn:['כניסה עם Google','Sign in with Google'], signout:['יציאה','Sign out'], other_account:['כניסה עם חשבון אחר','Use a different account'], signin_failed:['הכניסה נכשלה ({c}). נסו שוב.','Sign-in failed ({c}). Try again.'],
@@ -108,10 +108,10 @@ function safeUrl(u){u=String(u||'').trim();return /^https?:\/\//i.test(u)?u:'';}
 function normalize(S){
   S.v=S.v||1;
   S.shul=Object.assign({nameHe:'שיח השדה',nameEn:'Siach HaSadeh',lat:31.7795,lng:35.3015,candleMins:30,havdalahMode:'tzeit',havdalahMins:40,defaultLang:'he'},S.shul||{});
-  ['times','notices','sponsors','mazal','refuah','yahrzeit','docs'].forEach(function(k){if(!Array.isArray(S[k]))S[k]=[];});
+  ['times','notices','sponsors','mazal','refuah','yahrzeit','docs','simchas'].forEach(function(k){if(!Array.isArray(S[k]))S[k]=[];});
   S.donate=Object.assign({},S.donate||{});
   S.urgent=Object.assign({on:false,textHe:'',textEn:'',until:''},S.urgent||{});
-  S.display=Object.assign({lang:'he',slideSecs:12,shabbatMode:'still',zmanim:['alot','netz','shmaMGA','shma','tfilla','chatzot','minchaGedola','plag','shkia','tzeit'],showDonate:true,showQr:true,flyerFull:true,textSize:'normal'},S.display||{});
+  S.display=Object.assign({lang:'he',slideSecs:12,shabbatMode:'still',zmanim:['alot','netz','shmaMGA','shma','tfilla','chatzot','minchaGedola','plag','shkia','tzeit'],showDonate:true,showQr:true,flyerFull:true,textSize:'normal',showZmanim:false},S.display||{});
   return S;
 }
 
@@ -245,6 +245,8 @@ function sponsorsFor(S,iso){var wk=weekInfo(iso,S.shul);return S.sponsors.filter
 var MAZAL_DAYS=14;
 function mazalEnd(m){return m.end||(m.start?isoAdd(m.start,MAZAL_DAYS):'');}
 function mazalFor(S,iso){return S.mazal.filter(function(m){var e=mazalEnd(m);return !m.hidden&&(!m.start||iso>=m.start)&&(!e||iso<=e);});}
+function simchasFor(S,iso,days){var last=days?isoAdd(iso,days):'';return S.simchas.filter(function(x){return !x.hidden&&x.date&&x.date>=iso&&(!last||x.date<=last);}).sort(function(a,b){return a.date<b.date?-1:1;});}
+function shiurimOn(S,dow){return S.times.filter(function(e){return !e.hidden&&e.group==='shiur'&&(dow==null||(e.days||[]).indexOf(dow)>=0);});}
 function refuahFor(S,iso){return S.refuah.filter(function(r){return !r.hidden&&(!r.until||r.until>=iso);});}
 function yahrzeitIso(y,fromIso){
   if(!H||!y.hday||!y.hmonth)return null;
@@ -294,7 +296,7 @@ function render(){
   clearTimeout(ui.slideTimer);ui.slideTimer=null;
   if(!ui.ready){root.classList.remove('tv-mode');$app.innerHTML='<div class="loading">'+SPRIG+'<span>'+esc(t('loading'))+'</span></div>';return;}
   root.classList.toggle('tv-mode',r==='display');
-  if(r==='display'){var S=screenState();var dl=S.display.lang;root.lang=dl==='en'?'en':'he';root.dir=dl==='en'?'ltr':'rtl';$app.innerHTML=renderDisplay(S);fitSide();startSlides(S);keepAwake();armFs();return;}
+  if(r==='display'){var S=screenState();var dl=S.display.lang;root.lang=dl==='en'?'en':'he';root.dir=dl==='en'?'ltr':'rtl';$app.innerHTML=renderDisplay(S);fitSide();startScroll();startSlides(S);keepAwake();armFs();return;}
   root.lang=lang;root.dir=lang==='he'?'rtl':'ltr';
   $app.innerHTML=(r==='manage'?renderManage():renderHome());
 }
@@ -302,7 +304,7 @@ function screenState(){return ui.previewDraft?normalize(clone(draft)):state;}
 
 function header(){
   var S=state,r=route();
-  var nav=r==='home'?'<nav class="nav" aria-label="sections">'+[['sec-times','nav_times'],['sec-zmanim','nav_zmanim'],['sec-notices','nav_notices'],['sec-community','nav_community'],['sec-donate','nav_donate']].concat(docsFor(S).length?[['sec-docs','nav_docs']]:[]).concat([['sec-contact','nav_contact']]).map(function(n){return '<button data-act="go" data-to="'+n[0]+'">'+esc(t(n[1]))+'</button>';}).join('')+'</nav>':'<span class="nav"></span>';
+  var nav=r==='home'?'<nav class="nav" aria-label="sections">'+[['sec-times','nav_times'],['sec-shiurim','nav_shiurim'],['sec-notices','nav_notices'],['sec-community','nav_community'],['sec-simchas','nav_simchas'],['sec-donate','nav_donate'],['sec-zmanim','nav_zmanim']].concat(docsFor(S).length?[['sec-docs','nav_docs']]:[]).concat([['sec-contact','nav_contact']]).map(function(n){return '<button data-act="go" data-to="'+n[0]+'">'+esc(t(n[1]))+'</button>';}).join('')+'</nav>':'<span class="nav"></span>';
   return '<header class="top"><div class="wrap top-in">'+
     '<button class="brand" data-act="nav" data-to="">'+SPRIG+'<span><b>'+esc(pick(S.shul,'name'))+'</b><small>'+esc(pick(S.shul,'kind')||t('kind'))+' · '+esc(t('city'))+'</small></span></button>'+nav+
     '<div class="top-tools"><div class="lang" role="group" aria-label="language"><button data-act="lang" data-lang="he" aria-pressed="'+(lang==='he')+'">עברית</button><button data-act="lang" data-lang="en" aria-pressed="'+(lang==='en')+'">English</button></div>'+
@@ -321,7 +323,7 @@ function renderHome(){
   var S=state,now=new Date(),P=jp(now),iso=P.iso,di=dayInfo(iso,S.shul),wk=weekInfo(iso,S.shul);
   if(!ui.zDate)ui.zDate=iso;
   return header()+'<div class="wrap">'+urgentHtml(S,iso,false)+hero(S,P,di,wk)+'</div><main class="wrap sections">'+
-    secTimes(S,P,wk)+secZmanim(S,P)+secNotices(S,iso,P.dow)+secCommunity(S,iso)+secShiurim(S)+secDonate(S)+secDocs(S)+secContact(S)+
+    secTimes(S,P,wk)+secShiurim(S)+secNotices(S,iso,P.dow)+secCommunity(S,iso)+secSimchas(S,iso)+secDonate(S)+secZmanim(S,P)+secDocs(S)+secContact(S)+
     '</main><footer class="wrap foot"><span>© '+esc(pick(S.shul,'name'))+' · '+esc(pick(S.shul,'address'))+'</span><span style="display:flex;gap:14px;flex-wrap:wrap"><button class="linkbtn" data-act="nav" data-to="display">'+esc(t('foot_screen'))+'</button>'+'<button class="linkbtn" data-act="nav" data-to="manage">'+esc(FB.role?t('board'):t('foot_board'))+'</button></span></footer>';
 }
 function hero(S,P,di,wk){
@@ -332,13 +334,19 @@ function hero(S,P,di,wk){
     '<h1>'+esc(pick(S.shul,'name'))+(lang==='he'&&S.shul.nameEn?'<span class="en-name">'+esc(S.shul.nameEn)+'</span>':'')+(lang==='en'&&S.shul.nameHe?'<span class="en-name">'+esc(S.shul.nameHe)+'</span>':'')+'</h1>'+
     '<p class="lead">'+esc(pick(S.shul,'tagline'))+'</p>'+
     '<p class="verse">וְכֹל שִׂיחַ הַשָּׂדֶה טֶרֶם יִהְיֶה בָאָרֶץ<small>'+esc(t('verse_src'))+'</small></p>'+
-    '<div class="hero-actions"><button class="btn primary" data-act="go" data-to="sec-times">'+esc(t('nav_times'))+'</button><button class="btn" data-act="go" data-to="sec-donate">'+esc(t('nav_donate'))+'</button><button class="btn ghost" data-act="go" data-to="sec-contact">'+esc(t('nav_contact'))+'</button></div></div>'+
+    heroGive(S)+'<div class="hero-actions"><button class="btn primary" data-act="go" data-to="sec-times">'+esc(t('nav_times'))+'</button><button class="btn" data-act="go" data-to="sec-shiurim">'+esc(t('nav_shiurim'))+'</button><button class="btn ghost" data-act="go" data-to="sec-contact">'+esc(t('nav_contact'))+'</button></div></div>'+
     '<aside class="ledger" aria-label="'+esc(t('today'))+'"><div class="ledger-date"><div class="hd">'+esc(hebDate(di))+'</div><div class="gd">'+esc(gregLong(P.iso))+'</div></div><dl>'+
     '<div><dt>'+esc(t('next'))+'</dt><dd id="live-next">'+nextHtml(nx)+'</dd></div>'+
     (pt?'<div><dt>'+esc(t('parsha'))+'</dt><dd>'+esc(pt)+'</dd></div>':'')+
     (wk.candles?'<div><dt>'+esc(t('candles'))+' <span class="muted small">'+esc(fmtShort(wk.fri))+'</span></dt><dd class="tn"><span class="big">'+hm(wk.candles)+'</span></dd></div>':'')+
     (wk.havdalah?'<div><dt>'+esc(t('havdalah'))+'</dt><dd class="tn">'+hm(wk.havdalah)+'</dd></div>':'')+
     '</dl>'+((chips.length||hol.length)?'<div class="chips">'+hol.map(function(h){return '<span class="chip sage">'+esc(h)+'</span>';}).join('')+chips.map(function(c){return '<span class="chip">'+esc(t(c))+'</span>';}).join('')+'</div>':'')+'</aside></section>';
+}
+function heroGive(S){
+  var d=S.donate,pb=safeUrl(d.payboxLink),bit=safeUrl(d.bitLink),num=d.payboxPhone||d.bitPhone||'',go=pb||bit;
+  if(!go&&!num&&!pick(d,'bank'))return '';
+  return '<div class="give"><div class="give-h"><b>'+esc(t('hg_title'))+'</b><button class="linkbtn" data-act="go" data-to="sec-donate">'+esc(t('hg_more'))+'</button></div>'+
+    '<div class="give-r">'+(go?'<a class="btn primary" href="'+esc(go)+'" target="_blank" rel="noopener">'+esc(t(pb?'pay_paybox':'pay_bit'))+'</a>':'')+(num?'<span class="give-n"><span class="muted small">'+esc(t(d.payboxPhone?'paybox':'bit'))+'</span>'+copyRow(num)+'</span>':'')+'</div></div>';
 }
 function nextHtml(nx){if(!nx)return '<span class="muted">'+esc(t('none_today'))+'</span>';return esc(pick(nx.e,'name'))+' · <span class="tn big">'+esc(nx.time)+'</span><small>'+esc(nx.tomorrow?t('tomorrow'):inText(nx.mins))+'</small>';}
 function schedRow(e,time,extra){
@@ -374,12 +382,13 @@ function sponsorLine(s,lg){var by=pick(s,'by',lg),fr=pick(s,'for',lg);return '<l
 function secCommunity(S,iso){
   var sp=sponsorsFor(S,iso),mz=mazalFor(S,iso),yz=yahrzeitsFor(S,iso),rf=refuahFor(S,iso);
   var hasKiddush=sp.some(function(s){return s.type==='kiddush';});
-  var cards='<div class="card"><h3>'+esc(t('sponsors'))+'</h3>'+(sp.length?'<ul class="list">'+sp.map(function(s){return sponsorLine(s);}).join('')+'</ul>':'')+
+  var spCard='<div class="card"><h3>'+esc(t('sponsors'))+'</h3>'+(sp.length?'<ul class="list">'+sp.map(function(s){return sponsorLine(s);}).join('')+'</ul>':'')+
     (!hasKiddush?'<div class="cta"><span>'+esc(t('no_sponsor_kiddush'))+'</span><button class="btn sm primary" data-act="go" data-to="sec-donate" style="justify-self:start">'+esc(t('sponsor_cta'))+'</button></div>':'')+'</div>';
-  cards+='<div class="card"><h3>'+esc(t('mazal'))+'</h3>'+(mz.length?'<ul class="list">'+mz.map(function(m){return '<li>'+esc(pick(m,'text'))+'</li>';}).join('')+'</ul>':'<p class="empty">'+esc(t('no_mazal'))+'</p>')+'</div>';
+  var cards='<div class="card"><h3>'+esc(t('mazal'))+'</h3>'+(mz.length?'<ul class="list">'+mz.map(function(m){return '<li>'+esc(pick(m,'text'))+'</li>';}).join('')+'</ul>':'<p class="empty">'+esc(t('no_mazal'))+'</p>')+'</div>';
   cards+='<div class="card"><h3>'+esc(t('yahrzeit'))+'</h3>'+(yz.length?'<ul class="list">'+yz.map(function(x){return '<li><span class="k">'+esc(lang==='he'?x.hd.renderGematriya(true):x.hd.render('en'))+' · '+esc(fmtShort(x.iso))+'</span>'+esc(pick(x.y,'name'))+(pick(x.y,'rel')?' <span class="muted small">('+esc(pick(x.y,'rel'))+')</span>':'')+'</li>';}).join('')+'</ul>':'<p class="empty">'+esc(t('no_yahrzeit'))+'</p>')+'</div>';
+  cards+=spCard;
   if(rf.length)cards+='<div class="card" style="grid-column:1/-1"><h3>'+esc(t('refuah'))+'</h3><div class="names">'+rf.map(function(r){return '<span>'+esc(r.name)+'</span>';}).join('')+'</div></div>';
-  return '<section id="sec-community"><div class="sec-head"><h2>'+esc(t('community'))+'</h2></div><div class="grid3">'+cards+'</div></section>';
+  return '<section id="sec-community"><div class="sec-head"><div><h2>'+esc(t('community'))+'</h2><p>'+esc(t('community_lead'))+'</p></div></div><div class="grid3">'+cards+'</div></section>';
 }
 /* ---------- minutes & documents (Hebrew original + English translation) ---------- */
 function docsFor(S){return (S.docs||[]).filter(function(d){return !d.hidden&&(d.bodyHe||d.bodyEn||d.titleHe||d.titleEn);}).sort(function(a,b){return (b.date||'')<(a.date||'')?-1:1;});}
@@ -410,9 +419,16 @@ function secDocs(S){
   }).join('')+'</div></section>';
 }
 function secShiurim(S){
-  var list=S.times.filter(function(e){return !e.hidden&&e.group==='shiur';});if(!list.length)return '';
-  var today=jp().iso;
-  return '<section id="sec-shiurim"><div class="sec-head"><h2>'+esc(t('shiurim'))+'</h2></div><div class="card"><table class="sched">'+list.map(function(e){var d=(e.days||[])[0];var iso=d==null?today:isoAdd(today,((d-isoDow(today))+7)%7);return schedRow(e,entryTime(e,iso,S.shul),esc(daysLabel(e.days)));}).join('')+'</table></div></section>';
+  var list=shiurimOn(S),today=jp().iso;
+  list.sort(function(a,b){return minsOf(entryTime(a,today,S.shul))-minsOf(entryTime(b,today,S.shul));});
+  return '<section id="sec-shiurim"><div class="sec-head"><h2>'+esc(t('shiurim'))+'</h2></div>'+(list.length?'<div class="card shiur-card"><table class="sched">'+list.map(function(e){var d=(e.days||[])[0];var iso=d==null?today:isoAdd(today,((d-isoDow(today))+7)%7);return schedRow(e,entryTime(e,iso,S.shul),esc(daysLabel(e.days)));}).join('')+'</table></div>':'<p class="empty">'+esc(t('no_shiurim'))+'</p>')+'</section>';
+}
+function secSimchas(S,iso){
+  var list=simchasFor(S,iso),loc=lang==='he'?'he-IL':'en-GB',mf=new Intl.DateTimeFormat(loc,{month:'short',timeZone:'UTC'}),wf=new Intl.DateTimeFormat(loc,{weekday:'long',timeZone:'UTC'});
+  var utc=function(i){var a=i.split('-').map(Number);return new Date(Date.UTC(a[0],a[1]-1,a[2],12));};
+  return '<section id="sec-simchas"><div class="sec-head"><div><h2>'+esc(t('simchas'))+'</h2><p>'+esc(t('simchas_lead'))+'</p></div></div>'+
+    (list.length?'<ol class="cal">'+list.map(function(x){var di=dayInfo(x.date,S.shul),det=pick(x,'details');
+      return '<li><time class="cal-d" datetime="'+esc(x.date)+'"><b class="tn">'+(+x.date.slice(8,10))+'</b><span>'+esc(mf.format(utc(x.date)))+'</span></time><div class="cal-b"><b>'+esc(pick(x,'title'))+'</b><span class="muted small">'+esc(wf.format(utc(x.date)))+(di?' · '+esc(hebDate(di)):'')+'</span>'+(det?'<span>'+esc(det)+'</span>':'')+'</div></li>';}).join('')+'</ol>':'<p class="empty">'+esc(t('no_simchas'))+'</p>')+'</section>';
 }
 function payCard(label,link,qrText,sub){
   var q=qrText?qrSvg(qrText):'';
@@ -425,8 +441,9 @@ function secDonate(S){
   if(pb||d.payboxPhone)cards+=payCard(t('pay_paybox'),pb,pb,d.payboxPhone?'<span class="muted small">'+esc(t('bit_phone'))+'</span>'+copyRow(d.payboxPhone):'');
   if(ot)cards+=payCard(pick(d,'otherLabel')||t('donate'),ot,ot,'');
   if(pick(d,'bank'))cards+='<div class="card"><h3>'+esc(t('bank'))+'</h3><p style="white-space:pre-line">'+esc(pick(d,'bank'))+'</p></div>';
+  var tz=safeUrl(d.tzLink),tzc=tz?'<div class="card give-small">'+'<div class="qr" aria-hidden="true">'+qrSvg(tz)+'</div><div class="gs-t">'+(pick(d,'tzTitle')?'<b>'+esc(pick(d,'tzTitle'))+'</b>':'')+(pick(d,'tzText')?'<span class="muted">'+esc(pick(d,'tzText'))+'</span>':'')+'<a class="btn sm" href="'+esc(tz)+'" target="_blank" rel="noopener">'+esc(t('tz_join'))+'</a></div></div>':'';
   return '<section id="sec-donate"><div class="sec-head"><div><h2>'+esc(t('donate'))+'</h2><p style="white-space:pre-line">'+esc(pick(d,'lead')||t('donate_lead'))+'</p></div></div>'+
-    (cards?'<div class="donate">'+cards+'</div>':'<p class="empty">'+esc(t('no_donate'))+'</p>')+(pick(d,'note')?'<p class="muted small" style="margin-top:10px">'+esc(pick(d,'note'))+'</p>':'')+'</section>';
+    (cards?'<div class="donate">'+cards+'</div>':(tzc?'':'<p class="empty">'+esc(t('no_donate'))+'</p>'))+tzc+(pick(d,'note')?'<p class="muted small" style="margin-top:10px">'+esc(pick(d,'note'))+'</p>':'')+'</section>';
 }
 function secContact(S){
   var s=S.shul,addr=pick(s,'address'),q=encodeURIComponent((s.addressHe||addr||'')),wa=safeUrl(s.whatsapp);
@@ -466,7 +483,35 @@ function tvSide(S,still){
     (chips.length?'<div class="tv-chips">'+chips.map(function(c){return '<span>'+esc(t(c,null,lg))+'</span>';}).join('')+'</div>':'')+
     (!still&&nx?'<div class="tv-next"><span><small>'+TL(S,'next')+'</small> '+TP(S,nx.e,'name')+'</span><span style="text-align:end;white-space:nowrap"><b class="tn">'+esc(nx.time)+'</b> <small>'+esc(nx.tomorrow?t('tomorrow',null,lg):(nx.mins<60?t('in_min',{n:nx.mins},lg):t('in_hm',{h:Math.floor(nx.mins/60),m:String(nx.mins%60).padStart(2,'0')},lg)))+'</small></span></div>':'')+
     (list.length?'<div class="tv-block"><h3>'+TL(S,'today')+'</h3><div class="tv-rows">'+list.map(function(x){return '<div class="'+(minsOf(x.time)<nowM&&!still?'past':'')+'"><span>'+TP(S,x.e,'name')+'</span><b class="tn">'+esc(x.time||'—')+'</b></div>';}).join('')+'</div></div>':'')+
-    (di&&zk.length?'<div class="tv-block"><h3>'+TL(S,'zm_title')+'</h3><div class="tv-rows two">'+zk.map(function(k){var d=di.zm[k];return '<div class="'+(d&&d.getTime()<now.getTime()&&!still?'past':'')+'"><span>'+(bothM?esc(t('zm_'+k,null,'he')):esc(t('zm_'+k,null,lg)))+'</span><b class="tn">'+zText(d,k)+'</b></div>';}).join('')+'</div></div>':'');
+    tvShiurim(S,P,still)+(S.display.showZmanim&&di&&zk.length?'<div class="tv-block"><h3>'+TL(S,'zm_title')+'</h3><div class="tv-rows two">'+zk.map(function(k){var d=di.zm[k];return '<div class="'+(d&&d.getTime()<now.getTime()&&!still?'past':'')+'"><span>'+(bothM?esc(t('zm_'+k,null,'he')):esc(t('zm_'+k,null,lg)))+'</span><b class="tn">'+zText(d,k)+'</b></div>';}).join('')+'</div></div>':'')+tvScroll(S,P);
+}
+function tvShiurim(S,P,still){
+  var nowM=P.hh*60+P.mm,list=shiurimOn(S,P.dow).map(function(e){return {e:e,time:entryTime(e,P.iso,S.shul)};}).sort(function(a,b){return minsOf(a.time)-minsOf(b.time);});
+  if(!list.length)return '';
+  return '<div class="tv-block"><h3>'+TL(S,'shiurim')+'</h3><div class="tv-rows">'+list.map(function(x){var tch=TP(S,x.e,'teacher');return '<div class="'+(minsOf(x.time)<nowM&&!still?'past':'')+'"><span>'+TP(S,x.e,'name')+(tch?' <small class="tv-sub">'+tch+'</small>':'')+'</span><b class="tn">'+esc(x.time||'—')+'</b></div>';}).join('')+'</div></div>';
+}
+/* This week in the community: mazal tovs, simchas and yahrzeits, scrolling slowly when they don't fit. */
+function tvScroll(S,P){
+  var lg=tvLang(S),items=[],iso=P.iso;
+  mazalFor(S,iso).forEach(function(m){items.push('<div class="sc-it"><small>'+TL(S,'mazal')+'</small>'+TP(S,m,'text')+'</div>');});
+  simchasFor(S,iso,7).forEach(function(x){var det=TP(S,x,'details');items.push('<div class="sc-it"><small>'+TL(S,'simcha')+' · <span class="tn">'+esc(fmtShort(x.date))+'</span></small>'+TP(S,x,'title')+(det?'<span class="sc-sub">'+det+'</span>':'')+'</div>');});
+  yahrzeitsFor(S,iso).forEach(function(x){var rel=pick(x.y,'rel',lg);items.push('<div class="sc-it"><small>'+TL(S,'yz_short')+' · '+esc(lg==='he'?x.hd.renderGematriya(true):x.hd.render('en'))+'</small>'+TP(S,x.y,'name')+(rel?'<span class="sc-sub">'+esc(rel)+'</span>':'')+'</div>');});
+  if(!items.length)return '';
+  return '<div class="tv-block tv-scroll"><h3>'+TL(S,'community_lead')+'</h3><div class="sc-view" id="sc-view"><div class="sc-in">'+items.join('')+'</div></div></div>';
+}
+function startScroll(){
+  clearInterval(ui.scT);var v=document.getElementById('sc-view');if(!v)return;
+  var st=ui.sc||(ui.sc={pos:0,dir:1,hold:75});
+  v.scrollTop=st.pos;
+  if(v.scrollHeight-v.clientHeight<3){st.pos=0;v.scrollTop=0;return;}
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  ui.scT=setInterval(function(){
+    if(!v.isConnected){clearInterval(ui.scT);return;}
+    if(st.hold>0){st.hold--;return;}
+    var max=v.scrollHeight-v.clientHeight;
+    st.pos=Math.max(0,Math.min(max,st.pos+st.dir*(st.dir>0?1:3)));v.scrollTop=st.pos;
+    if(st.dir>0&&st.pos>=max){st.dir=-1;st.hold=75;}else if(st.dir<0&&st.pos<=0){st.dir=1;st.hold=75;}
+  },40);
 }
 function tvFoot(S){
   var lg=tvLang(S),iso=jp().iso,wk=weekInfo(iso,S.shul),url=siteUrl(S),q=S.display.showQr&&url?qrSvg(url):'';
@@ -491,16 +536,10 @@ function slidesFor(S){
   }
   var sp=sponsorsFor(S,iso);
   if(sp.length)out.push({cls:'',html:'<div class="kick">'+TL(S,'sponsors')+'</div><div class="sp">'+sp.map(function(s){var by=TP(S,s,'by'),fr=TP(S,s,'for');return '<div><span>'+TL(S,'sp_'+(s.type||'general'))+'</span>'+(by?TL(S,'sp_by')+' '+by:'')+(fr?(by?' — ':'')+fr:'')+'</div>';}).join('')+'</div>',secs:secs});
-  var mz=mazalFor(S,iso);
-  if(mz.length)out.push({cls:'',html:'<div class="kick">'+TL(S,'this_week')+'</div><h2>'+TL(S,'mazal')+'</h2><div class="sp">'+mz.map(function(m){return '<div>'+TP(S,m,'text')+'</div>';}).join('')+'</div>',secs:secs});
-  var yz=yahrzeitsFor(S,iso);
-  if(yz.length)out.push({cls:'',html:'<div class="kick">'+TL(S,'this_week')+'</div><h2>'+TL(S,'yahrzeit')+'</h2><div class="big-rows">'+yz.map(function(x){return '<div><span>'+TP(S,x.y,'name')+(pick(x.y,'rel',lg)?'<small>'+esc(pick(x.y,'rel',lg))+'</small>':'')+'</span><b>'+esc(lg==='he'?x.hd.renderGematriya(true):x.hd.render('en'))+'</b></div>';}).join('')+'</div>',secs:secs});
   var rf=refuahFor(S,iso);
   if(rf.length)out.push({cls:'',html:'<h2>'+TL(S,'refuah')+'</h2><div class="names">'+rf.map(function(r){return '<span>'+esc(r.name)+'</span>';}).join('')+'</div>',secs:secs});
-  var sh=S.times.filter(function(e){return !e.hidden&&e.group==='shiur';});
-  if(sh.length)out.push({cls:'',html:'<h2>'+TL(S,'shiurim')+'</h2><div class="big-rows">'+sh.map(function(e){var d=(e.days||[])[0];var di2=d==null?iso:isoAdd(iso,((d-dow)+7)%7);return '<div><span>'+TP(S,e,'name')+'<small>'+esc(daysLabel(e.days,lg))+(pick(e,'teacher',lg)?' · '+esc(pick(e,'teacher',lg)):'')+'</small></span><b class="tn">'+esc(entryTime(e,di2,S.shul))+'</b></div>';}).join('')+'</div>',secs:secs});
-  var d=S.donate,bit=safeUrl(d.bitLink),pb=safeUrl(d.payboxLink),ot=safeUrl(d.otherLink),bank=pick(d,'bank');
-  if(S.display.showDonate&&(bit||pb||ot||d.bitPhone||d.payboxPhone||bank)){
+  var d=S.donate,bit=safeUrl(d.bitLink),pb=safeUrl(d.payboxLink),ot=safeUrl(d.otherLink),bank=pick(d,'bank'),tz=safeUrl(d.tzLink);
+  if(S.display.showDonate&&(bit||pb||ot||d.bitPhone||d.payboxPhone||bank||tz)){
     var figs='',lines='';
     if(bit)figs+='<figure><div class="qr">'+qrSvg(bit)+'</div>'+TL(S,'bit')+'</figure>';
     if(pb)figs+='<figure><div class="qr">'+qrSvg(pb)+'</div>'+TL(S,'paybox')+'</figure>';
@@ -508,7 +547,7 @@ function slidesFor(S){
     if(d.bitPhone)lines+='<div><span>'+TL(S,'bit')+'</span><b class="tn"><bdi dir="ltr">'+esc(d.bitPhone)+'</bdi></b></div>';
     if(d.payboxPhone)lines+='<div><span>'+TL(S,'paybox')+'</span><b class="tn"><bdi dir="ltr">'+esc(d.payboxPhone)+'</bdi></b></div>';
     if(bank)lines+='<div><span>'+TL(S,'bank')+'</span><b>'+TP(S,d,'bank')+'</b></div>';
-    out.push({cls:'',html:'<div class="kick">'+TL(S,'scan')+'</div><h2>'+TL(S,'donate')+'</h2><div class="body">'+(pick(d,'lead')?TP(S,d,'lead'):TL(S,'donate_lead'))+'</div><div class="payrow">'+(figs?'<div class="pays">'+figs+'</div>':'')+(lines?'<div class="paylines">'+lines+'</div>':'')+'</div>',secs:secs});
+    out.push({cls:'',html:'<div class="kick">'+TL(S,'scan')+'</div><h2>'+TL(S,'donate')+'</h2><div class="body">'+(pick(d,'lead')?TP(S,d,'lead'):TL(S,'donate_lead'))+'</div><div class="payrow">'+(figs?'<div class="pays">'+figs+'</div>':'')+(lines?'<div class="paylines">'+lines+'</div>':'')+'</div>'+(tz?'<div class="paysmall"><div class="qr">'+qrSvg(tz)+'</div><div>'+(pick(d,'tzTitle')?'<b>'+TP(S,d,'tzTitle')+'</b>':'')+(pick(d,'tzText')?'<span>'+TP(S,d,'tzText')+'</span>':'')+'</div></div>':''),secs:secs});
   }
   if(!out.length)out.push({cls:'welcome',html:'<div>'+SPRIG.replace('<svg','<svg style="width:12vmin;height:12vmin;color:var(--tv-sage)"')+'</div><h2>'+TL(S,'welcome')+'</h2><p>וְכֹל שִׂיחַ הַשָּׂדֶה טֶרֶם יִהְיֶה בָאָרֶץ</p>',secs:secs});
   return out;
@@ -539,7 +578,7 @@ function fitText(el){
 /* Shrink the info column evenly until every list fits (e.g. when the urgent banner takes a row). */
 function fitSide(){
   var side=document.getElementById('tv-side');if(!side||!side.offsetParent)return;
-  var over=function(){if(side.scrollHeight>side.clientHeight+2||side.scrollWidth>side.clientWidth+2)return true;var b=side.querySelectorAll('.tv-block,.tv-next');for(var i=0;i<b.length;i++){if(b[i].scrollHeight>b[i].clientHeight+2||b[i].scrollWidth>b[i].clientWidth+2)return true;}return false;};
+  var over=function(){if(side.scrollHeight>side.clientHeight+2||side.scrollWidth>side.clientWidth+2)return true;var b=side.querySelectorAll('.tv-block:not(.tv-scroll),.tv-next');for(var i=0;i<b.length;i++){if(b[i].scrollHeight>b[i].clientHeight+2||b[i].scrollWidth>b[i].clientWidth+2)return true;}return false;};
   var z=ui.tvScale||1;side.style.setProperty('--sz',z.toFixed(2));
   while(z>0.55&&over()){z-=0.03;side.style.setProperty('--sz',z.toFixed(2));}
 }
@@ -572,8 +611,8 @@ var wakeLock=null;
 function keepAwake(){try{if(navigator.wakeLock&&!wakeLock)navigator.wakeLock.request('screen').then(function(w){wakeLock=w;w.addEventListener('release',function(){wakeLock=null;});}).catch(function(){});}catch(e){}}
 
 /* ---------- board manager ---------- */
-var TABS=['overview','times','notices','sponsors','community','docs','donate','urgent','shul','screen','users'];
-var LISTS=['times','notices','sponsors','mazal','refuah','yahrzeit','docs'],SECTS=['donate','urgent','shul','display'];
+var TABS=['overview','times','shiurim','notices','sponsors','community','docs','donate','urgent','shul','screen','users'];
+var LISTS=['times','notices','sponsors','mazal','refuah','yahrzeit','docs','simchas'],SECTS=['donate','urgent','shul','display'];
 function changes(B,D){B=B||base;D=D||draft;var out=[];
   LISTS.forEach(function(k){var a={},b={},n=0;B[k].forEach(function(x){a[x.id]=JSON.stringify(x);});D[k].forEach(function(x){b[x.id]=JSON.stringify(x);});Object.keys(b).forEach(function(id){if(a[id]!==b[id])n++;});Object.keys(a).forEach(function(id){if(!(id in b))n++;});if(n)out.push([k,n]);});
   SECTS.forEach(function(k){var o=B[k],d=D[k],n=0;Object.keys(Object.assign({},o,d)).forEach(function(f){if(JSON.stringify(o[f])!==JSON.stringify(d[f]))n++;});if(n)out.push([k,n]);});
@@ -597,7 +636,7 @@ function metaPanel(){
   var m=FB.meta,lines='';
   if(!FB.hasDoc)return '<div class="banner"><span>'+esc(t('not_in_db'))+'</span></div>';
   if(m.by)lines+='<p class="muted small">'+esc(t('last_saved',{who:m.by,when:fmtWhen(m.at)}))+'</p>';
-  if(FB.log.length)lines+='<div class="panel"><h3>'+esc(t('recent'))+'</h3><ul class="list">'+FB.log.map(function(l){return '<li><span class="k">'+esc(l.by||'')+' · '+esc(fmtWhen(l.at))+'</span>'+esc(t('log_line',{n:l.count||0,what:(l.sections||[]).map(function(x){return t('tab_'+(x==='mazal'||x==='refuah'||x==='yahrzeit'?'community':x==='display'?'screen':x))}).filter(function(v,i,a){return a.indexOf(v)===i;}).join(', ')}))+'</li>';}).join('')+'</ul></div>';
+  if(FB.log.length)lines+='<div class="panel"><h3>'+esc(t('recent'))+'</h3><ul class="list">'+FB.log.map(function(l){return '<li><span class="k">'+esc(l.by||'')+' · '+esc(fmtWhen(l.at))+'</span>'+esc(t('log_line',{n:l.count||0,what:(l.sections||[]).map(function(x){return t('tab_'+(x==='mazal'||x==='refuah'||x==='yahrzeit'||x==='simchas'?'community':x==='display'?'screen':x))}).filter(function(v,i,a){return a.indexOf(v)===i;}).join(', ')}))+'</li>';}).join('')+'</ul></div>';
   return lines;
 }
 function renderManage(){
@@ -607,7 +646,7 @@ function renderManage(){
   else if(!FB.user)body='<div class="panel gate"><h3>'+esc(t('signin_title'))+'</h3><p>'+esc(t('signin_body'))+'</p><button class="btn primary gbtn" data-act="signin">'+GLOGO+esc(t('signin_btn'))+'</button></div>';
   else if(!FB.role)body='<div class="panel gate"><h3>'+esc(t('not_admin_title'))+'</h3><p>'+esc(t('not_admin_body',{email:FB.email}))+'</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-act="switch">'+esc(t('other_account'))+'</button><button class="btn" data-act="signout">'+esc(t('signout'))+'</button></div></div>';
   else{
-    var counts={times:draft.times.length,notices:draft.notices.length,sponsors:draft.sponsors.length,community:draft.mazal.length+draft.refuah.length+draft.yahrzeit.length};
+    var counts={times:draft.times.filter(function(e){return e.group!=='shiur';}).length,shiurim:draft.times.filter(function(e){return e.group==='shiur';}).length,notices:draft.notices.length,sponsors:draft.sponsors.length,community:draft.mazal.length+draft.refuah.length+draft.yahrzeit.length+draft.simchas.length};
     body='<div class="mg"><nav class="mg-tabs" aria-label="manager">'+TABS.map(function(k){return '<button data-act="tab" data-tab="'+k+'" aria-current="'+(ui.tab===k)+'"><span>'+esc(t('tab_'+k))+'</span>'+(counts[k]!=null?'<span class="count">'+counts[k]+'</span>':(k==='urgent'&&draft.urgent.on?'<span class="count" style="color:var(--danger)">●</span>':''))+'</button>';}).join('')+'<div class="whoami"><span title="'+esc(FB.email)+'">'+esc(t('signed_in_as',{email:FB.email}))+'</span><button class="linkbtn" data-act="signout">'+esc(t('signout'))+'</button></div></nav>'+
       '<section class="mg-body" id="mg-body">'+tabBody()+'</section></div>'+saveBar();
   }
@@ -625,10 +664,11 @@ function tabBody(){
   var D=draft,iso=jp().iso;
   switch(ui.tab){
     case 'overview':return overview();
-    case 'times':return mgTitle('times',t('times_note'))+listEditor('times',D.times,TIME_F,sumTime,'add_time');
+    case 'times':return mgTitle('times',t('times_note'))+listEditor('times',D.times.filter(function(e){return e.group!=='shiur';}),TIME_F,sumTime,'add_time');
+    case 'shiurim':return mgTitle('shiurim',t('shiurim_hint'))+listEditor('times',D.times.filter(function(e){return e.group==='shiur';}),TIME_F,sumTime,'add_shiur','shiur');
     case 'notices':return mgTitle('notices',t('img_hint'))+listEditor('notices',D.notices,NOTICE_F,sumNotice,'add_notice');
     case 'sponsors':return mgTitle('sponsors')+listEditor('sponsors',D.sponsors,SPONSOR_F,sumSponsor,'add_sponsor');
-    case 'community':return mgTitle('community')+'<div class="subhead">'+esc(t('sub_mazal'))+'</div><p class="muted small">'+esc(t('mazal_hint'))+'</p>'+listEditor('mazal',D.mazal,MAZAL_F,sumMazal,'add_mazal')+'<div class="subhead">'+esc(t('sub_yahrzeit'))+'</div><p class="muted small">'+esc(t('yahrzeit_hint'))+'</p>'+listEditor('yahrzeit',D.yahrzeit,YZ_F,sumYz,'add_yahrzeit')+'<div class="subhead">'+esc(t('sub_refuah'))+'</div>'+listEditor('refuah',D.refuah,REFUAH_F,sumRefuah,'add_refuah');
+    case 'community':return mgTitle('community')+'<div class="subhead">'+esc(t('sub_mazal'))+'</div><p class="muted small">'+esc(t('mazal_hint'))+'</p>'+listEditor('mazal',D.mazal,MAZAL_F,sumMazal,'add_mazal')+'<div class="subhead">'+esc(t('sub_yahrzeit'))+'</div><p class="muted small">'+esc(t('yahrzeit_hint'))+'</p>'+listEditor('yahrzeit',D.yahrzeit,YZ_F,sumYz,'add_yahrzeit')+'<div class="subhead">'+esc(t('sub_refuah'))+'</div>'+listEditor('refuah',D.refuah,REFUAH_F,sumRefuah,'add_refuah')+'<div class="subhead">'+esc(t('sub_simchas'))+'</div><p class="muted small">'+esc(t('simchas_hint'))+'</p>'+listEditor('simchas',D.simchas,SIMCHA_F,sumSimcha,'add_simcha');
     case 'donate':return mgTitle('donate',t('donate_hint'))+'<div class="panel"><div class="ed-body" style="padding:0">'+fields('donate','',D.donate,DONATE_F)+'</div></div>';
     case 'urgent':return mgTitle('urgent',t('urgent_hint'))+'<div class="panel"><div class="ed-body" style="padding:0">'+fields('urgent','',D.urgent,URGENT_F)+'</div></div>';
     case 'shul':return mgTitle('shul',t('shul_hint'))+'<div class="panel"><div class="ed-body" style="padding:0">'+fields('shul','',D.shul,SHUL_F)+'</div></div>';
@@ -645,7 +685,7 @@ function overview(){
   var url=siteUrl(D);
   return mgTitle('overview',t('m_lead'))+metaPanel()+
     '<div class="stat"><div><b class="tn">'+slides+'</b><span>'+esc(t('ov_screen'))+' · '+esc(t('ov_slides'))+'</span></div><div><b class="tn">'+act+'</b><span>'+esc(t('ov_notices'))+'</span></div><div><b class="tn">'+exp+'</b><span>'+esc(t('ov_expiring'))+'</span></div></div>'+
-    '<div class="panel"><h3>'+esc(t('ov_quick'))+'</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="quick" data-col="notices">+ '+esc(t('add_notice'))+'</button><button class="btn" data-act="quick" data-col="sponsors">+ '+esc(t('add_sponsor'))+'</button><button class="btn" data-act="quick" data-col="mazal">+ '+esc(t('add_mazal'))+'</button><button class="btn" data-act="tab" data-tab="urgent">'+esc(t('tab_urgent'))+'</button><button class="btn" data-act="clean">'+esc(t('ov_clean'))+'</button></div></div>'+
+    '<div class="panel"><h3>'+esc(t('ov_quick'))+'</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="quick" data-col="notices">+ '+esc(t('add_notice'))+'</button><button class="btn" data-act="quick" data-col="sponsors">+ '+esc(t('add_sponsor'))+'</button><button class="btn" data-act="quick" data-col="mazal">+ '+esc(t('add_mazal'))+'</button><button class="btn" data-act="quick" data-col="simchas">+ '+esc(t('add_simcha'))+'</button><button class="btn" data-act="quick" data-col="times" data-group="shiur">+ '+esc(t('add_shiur'))+'</button><button class="btn" data-act="tab" data-tab="urgent">'+esc(t('tab_urgent'))+'</button><button class="btn" data-act="clean">'+esc(t('ov_clean'))+'</button></div></div>'+
     '<div class="panel"><h3>'+esc(t('ov_setup'))+'</h3><p style="margin-bottom:10px">'+esc(t('screen_hint'))+'</p>'+(url?copyRow(url+'#display'):'<p class="muted small">'+esc(t('ov_link_missing'))+'</p>')+'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn" data-act="nav" data-to="display">'+esc(t('open_screen'))+'</button><button class="btn" data-act="preview">'+esc(t('preview_edits'))+'</button></div></div>';
 }
 
@@ -681,12 +721,13 @@ var SPONSOR_F=[
 ];
 var DOC_F=[{k:'titleHe',type:'text'},{k:'titleEn',type:'text'},{k:'date',type:'date'},{k:'link',type:'text',full:1},{k:'bodyHe',type:'textarea',tall:1},{k:'bodyEn',type:'textarea',tall:1},{k:'hidden',type:'check',full:1}];
 var MAZAL_F=[{k:'textHe',type:'textarea'},{k:'textEn',type:'textarea'},{k:'start',l:'f_mstart',type:'date'},{k:'end',l:'f_mend',type:'date'},{k:'hidden',type:'check',full:1}];
+var SIMCHA_F=[{k:'date',type:'date'},{k:'titleHe',type:'text'},{k:'titleEn',type:'text'},{k:'detailsHe',type:'text'},{k:'detailsEn',type:'text'},{k:'hidden',type:'check',full:1}];
 var REFUAH_F=[{k:'name',type:'text'},{k:'until',type:'date'},{k:'hidden',type:'check',full:1}];
 var YZ_F=[{k:'nameHe',type:'text'},{k:'nameEn',type:'text'},{k:'hday',type:'number'},{k:'hmonth',type:'hmonth'},{k:'hyear',type:'number'},{k:'relHe',l:'f_relHe',type:'text'},{k:'relEn',l:'f_relEn',type:'text'},{k:'hidden',type:'check',full:1}];
-var DONATE_F=[{k:'leadHe',type:'textarea'},{k:'leadEn',type:'textarea'},{k:'bitPhone',type:'tel'},{k:'bitLink',type:'url'},{k:'payboxPhone',type:'tel'},{k:'payboxLink',type:'url'},{k:'otherLink',type:'url'},{k:'otherLabelHe',type:'text'},{k:'otherLabelEn',type:'text'},{k:'bankHe',type:'textarea'},{k:'bankEn',type:'textarea'},{k:'noteHe',l:'f_dnoteHe',type:'text'},{k:'noteEn',l:'f_dnoteEn',type:'text'}];
+var DONATE_F=[{k:'leadHe',type:'textarea'},{k:'leadEn',type:'textarea'},{k:'bitPhone',type:'tel'},{k:'bitLink',type:'url'},{k:'payboxPhone',type:'tel'},{k:'payboxLink',type:'url'},{k:'otherLink',type:'url'},{k:'otherLabelHe',type:'text'},{k:'otherLabelEn',type:'text'},{k:'bankHe',type:'textarea'},{k:'bankEn',type:'textarea'},{k:'noteHe',l:'f_dnoteHe',type:'text'},{k:'noteEn',l:'f_dnoteEn',type:'text'},{k:'tzTitleHe',type:'text'},{k:'tzTitleEn',type:'text'},{k:'tzTextHe',type:'text'},{k:'tzTextEn',type:'text'},{k:'tzLink',type:'url',full:1}];
 var URGENT_F=[{k:'on',type:'check',full:1},{k:'textHe',type:'textarea'},{k:'textEn',type:'textarea'},{k:'until',type:'date'}];
 var SHUL_F=[{k:'nameHe',l:'f_shulName',type:'text'},{k:'nameEn',type:'text'},{k:'taglineHe',type:'text'},{k:'taglineEn',type:'text'},{k:'addressHe',type:'text'},{k:'addressEn',type:'text'},{k:'directionsHe',type:'text'},{k:'directionsEn',type:'text'},{k:'aboutHe',type:'textarea'},{k:'aboutEn',type:'textarea'},{k:'rabbiHe',type:'text'},{k:'rabbiEn',type:'text'},{k:'gabbaiHe',type:'text'},{k:'gabbaiEn',type:'text'},{k:'nusachHe',type:'text'},{k:'nusachEn',type:'text'},{k:'phone',type:'tel'},{k:'email',type:'email'},{k:'whatsapp',type:'url'},{k:'siteUrl',type:'url',full:1},{k:'candleMins',type:'number'},{k:'havdalahMode',type:'select',opts:[['tzeit','hv_tzeit'],['mins','hv_mins']],re:1},{k:'havdalahMins',type:'number',show:function(x){return x.havdalahMode==='mins';}},{k:'defaultLang',type:'select',opts:[['he','dl_he'],['en','dl_en']]},{k:'lat',type:'number'},{k:'lng',type:'number'}];
-var SCREEN_F=[{k:'lang',l:'f_dlang',type:'select',opts:[['he','dl_he'],['en','dl_en'],['both','dl_both']]},{k:'textSize',type:'select',opts:[['normal','ts_normal'],['large','ts_large'],['xl','ts_xl']]},{k:'slideSecs',type:'number'},{k:'shabbatMode',type:'select',opts:[['still','sm_still'],['normal','sm_normal']],full:1},{k:'zmanim',type:'zm',full:1},{k:'showDonate',type:'check'},{k:'showQr',type:'check'},{k:'flyerFull',type:'check',full:1}];
+var SCREEN_F=[{k:'lang',l:'f_dlang',type:'select',opts:[['he','dl_he'],['en','dl_en'],['both','dl_both']]},{k:'textSize',type:'select',opts:[['normal','ts_normal'],['large','ts_large'],['xl','ts_xl']]},{k:'slideSecs',type:'number'},{k:'shabbatMode',type:'select',opts:[['still','sm_still'],['normal','sm_normal']],full:1},{k:'showZmanim',type:'check',full:1},{k:'zmanim',type:'zm',full:1},{k:'showDonate',type:'check'},{k:'showQr',type:'check'},{k:'flyerFull',type:'check',full:1}];
 
 function fieldDir(k){return /He$/.test(k)?'rtl':(/En$/.test(k)||/(Link|Url|url|phone|Phone|email|whatsapp|lat|lng)$/.test(k)?'ltr':'auto');}
 function fields(col,id,obj,F){
@@ -704,9 +745,9 @@ function fields(col,id,obj,F){
     }
   }).join('');
 }
-function listEditor(col,items,F,sum,addKey){
+function listEditor(col,items,F,sum,addKey,group){
   var iso=jp().iso;
-  return '<div><button class="btn primary" data-act="add" data-col="'+col+'">+ '+esc(t(addKey))+'</button></div>'+
+  return '<div><button class="btn primary" data-act="add" data-col="'+col+'"'+(group?' data-group="'+group+'"':'')+'>+ '+esc(t(addKey))+'</button></div>'+
     (items.length?items.map(function(it){return card(col,it,F,sum,iso);}).join(''):'<p class="empty">'+esc(t('empty_list'))+'</p>');
 }
 function card(col,it,F,sum,iso){
@@ -720,6 +761,7 @@ function sumNotice(x,iso){return {title:pick(x,'title')||(x.image?t('f_image'):'
 function sumSponsor(x,iso){return {title:t('sp_'+(x.type||'general'))+(pick(x,'by')?' — '+pick(x,'by'):''),sub:pick(x,'for')+(x.start?' · '+fmtShort(x.start):''),st:status(x,iso)};}
 function sumMazal(x,iso){var e=mazalEnd(x);return {title:pick(x,'text'),sub:x.start?fmtShort(x.start)+(e?'–'+fmtShort(e):''):'',st:status({hidden:x.hidden,start:x.start,end:e},iso)};}
 function sumDoc(x){return {title:pick(x,'title'),sub:x.date?fmtDate(x.date):'',st:x.hidden?['off','st_hidden']:null};}
+function sumSimcha(x,iso){return {title:pick(x,'title'),sub:(x.date?fmtDate(x.date):'')+(pick(x,'details')?' · '+pick(x,'details'):''),st:status({hidden:x.hidden,end:x.date},iso)};}
 function sumRefuah(x,iso){return {title:x.name,sub:x.until?t('until',{d:fmtShort(x.until)}):'',st:status({hidden:x.hidden,until:x.until},iso)};}
 function sumYz(x,iso){var m=HMONTHS.filter(function(h){return h[0]===String(x.hmonth);})[0];var r=yahrzeitIso(x,iso);return {title:pick(x,'name'),sub:(x.hday||'')+' '+(m?(lang==='he'?m[1]:m[2]):''),st:x.hidden?['off','st_hidden']:(r?['warn','this_week']:null)};}
 
@@ -729,11 +771,12 @@ var DEFAULTS={
   sponsors:function(){var i=jp().iso,w=weekInfo(i,draft.shul);return {type:'kiddush',byHe:'',byEn:'',forHe:'',forEn:'',start:w.sat,end:w.sat,hidden:false};},
   mazal:function(){var i=jp().iso;return {textHe:'',textEn:'',start:i,end:isoAdd(i,MAZAL_DAYS),hidden:false};},
   refuah:function(){return {name:'',until:'',hidden:false};},
+  simchas:function(){return {date:isoAdd(jp().iso,7),titleHe:'',titleEn:'',detailsHe:'',detailsEn:'',hidden:false};},
   docs:function(){return {titleHe:'',titleEn:'',date:jp().iso,link:'',bodyHe:'',bodyEn:'',hidden:false};},
   yahrzeit:function(){return {nameHe:'',nameEn:'',hday:'',hmonth:'',hyear:'',relHe:'',relEn:'',hidden:false};}
 };
 function target(col,id){if(!col)return null;if(!id)return draft[col];var arr=draft[col];if(!Array.isArray(arr))return null;for(var i=0;i<arr.length;i++)if(arr[i].id===id)return arr[i];return null;}
-var SCHEMA={times:[TIME_F,sumTime],notices:[NOTICE_F,sumNotice],sponsors:[SPONSOR_F,sumSponsor],mazal:[MAZAL_F,sumMazal],refuah:[REFUAH_F,sumRefuah],yahrzeit:[YZ_F,sumYz],docs:[DOC_F,sumDoc]};
+var SCHEMA={times:[TIME_F,sumTime],notices:[NOTICE_F,sumNotice],sponsors:[SPONSOR_F,sumSponsor],mazal:[MAZAL_F,sumMazal],refuah:[REFUAH_F,sumRefuah],yahrzeit:[YZ_F,sumYz],docs:[DOC_F,sumDoc],simchas:[SIMCHA_F,sumSimcha]};
 function refreshCard(col,id,body){
   var it=target(col,id),sc=SCHEMA[col];if(!it||!sc)return;var iso=jp().iso;
   var s=document.getElementById('sum-'+id);if(s)s.innerHTML=summaryHtml(sc[1](it,iso));
@@ -853,7 +896,7 @@ $app.addEventListener('click',function(e){
   if(act==='fs'){var de=document.documentElement;if(de.requestFullscreen)de.requestFullscreen().catch(function(){});b.hidden=true;keepAwake();return;}
   if(act==='endpreview'){ui.previewDraft=false;location.hash='manage';return;}
   if(act==='tab'){ui.tab=b.dataset.tab;render();window.scrollTo(0,0);return;}
-  if(act==='add'||act==='quick'){var col=b.dataset.col,it=DEFAULTS[col]();it.id=uid(col.charAt(0));draft[col].unshift(it);ui.open[it.id]=1;if(act==='quick')ui.tab=(col==='mazal'?'community':col);render();if(act==='quick')window.scrollTo(0,0);return;}
+  if(act==='add'||act==='quick'){var col=b.dataset.col,it=DEFAULTS[col]();it.id=uid(col.charAt(0));if(b.dataset.group){it.group=b.dataset.group;if(it.group==='shiur'){it.days=[0,1,2,3,4];it.nameHe='';it.nameEn='';}}draft[col].unshift(it);ui.open[it.id]=1;if(act==='quick')ui.tab=(col==='mazal'||col==='simchas'?'community':(it.group==='shiur'?'shiurim':col));render();if(act==='quick')window.scrollTo(0,0);return;}
   if(act==='dup'){var c2=b.dataset.col,src=target(c2,b.dataset.id);if(!src)return;var cp=clone(src);cp.id=uid(c2.charAt(0));var arr=draft[c2];arr.splice(arr.indexOf(src)+1,0,cp);ui.open[cp.id]=1;refreshPanel();updateBar();return;}
   if(act==='del'||act==='discard'){
     if(ui.armed!==b){if(ui.armed)disarm();ui.armed=b;b.dataset.label=b.textContent;b.textContent=t(act==='del'?'del2':'discard2');b.classList.add('armed','danger');b._t=setTimeout(disarm,3500);return;}
@@ -885,7 +928,7 @@ function jumpToHash(){var h=(location.hash||'').slice(1);if(h!=='docs'&&h!=='min
 var GLOGO='<svg class="glogo" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>';
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&route()==='display')keepAwake();});
 var rsT=null;window.addEventListener('resize',function(){if(route()!=='display')return;clearTimeout(rsT);rsT=setTimeout(render,300);});
-if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){if(route()!=='display')return;fitSide();var el=document.querySelector('#tv-stage .slide');if(el&&!el.classList.contains('img'))fitText(el);});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){if(route()!=='display')return;fitSide();startScroll();var el=document.querySelector('#tv-stage .slide');if(el&&!el.classList.contains('img'))fitText(el);});
 
 /* ---------- clock ---------- */
 setInterval(function(){
@@ -898,7 +941,7 @@ setInterval(function(){
     if(still!==ui.stillFlag){render();return;}
     if(still)return;
     var c=document.getElementById('tv-clock');if(c)c.textContent=String(P.hh).padStart(2,'0')+':'+String(P.mm).padStart(2,'0');
-    if(P.mm!==ui.lastMinute){ui.lastMinute=P.mm;var side=document.getElementById('tv-side');if(side)side.innerHTML=tvSide(S,false);fitSide();var ft=document.getElementById('tv-foot');if(ft)ft.innerHTML=tvFoot(S);}
+    if(P.mm!==ui.lastMinute){ui.lastMinute=P.mm;var side=document.getElementById('tv-side');if(side)side.innerHTML=tvSide(S,false);fitSide();startScroll();var ft=document.getElementById('tv-foot');if(ft)ft.innerHTML=tvFoot(S);}
   }else if(r==='home'){
     if(P.mm!==ui.lastMinute){var dayChanged=ui.lastDay&&ui.lastDay!==P.iso;ui.lastMinute=P.mm;ui.lastDay=P.iso;if(dayChanged){ui.zDate=P.iso;render();return;}var n=document.getElementById('live-next');if(n)n.innerHTML=nextHtml(nextTefillah(state,new Date()));}
   }
