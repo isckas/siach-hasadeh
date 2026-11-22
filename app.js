@@ -343,7 +343,8 @@ function hero(S,P,di,wk){
 function nextHtml(nx){if(!nx)return '<span class="muted">'+esc(t('none_today'))+'</span>';return esc(pick(nx.e,'name'))+' · <span class="tn big">'+esc(nx.time)+'</span><small>'+esc(nx.tomorrow?t('tomorrow'):inText(nx.mins))+'</small>';}
 function schedRow(e,time,extra){
   var note=pick(e,'note'),rule=ruleText(e);
-  return '<tr><th>'+esc(pick(e,'name'))+(e.group==='shiur'&&pick(e,'teacher')?'<span class="note">'+esc(pick(e,'teacher'))+'</span>':'')+(note?'<span class="note">'+esc(note)+'</span>':'')+'</th><td class="d">'+(extra||'')+'</td><td class="t tn">'+esc(time||'—')+(rule?'<span class="rule">'+esc(rule)+'</span>':'')+'</td></tr>';
+  var meta=[extra||'',rule?esc(rule):''].filter(Boolean).join('<span class="sep" aria-hidden="true"> · </span>');
+  return '<tr><th>'+esc(pick(e,'name'))+(e.group==='shiur'&&pick(e,'teacher')?'<span class="note">'+esc(pick(e,'teacher'))+'</span>':'')+(note?'<span class="note">'+esc(note)+'</span>':'')+'</th><td class="d">'+meta+'</td><td class="t tn">'+esc(time||'—')+'</td></tr>';
 }
 function secTimes(S,P,wk){
   var wd=S.times.filter(function(e){return !e.hidden&&e.group==='weekday';}).map(function(e){var dd=(e.days||[]).indexOf(P.dow)>=0?P.iso:isoAdd(P.iso,1);return {e:e,time:entryTime(e,dd,S.shul)};}).sort(function(a,b){return minsOf(a.time)-minsOf(b.time);});
@@ -415,7 +416,7 @@ function secShiurim(S){
 }
 function payCard(label,link,qrText,sub){
   var q=qrText?qrSvg(qrText):'';
-  return '<div class="card pay">'+(q?'<div class="qr" aria-hidden="true">'+q+'</div>':'')+'<div style="display:grid;gap:8px;min-width:0"><h3 style="margin:0">'+esc(label)+'</h3>'+(sub||'')+(link?'<a class="btn primary" style="justify-self:start" href="'+esc(link)+'" target="_blank" rel="noopener">'+esc(label)+'</a>':'')+'</div></div>';
+  return '<div class="card pay"><div class="pay-in">'+(q?'<div class="qr" aria-hidden="true">'+q+'</div>':'')+'<div class="pay-txt"><h3>'+esc(label)+'</h3>'+(sub||'')+(link?'<a class="btn primary pay-go" href="'+esc(link)+'" target="_blank" rel="noopener">'+esc(label)+'</a>':'')+'</div></div></div>';
 }
 function copyRow(txt){return '<div class="copyrow"><code>'+esc(txt)+'</code><button class="btn sm" data-act="copy" data-text="'+esc(txt)+'">'+esc(t('copy'))+'</button></div>';}
 function secDonate(S){
