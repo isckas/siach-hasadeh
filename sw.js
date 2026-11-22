@@ -3,7 +3,7 @@
    - Each later load tries the network first (so updates arrive), and falls back
      to the saved copy when there is no connection or it is too slow.
    - Firestore keeps its own offline copy of the content, so it is not touched here. */
-var VERSION = 'shul-v9';
+var VERSION = 'shul-v10';
 var SHELL = [
   './',
   'index.html',
@@ -17,7 +17,11 @@ var SHELL = [
   'vendor/firebase-firestore-compat-10.14.1.js',
   'seed/state.json',
   'seed/flyer-1.jpg',
-  'seed/flyer-2.jpg'
+  'seed/flyer-2.jpg',
+  'v2/',
+  'v2/index.html',
+  'v2/skin.js',
+  'v2/v2.css'
 ];
 var FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
 var NET_TIMEOUT = 4000;
@@ -81,6 +85,6 @@ self.addEventListener('fetch', function (e) {
   var url = new URL(req.url);
   if (FONT_HOSTS.indexOf(url.hostname) >= 0) { e.respondWith(cacheFirst(req)); return; }
   if (url.origin !== self.location.origin) return; /* Firebase, Google sign-in: leave alone */
-  if (req.mode === 'navigate') { e.respondWith(networkFirst(req, 'index.html')); return; }
+  if (req.mode === 'navigate') { e.respondWith(networkFirst(req, /\/v2\//.test(url.pathname) ? 'v2/index.html' : 'index.html')); return; }
   e.respondWith(networkFirst(req));
 });
