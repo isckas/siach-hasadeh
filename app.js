@@ -435,15 +435,20 @@ function payCard(label,link,qrText,sub){
   return '<div class="card pay"><div class="pay-in">'+(q?'<div class="qr" aria-hidden="true">'+q+'</div>':'')+'<div class="pay-txt"><h3>'+esc(label)+'</h3>'+(sub||'')+(link?'<a class="btn primary pay-go" href="'+esc(link)+'" target="_blank" rel="noopener">'+esc(label)+'</a>':'')+'</div></div></div>';
 }
 function copyRow(txt){return '<div class="copyrow"><code>'+esc(txt)+'</code><button class="btn sm" data-act="copy" data-text="'+esc(txt)+'">'+esc(t('copy'))+'</button></div>';}
+function payBlock(label,link,num,btn){
+  var q=link?qrSvg(link):'';
+  return '<div class="gm-b gm-pay">'+(q?'<div class="qr" aria-hidden="true">'+q+'</div>':'')+'<div class="pay-txt"><span class="gm-l">'+esc(label)+'</span>'+(num?copyRow(num):'')+(link?'<a class="btn primary pay-go" href="'+esc(link)+'" target="_blank" rel="noopener">'+esc(btn)+'</a>':'')+'</div></div>';
+}
 function secDonate(S){
-  var d=S.donate,bit=safeUrl(d.bitLink),pb=safeUrl(d.payboxLink),ot=safeUrl(d.otherLink),cards='';
-  if(bit||d.bitPhone)cards+=payCard(t('pay_bit'),bit,bit,d.bitPhone?'<span class="muted small">'+esc(t('bit_phone'))+'</span>'+copyRow(d.bitPhone):'');
-  if(pb||d.payboxPhone)cards+=payCard(t('pay_paybox'),pb,pb,d.payboxPhone?'<span class="muted small">'+esc(t('bit_phone'))+'</span>'+copyRow(d.payboxPhone):'');
-  if(ot)cards+=payCard(pick(d,'otherLabel')||t('donate'),ot,ot,'');
-  if(pick(d,'bank'))cards+='<div class="card"><h3>'+esc(t('bank'))+'</h3><p style="white-space:pre-line">'+esc(pick(d,'bank'))+'</p></div>';
-  var tz=safeUrl(d.tzLink),tzc=tz?'<div class="card give-small">'+'<div class="qr" aria-hidden="true">'+qrSvg(tz)+'</div><div class="gs-t">'+(pick(d,'tzTitle')?'<b>'+esc(pick(d,'tzTitle'))+'</b>':'')+(pick(d,'tzText')?'<span class="muted">'+esc(pick(d,'tzText'))+'</span>':'')+'<a class="btn sm" href="'+esc(tz)+'" target="_blank" rel="noopener">'+esc(t('tz_join'))+'</a></div></div>':'';
+  var d=S.donate,bit=safeUrl(d.bitLink),pb=safeUrl(d.payboxLink),ot=safeUrl(d.otherLink),bank=pick(d,'bank'),blocks='';
+  if(pb||d.payboxPhone)blocks+=payBlock(t('paybox'),pb,d.payboxPhone,t('pay_paybox'));
+  if(bit||d.bitPhone)blocks+=payBlock(t('bit'),bit,d.bitPhone,t('pay_bit'));
+  if(ot)blocks+=payBlock(pick(d,'otherLabel')||t('donate'),ot,'',pick(d,'otherLabel')||t('donate'));
+  if(bank)blocks+='<div class="gm-b gm-bank"><span class="gm-l">'+esc(t('bank'))+'</span><p>'+esc(bank)+'</p></div>';
+  var cards=blocks?'<div class="card give-main"><h3>'+esc(t('hg_title'))+'</h3><div class="gm">'+blocks+'</div></div>':'';
+  var tz=safeUrl(d.tzLink),tzc=tz?'<div class="card give-small">'+'<div class="qr" aria-hidden="true">'+qrSvg(tz)+'</div><div class="gs-t">'+(pick(d,'tzTitle')?'<b>'+esc(pick(d,'tzTitle'))+'</b>':'')+(pick(d,'tzText')?'<span class="muted">'+esc(pick(d,'tzText'))+'</span>':'')+'<a class="gs-link" href="'+esc(tz)+'" target="_blank" rel="noopener" dir="ltr">'+esc(tz.replace(/^https?:\/\//,''))+'</a></div></div>':'';
   return '<section id="sec-donate"><div class="sec-head"><div><h2>'+esc(t('donate'))+'</h2><p style="white-space:pre-line">'+esc(pick(d,'lead')||t('donate_lead'))+'</p></div></div>'+
-    (cards?'<div class="donate">'+cards+'</div>':(tzc?'':'<p class="empty">'+esc(t('no_donate'))+'</p>'))+tzc+(pick(d,'note')?'<p class="muted small" style="margin-top:10px">'+esc(pick(d,'note'))+'</p>':'')+'</section>';
+    (cards||(tzc?'':'<p class="empty">'+esc(t('no_donate'))+'</p>'))+tzc+(pick(d,'note')?'<p class="muted small" style="margin-top:10px">'+esc(pick(d,'note'))+'</p>':'')+'</section>';
 }
 function secContact(S){
   var s=S.shul,addr=pick(s,'address'),q=encodeURIComponent((s.addressHe||addr||'')),wa=safeUrl(s.whatsapp);
