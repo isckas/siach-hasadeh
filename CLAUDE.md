@@ -33,5 +33,8 @@ These hold for every session that works on this repository.
 - Hebcal 6.14 gets the edges of Chanukah wrong (Hallel on the eve, half Hallel on Rosh Chodesh Tevet, no Tachanun the day after). app.js seasonal() corrects them.
 - Holiday themes switch on at sunset the evening before. Chanukah's starts with the first candle.
 
+## Admins' how-to guide
+- The admins have a separate step-by-step guide page that opens admin sections by address (#manage/<section>). When an admin feature, label or section changes, update the guide in the same release, and keep the section ids stable.
+
 ## Backlog (v4)
 - The v4 list is in V4.md. Add agreed-but-later features there rather than building them now.
