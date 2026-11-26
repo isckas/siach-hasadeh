@@ -3,7 +3,7 @@
    - Each later load tries the network first (so updates arrive), and falls back
      to the saved copy when there is no connection or it is too slow.
    - Firestore keeps its own offline copy of the content, so it is not touched here. */
-var VERSION = 'shul-v10';
+var VERSION = 'shul-v11';
 var SHELL = [
   './',
   'index.html',
@@ -11,6 +11,7 @@ var SHELL = [
   'styles.css',
   'firebase-config.js',
   'vendor/hebcal-core-6.14.4.min.js',
+  'vendor/hebcal-leyning-10.1.0.min.js',
   'vendor/qrcode-generator-1.4.4.js',
   'vendor/firebase-app-compat-10.14.1.js',
   'vendor/firebase-auth-compat-10.14.1.js',
@@ -21,7 +22,13 @@ var SHELL = [
   'v2/',
   'v2/index.html',
   'v2/skin.js',
-  'v2/v2.css'
+  'v2/v2.css',
+  'v3/',
+  'v3/index.html',
+  'v3/art.js',
+  'v3/skin.js',
+  'v3/v3.css',
+  'v3/img/wall.webp'
 ];
 var FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
 var NET_TIMEOUT = 4000;
@@ -85,6 +92,6 @@ self.addEventListener('fetch', function (e) {
   var url = new URL(req.url);
   if (FONT_HOSTS.indexOf(url.hostname) >= 0) { e.respondWith(cacheFirst(req)); return; }
   if (url.origin !== self.location.origin) return; /* Firebase, Google sign-in: leave alone */
-  if (req.mode === 'navigate') { e.respondWith(networkFirst(req, /\/v2\//.test(url.pathname) ? 'v2/index.html' : 'index.html')); return; }
+  if (req.mode === 'navigate') { e.respondWith(networkFirst(req, /\/v3\//.test(url.pathname) ? 'v3/index.html' : (/\/v2\//.test(url.pathname) ? 'v2/index.html' : 'index.html'))); return; }
   e.respondWith(networkFirst(req));
 });

@@ -110,7 +110,7 @@ Object.assign(L,{
   pending_none:['אין כרגע שליחות שממתינות לאישור.','Nothing is waiting for approval.'],
   pend_approve:['אישור ופרסום','Approve and publish'], pend_edit:['עריכה לפני אישור','Edit first'], pend_reject:['דחייה','Reject'], pend_reject2:['לחצו שוב לדחייה','Click again to reject'],
   pend_from:['נשלח על ידי','Sent by'], pend_approved:['אושר ופורסם באתר ובמסך','Approved and published'], pend_rejected:['נדחה ונמחק','Rejected and deleted'],
-  pend_moved:['הועבר לעריכה. בסיום לוחצים "פרסום".','Moved into your edits. Press Publish when you are done.'], pend_fail:['הפעולה לא הצליחה ({c})','That didn\'t work ({c})'],
+  pend_moved:['הועבר לעריכה. בסיום לוחצים "שמירה ופרסום".','Moved into your edits. Press Save & publish when you are done.'], pend_fail:['הפעולה לא הצליחה ({c})','That didn\'t work ({c})'],
   ov_pending:['ממתינים לאישור','Waiting for approval'],
   typ_mazal:['מזל טוב','Mazal tov'], typ_simcha:['שמחה','Simcha'], typ_yahrzeit:['יארצייט','Yahrzeit'], typ_refuah:['רפואה שלמה','Refuah shleimah'], typ_birthday:['יום הולדת','Birthday'],
   pk_text:['נוסח','Message'], pk_start:['מתאריך','From'], pk_end:['עד תאריך','Until'], pk_date:['תאריך','Date'], pk_title:['מה','What'], pk_details:['שעה ומקום','Time and place'], pk_who:['שם','Name'], pk_hdate:['תאריך עברי','Hebrew date'], pk_rel:['קרבה','Relationship'], pk_until:['עד תאריך','Until'],
@@ -192,8 +192,10 @@ function seasonal(di,dow){
   if(dow!==6)out.push(matar?'s_umatar':'s_bracha');
   if(di.rc||di.chol||di.chag)out.push('s_yaaleh');
   try{var cs=new H.HDate(25,9,hd.getFullYear());var diff=hd.abs()-cs.abs();var purim=di.hol.some(function(e){return /^Purim$/.test(e.getDesc());});if((diff>=0&&diff<=7)||purim)out.push('s_nissim');}catch(e){}
-  try{var hl=H.HebrewCalendar.hallel(hd,true);if(hl===2)out.push('s_hallel2');else if(hl===1)out.push('s_hallel1');}catch(e){}
-  if(dow!==6&&!di.chag){try{var tc=H.HebrewCalendar.tachanun(hd,true);if(tc.shacharit&&tc.mincha)out.push('s_tach');else if(tc.shacharit)out.push('s_tach_s');else out.push('s_notach');}catch(e){}}
+  /* Hebcal gets the edges of Chanukah wrong (Hallel on the eve, half Hallel on Rosh Chodesh Tevet, no Tachanun the day after), so fix them by distance from 25 Kislev. */
+  var chd=null;try{chd=hd.abs()-new H.HDate(25,9,hd.getFullYear()).abs();}catch(e){}
+  try{var hl=H.HebrewCalendar.hallel(hd,true);if(chd===-1)hl=0;else if(chd>=0&&chd<=7)hl=2;if(hl===2)out.push('s_hallel2');else if(hl===1)out.push('s_hallel1');}catch(e){}
+  if(dow!==6&&!di.chag){try{var tc=H.HebrewCalendar.tachanun(hd,true);if(chd===8&&!tc.shacharit)tc={shacharit:true,mincha:dow!==5};if(tc.shacharit&&tc.mincha)out.push('s_tach');else if(tc.shacharit)out.push('s_tach_s');else out.push('s_notach');}catch(e){}}
   try{if(H.HebrewCalendar.eruvTavshilin(civil(di.iso),true))out.push('s_eruv');}catch(e){}
   return out;
 }
@@ -687,7 +689,7 @@ function renderManage(){
   else if(!FB.role)body='<div class="panel gate"><h3>'+esc(t('not_admin_title'))+'</h3><p>'+esc(t('not_admin_body',{email:FB.email}))+'</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-act="switch">'+esc(t('other_account'))+'</button><button class="btn" data-act="signout">'+esc(t('signout'))+'</button></div></div>';
   else{
     var counts={times:draft.times.filter(function(e){return e.group!=='shiur';}).length,shiurim:draft.times.filter(function(e){return e.group==='shiur';}).length,notices:draft.notices.length,sponsors:draft.sponsors.length,community:draft.mazal.length+draft.refuah.length+draft.yahrzeit.length+draft.simchas.length+draft.birthdays.length,memorial:draft.memorial.length,pending:FB.pending.length};
-    body='<div class="mg"><nav class="mg-tabs" aria-label="manager">'+TABS.map(function(k){return '<button data-act="tab" data-tab="'+k+'" aria-current="'+(ui.tab===k)+'"><span>'+esc(t('tab_'+k))+'</span>'+(counts[k]!=null?'<span class="count"'+(k==='pending'&&counts[k]?' style="background:var(--danger);color:#fff"':'')+'>'+counts[k]+'</span>':(k==='urgent'&&draft.urgent.on?'<span class="count" style="color:var(--danger)">●</span>':''))+'</button>';}).join('')+'<div class="whoami"><span title="'+esc(FB.email)+'">'+esc(t('signed_in_as',{email:FB.email}))+'</span><button class="linkbtn" data-act="signout">'+esc(t('signout'))+'</button></div></nav>'+
+    body='<div class="mg"><nav class="mg-tabs" aria-label="manager">'+TABS.map(function(k){return '<button data-act="tab" data-tab="'+k+'" aria-current="'+(ui.tab===k)+'"><span>'+esc(t('tab_'+k))+'</span>'+(counts[k]!=null?'<span class="count'+(k==='pending'&&counts[k]?' hot':'')+'">'+counts[k]+'</span>':(k==='urgent'&&draft.urgent.on?'<span class="count" style="color:var(--danger)">●</span>':''))+'</button>';}).join('')+'<div class="whoami"><span title="'+esc(FB.email)+'">'+esc(t('signed_in_as',{email:FB.email}))+'</span><button class="linkbtn" data-act="signout">'+esc(t('signout'))+'</button></div></nav>'+
       '<section class="mg-body" id="mg-body">'+tabBody()+'</section></div>'+saveBar();
   }
   return header()+'<div class="wrap">'+body+'</div><div class="toast" aria-live="polite"><div id="toast" hidden></div></div>';
@@ -1112,7 +1114,7 @@ function watchAdminData(){
   FB.subs.push(FB.db.collection('log').orderBy('at','desc').limit(8).onSnapshot(function(q){FB.log=q.docs.map(function(d){var x=d.data();return {by:x.by,at:x.at&&x.at.toDate?x.at.toDate():null,count:x.count,sections:x.sections};});
     if(route()==='manage'&&ui.tab==='overview')refreshPanel();},function(){}));
   FB.subs.push(FB.db.collection('submissions').orderBy('at','desc').limit(100).onSnapshot(function(q){FB.pending=q.docs.map(function(d){var x=d.data();return {id:d.id,type:x.type,data:x.data||{},name:x.name||'',phone:x.phone||'',lang:x.lang||'he',at:x.at&&x.at.toDate?x.at.toDate():null};});
-    if(route()==='manage'){var c=document.querySelector('[data-tab="pending"] .count');if(c){c.textContent=FB.pending.length;c.style.cssText=FB.pending.length?'background:var(--danger);color:#fff':'';}if(ui.tab==='pending'||ui.tab==='overview')refreshPanel();}},function(){}));
+    if(route()==='manage'){var c=document.querySelector('[data-tab="pending"] .count');if(c){c.textContent=FB.pending.length;c.classList.toggle('hot',FB.pending.length>0);}if(ui.tab==='pending'||ui.tab==='overview')refreshPanel();}},function(){}));
 }
 function rerenderAuth(){if(!ui.ready)return;if(route()!=='display')render();}
 function signIn(choose){
