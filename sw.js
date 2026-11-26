@@ -3,12 +3,13 @@
    - Each later load tries the network first (so updates arrive), and falls back
      to the saved copy when there is no connection or it is too slow.
    - Firestore keeps its own offline copy of the content, so it is not touched here. */
-var VERSION = 'shul-v13';
+var VERSION = 'shul-v14';
 var SHELL = [
   './',
   'index.html',
   'app.js',
   'styles.css',
+  'admin.css',
   'firebase-config.js',
   'vendor/hebcal-core-6.14.4.min.js',
   'vendor/hebcal-leyning-10.1.0.min.js',

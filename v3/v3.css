@@ -439,3 +439,7 @@ html.tv-mode,html.tv-mode body{background:#000;overflow:hidden}
 
 /* reCAPTCHA (App Check) runs invisibly; its badge is hidden and the notice is shown on the send form instead, as Google allows. */
 .grecaptcha-badge{visibility:hidden!important}
+
+/* Preview of an admin's unpublished edits on the board (opened from the admin page) */
+.pv-bar{position:fixed;top:0;inset-inline:0;z-index:50;display:flex;align-items:center;justify-content:center;gap:16px;padding:8px 16px;background:#F2B94B;color:#2A1C00;font-family:'Assistant',system-ui,sans-serif;font-weight:800;font-size:16px}
+.pv-bar button{border:0;border-radius:999px;background:#131C4C;color:#fff;font:inherit;font-size:15px;padding:6px 16px;cursor:pointer}

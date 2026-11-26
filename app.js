@@ -10,6 +10,7 @@ var SEED=null;                 /* starting content shipped with the site (seed/s
 var state=normalize({});       /* what is live in the database */
 var base=clone(state);         /* the version the board member's draft was started from */
 var draft=clone(state);        /* the board member's unsaved edits */
+var PV_KEY='shul-preview';
 var ui={tab:'overview',open:{},docLang:{},docOpen:{},previewDraft:false,publishing:false,ready:false,baseRev:0,zDate:'',slide:0,slideTimer:null,lastMinute:-1,stillFlag:null,armed:null,busy:{},uploaded:{}};
 /* Firebase: database, Google sign-in, admin role */
 var FB={app:null,db:null,auth:null,user:null,email:'',role:'',checked:false,hasDoc:false,meta:{rev:0,by:'',at:null},admins:[],log:[],subs:[],pending:[]};
@@ -84,7 +85,7 @@ var L={
   signin_title:['כניסת חברי ועד','Board sign-in'], signin_body:['הכניסה מיועדת למנהלי האתר בלבד. האתר הציבורי והמסך בבית הכנסת לא דורשים כניסה.','Sign-in is only for the site\'s admins. The public website and the shul screen need no login.'], signin_btn:['כניסה עם Google','Sign in with Google'], signout:['יציאה','Sign out'], other_account:['כניסה עם חשבון אחר','Use a different account'], signin_failed:['הכניסה נכשלה ({c}). נסו שוב.','Sign-in failed ({c}). Try again.'],
   not_admin_title:['החשבון הזה לא ברשימת המנהלים','This account isn\'t on the admin list'], not_admin_body:['{email} לא מורשה לנהל את האתר. בקשו מבעל האתר להוסיף את הכתובת בלשונית "משתמשים".','{email} can\'t manage the site. Ask the owner to add this address under "Users".'],
   no_fb:['האתר עדיין לא מחובר ל-Firebase.','This site isn\'t connected to Firebase yet.'], loading:['טוען…','Loading…'],
-  tab_users:['משתמשים','Users'], users_lead:['רק מי שמופיע כאן יכול להיכנס עם Google ולערוך. בעלים יכולים גם להוסיף ולהסיר מנהלים. אין משתמשים רגילים — כל השאר רואים את האתר בלי כניסה.','Only people listed here can sign in with Google and edit. Owners can also add and remove admins. There are no regular users: everyone else sees the site without signing in.'],
+  tab_users:['מנהלי האתר','Admins'], users_lead:['רק מי שמופיע כאן יכול להיכנס עם Google ולערוך. בעלים יכולים גם להוסיף ולהסיר מנהלים. אין משתמשים רגילים — כל השאר רואים את האתר בלי כניסה.','Only people listed here can sign in with Google and edit. Owners can also add and remove admins. There are no regular users: everyone else sees the site without signing in.'],
   role_owner:['בעלים','Owner'], role_admin:['מנהל','Admin'], role_builtin:['בעלים קבוע','Built-in owner'], role_owner_d:['עורך תוכן ומנהל משתמשים','Edits content and manages users'], role_admin_d:['עורך תוכן','Edits content'],
   add_user:['הוספת מנהל','Add admin'], user_email:['כתובת חשבון Google','Google account email'], user_role:['הרשאה','Role'], add_btn:['הוספה','Add'], rm_user:['הסרה','Remove'], rm_user2:['לחצו שוב להסרה','Click again to remove'],
   user_added:['{email} נוסף ויכול להיכנס עכשיו.','{email} was added and can sign in now.'], user_removed:['{email} הוסר.','{email} was removed.'], user_updated:['ההרשאה עודכנה.','Role updated.'], user_bad:['הכניסו כתובת אימייל תקינה.','Enter a valid email address.'], only_owner:['רק בעלים יכולים לשנות את רשימת המנהלים.','Only owners can change the admin list.'], user_fail:['השינוי נכשל ({c}).','The change failed ({c}).'],
@@ -96,6 +97,12 @@ var L={
 };
 /* v3 additions: memorial wall, birthdays, member submissions, screen switches */
 Object.assign(L,{
+  screen_addr:['כתובת המסך','Screen address'], screen_addr_d:['זו הכתובת לפתוח בדפדפן של מסך הטלוויזיה. היא לא מופיעה באתר הציבורי.','Open this address in the TV screen\'s browser. It is not shown on the public website.'],
+  ov_slides_now:['שקופיות במסך עכשיו','Slides on the screen now'],
+  mg_brand:['ניהול האתר והמסך','Site & screen manager'], mg_sections:['מדורים','Sections'], mg_close:['סגירה','Close'],
+  grp_times:['תפילות ושיעורים','Prayers & shiurim'], grp_board:['לוח המודעות','Notice board'], grp_comm:['קהילה','Community'], grp_shul:['בית הכנסת','The shul'], grp_team:['צוות','Team'],
+  pub_none:['הכל מפורסם','Everything is published'], preview_short:['תצוגה מקדימה','Preview'], pub_dirty1:['שינוי אחד עוד לא פורסם','1 change not published yet'], pub_dirty:['{n} שינויים עוד לא פורסמו','{n} changes not published yet'],
+  ov_attn:['מה דורש תשומת לב','Needs attention'], ov_attn_none:['אין כרגע שום דבר שמחכה לך.','Nothing is waiting for you right now.'], ov_go:['לטיפול','Open'], ov_urgent_on:['הודעה דחופה מוצגת עכשיו באתר ובמסך','An urgent banner is showing on the site and screen'],
   tab_pending:['ממתינים לאישור','Pending'], tab_memorial:['לוח הזיכרון','Memorial wall'],
   sub_birthdays:['ימי הולדת','Birthdays'], birthdays_hint:['לפי התאריך העברי, ומוצגים מחדש כל שנה בשבוע של יום ההולדת.','By the Hebrew date; shown again every year in the week of the birthday.'],
   add_birthday:['הוספת יום הולדת','Add a birthday'], add_memorial:['הוספת הנצחה','Add a dedication'],
@@ -313,6 +320,7 @@ function loadImage(fid){
 }
 function imgUrl(img){var s=imgSrc(img);if(s)return Promise.resolve(s);if(img&&img.fid)return loadImage(img.fid);return Promise.resolve('');}
 function imgAttr(img){if(!img)return '';var s=imgSrc(img);if(s)return 'src="'+esc(s)+'"';if(img.fid){loadImage(img.fid);return 'src="'+BLANK+'" data-fid="'+esc(img.fid)+'"';}return '';}
+function screenUrl(S){var u=siteUrl(S);if(!u)return '';u=u.replace(/[?#].*$/,'').replace(/index\.html$/,'').replace(/\/?$/,'/');return (/\/v3\/$/.test(u)?u:u+'v3/')+'#display';}
 function siteUrl(S){return safeUrl(S.shul.siteUrl)||(/^https?:/.test(location.protocol)?location.origin+location.pathname:'');}
 var QRC={};
 function qrSvg(text){
@@ -327,6 +335,7 @@ function route(){var h=(location.hash||'').slice(1);return (h==='display'||h==='
 function render(){
   var r=route(),root=document.documentElement;
   clearTimeout(ui.slideTimer);ui.slideTimer=null;
+  if(!ui.ready&&r==='manage'&&!SKIN){root.classList.add('mg-mode');$app.innerHTML='<div class="mg-loading" role="status"><span>'+esc(t('loading'))+'</span></div>';return;}
   if(!ui.ready){root.classList.remove('tv-mode');$app.innerHTML=SKIN&&SKIN.loading?SKIN.loading(API):'<div class="loading">'+SPRIG+'<span>'+esc(t('loading'))+'</span></div>';return;}
   if(r==='manage'&&window.top!==window.self){$app.innerHTML='<p class="empty">'+esc(t('framed'))+'</p>';return;}
   if(SKIN){
@@ -334,14 +343,19 @@ function render(){
     root.classList.toggle('tv-mode',r==='display');
     if(r==='display'){var S2=screenState(),dl2=S2.display.lang;ui.stillFlag=S2.display.shabbatMode==='still'&&isShabbatNow(S2.shul);root.lang=dl2==='en'?'en':'he';root.dir=dl2==='en'?'ltr':'rtl';}
     else{root.lang=lang;root.dir=lang==='he'?'rtl':'ltr';}
-    clearInterval(ui.scT);$app.innerHTML=SKIN[r](API);if(SKIN.after)SKIN.after(r,API);if(r==='display'){keepAwake();armFs();}return;
+    clearInterval(ui.scT);$app.innerHTML=(r==='display'&&ui.previewDraft?'<div class="pv-bar" role="status"><span>'+esc(t('preview_on'))+'</span><button type="button" data-act="endpreview">'+esc(t('back_edit'))+'</button></div>':'')+SKIN[r](API);if(SKIN.after)SKIN.after(r,API);if(r==='display'){keepAwake();armFs();}return;
   }
   root.classList.toggle('tv-mode',r==='display');
   if(r==='display'){var S=screenState();var dl=S.display.lang;root.lang=dl==='en'?'en':'he';root.dir=dl==='en'?'ltr':'rtl';$app.innerHTML=renderDisplay(S);fitSide();startScroll();startSlides(S);keepAwake();armFs();return;}
-  root.lang=lang;root.dir=lang==='he'?'rtl':'ltr';
+  root.lang=lang;root.dir=lang==='he'?'rtl':'ltr';root.classList.toggle('mg-mode',r==='manage');
   $app.innerHTML=(r==='manage'?renderManage():renderHome());
+  if(r==='manage'){var mh=document.querySelector('.mgh');if(mh)root.style.setProperty('--mgh-h',mh.offsetHeight+'px');}
 }
-function screenState(){return ui.previewDraft?normalize(clone(draft)):state;}
+function screenState(){return ui.previewDraft?normalize(clone(ui.previewData||draft)):state;}
+function loadPreview(){try{var pv=JSON.parse(sessionStorage.getItem(PV_KEY)||'null');if(pv&&pv.at&&Date.now()-pv.at<3*3600e3&&pv.d){ui.previewData=pv.d;ui.previewDraft=true;}else sessionStorage.removeItem(PV_KEY);}catch(e){}}
+/* Back on the admin page after a preview: take the unpublished edits back, merged onto anything published meanwhile. */
+function takeBackPreview(S,meta){var pv=null;try{pv=JSON.parse(sessionStorage.getItem(PV_KEY)||'null');sessionStorage.removeItem(PV_KEY);}catch(e){}if(!pv||!pv.d||!pv.at||Date.now()-pv.at>3*3600e3)return;try{var d=normalize(clone(pv.d));draft=pv.rev===meta.rev?d:merge3(normalize(clone(pv.b||S)),d,S);}catch(e){}}
+function endPreview(){try{sessionStorage.removeItem(PV_KEY);}catch(e){}ui.previewDraft=false;ui.previewData=null;}
 
 function header(){
   var S=state,r=route();
@@ -661,6 +675,7 @@ function keepAwake(){try{if(navigator.wakeLock&&!wakeLock)navigator.wakeLock.req
 
 /* ---------- board manager ---------- */
 var TABS=['overview','pending','times','shiurim','notices','sponsors','community','memorial','docs','donate','urgent','shul','screen','users'];
+var TAB_GROUPS=[['',['overview','pending']],['grp_times',['times','shiurim']],['grp_board',['notices','sponsors','urgent']],['grp_comm',['community','memorial']],['grp_shul',['docs','donate','shul','screen']],['grp_team',['users']]];
 var LISTS=['times','notices','sponsors','mazal','refuah','yahrzeit','docs','simchas','memorial','birthdays'],SECTS=['donate','urgent','shul','display'];
 function changes(B,D){B=B||base;D=D||draft;var out=[];
   LISTS.forEach(function(k){var a={},b={},n=0;B[k].forEach(function(x){a[x.id]=JSON.stringify(x);});D[k].forEach(function(x){b[x.id]=JSON.stringify(x);});Object.keys(b).forEach(function(id){if(a[id]!==b[id])n++;});Object.keys(a).forEach(function(id){if(!(id in b))n++;});if(n)out.push([k,n]);});
@@ -688,26 +703,38 @@ function metaPanel(){
   if(FB.log.length)lines+='<div class="panel"><h3>'+esc(t('recent'))+'</h3><ul class="list">'+FB.log.map(function(l){return '<li><span class="k">'+esc(l.by||'')+' · '+esc(fmtWhen(l.at))+'</span>'+esc(t('log_line',{n:l.count||0,what:(l.sections||[]).map(function(x){return t('tab_'+(x==='mazal'||x==='refuah'||x==='yahrzeit'||x==='simchas'||x==='birthdays'?'community':x==='display'?'screen':x))}).filter(function(v,i,a){return a.indexOf(v)===i;}).join(', ')}))+'</li>';}).join('')+'</ul></div>';
   return lines;
 }
+function mgHeader(){
+  var S=state,on=!!(FB.role&&FB.user),sun='';
+  try{var di=dayInfo(jp().iso,S.shul),z=di&&di.zm,now=Date.now();if(z&&z.netz&&z.shkia&&now>z.netz&&now<z.shkia){var f=(now-z.netz)/(z.shkia-z.netz);sun='<i class="sun" style="inset-inline-start:'+(6+f*88).toFixed(1)+'%"></i>';}}catch(e){}
+  return '<header class="mgh"><div class="mgh-in"><button class="mgh-brand" data-act="nav" data-to="" aria-label="'+esc(t('site_view'))+'"><b>'+esc(pick(S.shul,'name'))+'</b><span>'+esc(t('mg_brand'))+'</span></button>'+
+    (on?'<button class="mgh-sec" data-act="mgnav" aria-expanded="'+(!!ui.navOpen)+'" aria-controls="mg-nav"><span>'+esc(t('tab_'+ui.tab))+'</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.5 6 8.5 10 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>':'')+
+    '<div class="mgh-tools"><div class="lang" role="group" aria-label="language"><button data-act="lang" data-lang="he" aria-pressed="'+(lang==='he')+'">עברית</button><button data-act="lang" data-lang="en" aria-pressed="'+(lang==='en')+'">English</button></div><button class="mgh-link" data-act="nav" data-to="">'+esc(t('site_view'))+'</button></div></div>'+
+    '<div class="th-line" aria-hidden="true">'+sun+'</div></header>';
+}
+function mgNav(){
+  var pend=FB.pending.length,urg=draft.urgent&&draft.urgent.on;
+  var btn=function(k){if(k==='users'&&!FB.role)return '';return '<button data-act="tab" data-tab="'+k+'" aria-current="'+(ui.tab===k)+'"><span>'+esc(t('tab_'+k))+'</span>'+(k==='pending'?'<span class="count'+(pend?' hot':'')+'">'+pend+'</span>':(k==='urgent'&&urg?'<span class="dot" title="'+esc(t('ov_urgent_on'))+'"></span>':''))+'</button>';};
+  return '<nav class="mg-tabs'+(ui.navOpen?' open':'')+'" id="mg-nav" aria-label="'+esc(t('mg_sections'))+'">'+TAB_GROUPS.map(function(g){return '<div class="mg-grp">'+(g[0]?'<span class="mg-gh">'+esc(t(g[0]))+'</span>':'')+g[1].map(btn).join('')+'</div>';}).join('')+
+    '<div class="whoami"><span title="'+esc(FB.email)+'">'+esc(t('signed_in_as',{email:FB.email}))+'</span><button class="linkbtn" data-act="signout">'+esc(t('signout'))+'</button></div></nav>';
+}
 function renderManage(){
   var body;
   if(!FB.app)body='<div class="panel gate"><h3>'+esc(t('signin_title'))+'</h3><p>'+esc(t('no_fb'))+'</p></div>';
   else if(!FB.checked)body='<p class="empty" style="padding:40px 0">'+esc(t('checking'))+'</p>';
   else if(!FB.user)body='<div class="panel gate"><h3>'+esc(t('signin_title'))+'</h3><p>'+esc(t('signin_body'))+'</p><button class="btn primary gbtn" data-act="signin">'+GLOGO+esc(t('signin_btn'))+'</button></div>';
   else if(!FB.role)body='<div class="panel gate"><h3>'+esc(t('not_admin_title'))+'</h3><p>'+esc(t('not_admin_body',{email:FB.email}))+'</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-act="switch">'+esc(t('other_account'))+'</button><button class="btn" data-act="signout">'+esc(t('signout'))+'</button></div></div>';
-  else{
-    var counts={times:draft.times.filter(function(e){return e.group!=='shiur';}).length,shiurim:draft.times.filter(function(e){return e.group==='shiur';}).length,notices:draft.notices.length,sponsors:draft.sponsors.length,community:draft.mazal.length+draft.refuah.length+draft.yahrzeit.length+draft.simchas.length+draft.birthdays.length,memorial:draft.memorial.length,pending:FB.pending.length};
-    body='<div class="mg"><nav class="mg-tabs" aria-label="manager">'+TABS.map(function(k){return '<button data-act="tab" data-tab="'+k+'" aria-current="'+(ui.tab===k)+'"><span>'+esc(t('tab_'+k))+'</span>'+(counts[k]!=null?'<span class="count'+(k==='pending'&&counts[k]?' hot':'')+'">'+counts[k]+'</span>':(k==='urgent'&&draft.urgent.on?'<span class="count" style="color:var(--danger)">●</span>':''))+'</button>';}).join('')+'<div class="whoami"><span title="'+esc(FB.email)+'">'+esc(t('signed_in_as',{email:FB.email}))+'</span><button class="linkbtn" data-act="signout">'+esc(t('signout'))+'</button></div></nav>'+
-      '<section class="mg-body" id="mg-body">'+tabBody()+'</section></div>'+saveBar();
-  }
-  return header()+'<div class="wrap">'+body+'</div><div class="toast" aria-live="polite"><div id="toast" hidden></div></div>';
+  else body='<div class="mg'+(ui.navOpen?' nav-open':'')+'">'+mgNav()+'<section class="mg-body" id="mg-body">'+tabBody()+'</section></div>'+saveBar();
+  return mgHeader()+'<div class="wrap">'+body+'</div><div class="toast" aria-live="polite"><div id="toast" hidden></div></div>';
 }
 function saveBar(){
-  var n=changeCount();
-  return '<div class="savebar" id="savebar"><div class="wrap"><span>'+(n?esc(n===1?t('unsaved1'):t('unsaved',{n:n})):esc(t('all_saved')))+'</span><span style="display:flex;gap:8px;flex-wrap:wrap">'+
-    (n?'<button class="btn sm" data-act="discard">'+esc(t('discard'))+'</button>':'')+'<button class="btn sm" data-act="preview">'+esc(t('preview_edits'))+'</button>'+
-    '<button class="btn primary" data-act="publish" '+(((!n&&FB.hasDoc)||ui.publishing)?'disabled':'')+'>'+esc(ui.publishing?t('publishing'):t('publish'))+'</button></span></div></div>';
+  var n=changeCount(),dirty=n>0||!FB.hasDoc;
+  return '<div class="savebar'+(dirty?' dirty':'')+'" id="savebar" data-sig="'+sbSig(n,dirty)+'"><div class="wrap"><span class="sb-state" role="status">'+esc(n?(n===1?t('pub_dirty1'):t('pub_dirty',{n:n})):t('pub_none'))+'</span><span class="sb-acts">'+
+    (n?'<button class="btn sm ghost" data-act="discard">'+esc(t('discard'))+'</button>':'')+'<button class="btn sm ghost" data-act="preview" title="'+esc(t('preview_edits'))+'">'+esc(t('preview_short'))+'</button>'+
+    '<button class="btn publish" data-act="publish" '+((!dirty||ui.publishing)?'disabled':'')+'>'+esc(ui.publishing?t('publishing'):t('publish'))+'</button></span></div></div>';
 }
-function updateBar(){var b=document.getElementById('savebar');if(b)b.outerHTML=saveBar();}
+function sbSig(n,dirty){return [n,dirty?1:0,ui.publishing?1:0,lang].join('-');}
+/* Only redraw the bar when what it says changes: redrawing it on every keystroke or blur would swallow a click on its buttons. */
+function updateBar(){var b=document.getElementById('savebar');if(!b)return;var n=changeCount();if(b.dataset.sig===sbSig(n,n>0||!FB.hasDoc))return;b.outerHTML=saveBar();}
 function mgTitle(k,lead){return '<div class="mg-title"><div><h2>'+esc(t('tab_'+k))+'</h2>'+(lead?'<p>'+esc(lead)+'</p>':'')+'</div></div>';}
 function tabBody(){
   var D=draft,iso=jp().iso;
@@ -725,7 +752,7 @@ function tabBody(){
     case 'shul':return mgTitle('shul',t('shul_hint'))+'<div class="panel"><div class="ed-body" style="padding:0">'+fields('shul','',D.shul,SHUL_F)+'</div></div>';
     case 'docs':return mgTitle('docs',t('docs_hint'))+listEditor('docs',D.docs,DOC_F,sumDoc,'add_doc');
     case 'users':return usersTab();
-    case 'screen':return mgTitle('screen',t('screen_hint'))+'<div class="panel"><div class="ed-body" style="padding:0">'+fields('display','',D.display,SCREEN_F)+'</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="nav" data-to="display">'+esc(t('open_screen'))+'</button><button class="btn" data-act="preview">'+esc(t('preview_edits'))+'</button></div>';
+    case 'screen':return mgTitle('screen',t('screen_hint'))+(siteUrl(D)?'<div class="panel"><h3>'+esc(t('screen_addr'))+'</h3>'+copyRow(screenUrl(D))+'<p class="muted small" style="margin-top:8px">'+esc(t('screen_addr_d'))+'</p></div>':'')+'<div class="panel"><div class="ed-body" style="padding:0">'+fields('display','',D.display,SCREEN_F)+'</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="'+esc(BASE+'v3/#display')+'" target="_blank" rel="noopener">'+esc(t('open_screen'))+'</a><button class="btn" data-act="preview">'+esc(t('preview_edits'))+'</button></div>';
   }
   return '';
 }
@@ -734,10 +761,15 @@ function overview(){
   var act=D.notices.filter(function(n){return noticeOn(n,iso,P.dow,'screen')||noticeOn(n,iso,P.dow,'web');}).length;
   var wkEnd=isoAdd(iso,6),exp=0;['notices','sponsors','mazal'].forEach(function(k){D[k].forEach(function(x){var e=k==='mazal'?mazalEnd(x):x.end;if(e&&e>=iso&&e<=wkEnd)exp++;});});
   var url=siteUrl(D);
-  return mgTitle('overview',t('m_lead'))+metaPanel()+
-    '<div class="stat"><div><b class="tn"'+(FB.pending.length?' style="color:var(--danger)"':'')+'>'+FB.pending.length+'</b><span>'+esc(t('ov_pending'))+'</span></div><div><b class="tn">'+slides+'</b><span>'+esc(t('ov_screen'))+' · '+esc(t('ov_slides'))+'</span></div><div><b class="tn">'+act+'</b><span>'+esc(t('ov_notices'))+'</span></div><div><b class="tn">'+exp+'</b><span>'+esc(t('ov_expiring'))+'</span></div></div>'+
+  var attn=[];
+  if(FB.pending.length)attn.push(['hot',t('ov_pending')+': '+FB.pending.length,'pending']);
+  if(D.urgent.on&&!(D.urgent.until&&iso>D.urgent.until))attn.push(['warn',t('ov_urgent_on'),'urgent']);
+  if(exp)attn.push(['',t('ov_expiring')+': '+exp,'notices']);
+  var attnHtml='<div class="panel attn"><h3>'+esc(t('ov_attn'))+'</h3>'+(attn.length?'<ul class="attn-l">'+attn.map(function(a){return '<li class="'+a[0]+'"><span>'+esc(a[1])+'</span><button class="btn sm" data-act="tab" data-tab="'+a[2]+'">'+esc(t('ov_go'))+'</button></li>';}).join('')+'</ul>':'<p class="muted">'+esc(t('ov_attn_none'))+'</p>')+'</div>';
+  return mgTitle('overview',t('m_lead'))+attnHtml+
+    '<div class="stat"><div><b class="tn">'+slides+'</b><span>'+esc(t('ov_slides_now'))+'</span></div><div><b class="tn">'+act+'</b><span>'+esc(t('ov_notices'))+'</span></div><div><b class="tn">'+exp+'</b><span>'+esc(t('ov_expiring'))+'</span></div></div>'+
     '<div class="panel"><h3>'+esc(t('ov_quick'))+'</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="quick" data-col="notices">+ '+esc(t('add_notice'))+'</button><button class="btn" data-act="quick" data-col="sponsors">+ '+esc(t('add_sponsor'))+'</button><button class="btn" data-act="quick" data-col="mazal">+ '+esc(t('add_mazal'))+'</button><button class="btn" data-act="quick" data-col="simchas">+ '+esc(t('add_simcha'))+'</button><button class="btn" data-act="quick" data-col="times" data-group="shiur">+ '+esc(t('add_shiur'))+'</button><button class="btn" data-act="tab" data-tab="urgent">'+esc(t('tab_urgent'))+'</button><button class="btn" data-act="clean">'+esc(t('ov_clean'))+'</button></div></div>'+
-    '<div class="panel"><h3>'+esc(t('ov_setup'))+'</h3><p style="margin-bottom:10px">'+esc(t('screen_hint'))+'</p>'+(url?copyRow(url+'#display'):'<p class="muted small">'+esc(t('ov_link_missing'))+'</p>')+'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn" data-act="nav" data-to="display">'+esc(t('open_screen'))+'</button><button class="btn" data-act="preview">'+esc(t('preview_edits'))+'</button></div></div>';
+    '<div class="panel"><h3>'+esc(t('ov_setup'))+'</h3><p style="margin-bottom:10px">'+esc(t('screen_hint'))+'</p>'+(url?copyRow(screenUrl(D)):'<p class="muted small">'+esc(t('ov_link_missing'))+'</p>')+'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><a class="btn" href="'+esc(BASE+'v3/#display')+'" target="_blank" rel="noopener">'+esc(t('open_screen'))+'</a><button class="btn" data-act="preview">'+esc(t('preview_edits'))+'</button></div></div>'+metaPanel();
 }
 
 /* field schemas */
@@ -1030,8 +1062,9 @@ $app.addEventListener('click',function(e){
   if(act==='zday'){var n=+b.dataset.n,today=jp().iso;ui.zDate=n===0?today:isoAdd(ui.zDate||today,n);var sec=document.getElementById('sec-zmanim');if(sec)sec.outerHTML=secZmanim(state,jp());return;}
   if(act==='copy'){e.preventDefault();var txt=b.dataset.text;var done=function(){var o=b.textContent;b.textContent=t('copied');setTimeout(function(){b.textContent=o;},1500);};try{navigator.clipboard.writeText(txt).then(done,function(){selectNear(b);});}catch(err){selectNear(b);}return;}
   if(act==='fs'){var de=document.documentElement;if(de.requestFullscreen)de.requestFullscreen().catch(function(){});b.hidden=true;keepAwake();return;}
-  if(act==='endpreview'){ui.previewDraft=false;location.hash='manage';return;}
-  if(act==='tab'){ui.tab=b.dataset.tab;render();window.scrollTo(0,0);return;}
+  if(act==='endpreview'){ui.previewDraft=false;location.href=BASE+'#manage';return;}
+  if(act==='tab'){ui.tab=b.dataset.tab;ui.navOpen=false;render();window.scrollTo(0,0);return;}
+  if(act==='mgnav'){ui.navOpen=!ui.navOpen;render();if(ui.navOpen){var f=document.querySelector('.mg-tabs [aria-current="true"]');if(f)f.focus();}return;}
   if(act==='add'||act==='quick'){var col=b.dataset.col,it=DEFAULTS[col]();it.id=uid(col.charAt(0));if(b.dataset.group){it.group=b.dataset.group;if(it.group==='shiur'){it.days=[0,1,2,3,4];it.nameHe='';it.nameEn='';}}draft[col].unshift(it);ui.open[it.id]=1;if(act==='quick')ui.tab=(col==='mazal'||col==='simchas'?'community':(it.group==='shiur'?'shiurim':col));render();if(act==='quick')window.scrollTo(0,0);return;}
   if(act==='dup'){var c2=b.dataset.col,src=target(c2,b.dataset.id);if(!src)return;var cp=clone(src);cp.id=uid(c2.charAt(0));var arr=draft[c2];arr.splice(arr.indexOf(src)+1,0,cp);ui.open[cp.id]=1;refreshPanel();updateBar();return;}
   if(act==='del'||act==='discard'){
@@ -1043,7 +1076,7 @@ $app.addEventListener('click',function(e){
   }
   if(act==='rmimg'){var o4=target(b.dataset.col,b.dataset.id);if(o4){o4[b.dataset.k]=null;refreshCard(b.dataset.col,b.dataset.id,true);updateBar();}return;}
   if(act==='publish'){publish();return;}
-  if(act==='preview'){ui.previewDraft=true;location.hash='display';return;}
+  if(act==='preview'){try{sessionStorage.setItem(PV_KEY,JSON.stringify({at:Date.now(),d:draft,b:base,rev:ui.baseRev}));location.href=BASE+'v3/#display';}catch(e){ui.previewDraft=true;location.hash='display';}return;}
   if(act==='signin'){signIn(false);return;}
   if(act==='switch'){signIn(true);return;}
   if(act==='signout'){if(FB.auth)FB.auth.signOut().then(function(){stopAdminData();return FB.db.terminate();}).then(function(){return FB.db.clearPersistence();}).catch(function(){}).then(function(){location.reload();});return;}
@@ -1058,11 +1091,12 @@ function disarm(){var b=ui.armed;if(!b)return;b.textContent=b.dataset.label||b.t
 $app.addEventListener('submit',function(e){if(e.target&&e.target.id==='uadd'){e.preventDefault();addUser(document.getElementById('u-email').value,document.getElementById('u-role').value);}});
 $app.addEventListener('change',function(e){var el=e.target;if(!el||!el.dataset||!el.dataset.userrole)return;FB.db.collection('admins').doc(el.dataset.userrole).set({role:el.value==='owner'?'owner':'admin'},{merge:true}).then(function(){toast(t('user_updated'));}).catch(function(e2){toast(t('user_fail',{c:e2.code||'error'}));});});
 function selectNear(b){var c=b.parentNode&&b.parentNode.querySelector('code');if(!c)return;var r=document.createRange();r.selectNodeContents(c);var s=window.getSelection();s.removeAllRanges();s.addRange(r);}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ui.navOpen){ui.navOpen=false;render();var m=document.querySelector('.mgh-sec');if(m)m.focus();}});
 window.addEventListener('hashchange',function(){
   /* The admin page runs without the offline copy, so member details never land in it: reload into it if this tab has one. */
   if(route()==='manage'&&FB.persist){location.reload();return;}
   if(route()==='manage'&&FB.role)watchAdminData();else if(route()!=='manage'&&FB.watching){stopAdminData();}
-if(route()!=='display')ui.previewDraft=false;render();if(!jumpToHash())window.scrollTo(0,0);});
+if(route()!=='display'){if(ui.previewData)endPreview();else ui.previewDraft=false;}render();if(!jumpToHash())window.scrollTo(0,0);});
 document.addEventListener('toggle',function(e){var d=e.target;if(d&&d.classList&&d.classList.contains('doc'))ui.docOpen[d.id.slice(4)]=d.open;},true);
 function jumpToHash(){var h=(location.hash||'').slice(1);if(SKIN)return SKIN.jump?SKIN.jump(h):false;if(h!=='docs'&&h!=='minutes')return false;var el=document.getElementById('sec-docs');if(!el)return false;var first=el.querySelector('details.doc');if(first&&!first.open){first.open=true;}el.scrollIntoView({block:'start'});return true;}
 var GLOGO='<svg class="glogo" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>';
@@ -1103,7 +1137,7 @@ function fbInit(){
   FB.auth.getRedirectResult().catch(function(e){if(e&&e.code)toast(t('signin_failed',{c:e.code}));});
 }
 function loadSeed(){if(SEED)return Promise.resolve(SEED);return fetch(BASE+'seed/state.json',{cache:'no-cache'}).then(function(r){return r.json();}).catch(function(){return {};}).then(function(j){SEED=j||{};return SEED;});}
-function ready(){if(ui.ready)return;ui.ready=true;try{lang=localStorage.getItem('shul-lang')||state.shul.defaultLang||'he';}catch(e){lang=state.shul.defaultLang||'he';}render();jumpToHash();}
+function ready(){if(ui.ready)return;ui.ready=true;if(SKIN&&route()==='display')loadPreview();try{lang=localStorage.getItem('shul-lang')||state.shul.defaultLang||'he';}catch(e){lang=state.shul.defaultLang||'he';}render();jumpToHash();}
 function onState(snap){
   var d=snap.exists?snap.data():null;
   if(!d){loadSeed().then(function(sd){applyState(normalize(clone(sd)),{rev:0,by:'',at:null},false);});return;}
@@ -1114,7 +1148,7 @@ function onState(snap){
 function applyState(S,meta,hasDoc){
   var dirty=changeCount(base,draft)>0;
   state=S;FB.meta=meta;FB.hasDoc=hasDoc;
-  if(!dirty){draft=clone(S);base=clone(S);ui.baseRev=meta.rev;}
+  if(!dirty){draft=clone(S);base=clone(S);ui.baseRev=meta.rev;if(!ui.ready&&!SKIN&&route()==='manage')takeBackPreview(S,meta);}
   else if(meta.rev!==ui.baseRev){draft=merge3(base,draft,S);base=clone(S);ui.baseRev=meta.rev;if(meta.by&&meta.by!==FB.email&&!(FB.user&&meta.by===FB.user.uid))setTimeout(function(){toast(t('merged',{who:whoIs(meta.by)}));},50);}
   if(!ui.ready){ready();return;}
   var r=route();
