@@ -15,7 +15,8 @@ var ui={tab:'overview',open:{},docLang:{},docOpen:{},previewDraft:false,publishi
 /* Firebase: database, Google sign-in, admin role */
 var FB={app:null,db:null,auth:null,user:null,email:'',role:'',checked:false,hasDoc:false,meta:{rev:0,by:'',at:null},admins:[],log:[],subs:[],pending:[]};
 var OWNERS=(window.SHUL_OWNERS||[]).map(function(e){return String(e).toLowerCase();});
-var lang=(function(){try{return localStorage.getItem('shul-lang')||state.shul.defaultLang||'he';}catch(e){return state.shul.defaultLang||'he';}})();
+function okLang(v){return v==='en'?'en':'he';}
+var lang=(function(){try{return okLang(localStorage.getItem('shul-lang')||state.shul.defaultLang);}catch(e){return okLang(state.shul.defaultLang);}})();
 
 /* ---------- strings ---------- */
 var L={
@@ -100,6 +101,7 @@ Object.assign(L,{
   screen_addr:['כתובת המסך','Screen address'], screen_addr_d:['זו הכתובת לפתוח בדפדפן של מסך הטלוויזיה. היא לא מופיעה באתר הציבורי.','Open this address in the TV screen\'s browser. It is not shown on the public website.'],
   ov_slides_now:['שקופיות במסך עכשיו','Slides on the screen now'],
   rc_a:['האתר מוגן על ידי reCAPTCHA, וחלים עליו','This site is protected by reCAPTCHA and the Google'], rc_priv:['מדיניות הפרטיות','Privacy Policy'], rc_and:['ו','and'], rc_terms:['תנאי השירות של Google','Terms of Service'], rc_end:['.',' apply.'],
+  pv_restored:['השינויים שלא פורסמו חזרו מהתצוגה המקדימה. אפשר לפרסם או לבטל אותם.','Your unpublished edits are back from the preview. Publish or discard them.'],
   mg_brand:['ניהול האתר והמסך','Site & screen manager'], mg_sections:['מדורים','Sections'], mg_close:['סגירה','Close'],
   grp_times:['תפילות ושיעורים','Prayers & shiurim'], grp_board:['לוח המודעות','Notice board'], grp_comm:['קהילה','Community'], grp_shul:['בית הכנסת','The shul'], grp_team:['צוות','Team'],
   pub_none:['הכל מפורסם','Everything is published'], preview_short:['תצוגה מקדימה','Preview'], pub_dirty1:['שינוי אחד עוד לא פורסם','1 change not published yet'], pub_dirty:['{n} שינויים עוד לא פורסמו','{n} changes not published yet'],
@@ -148,6 +150,7 @@ function normalize(S){
     /* Item ids go into HTML ids and date fields into Date(): anything malformed is replaced so it can't break or inject into a page. */
     S[k]=S[k].filter(function(x){return x&&typeof x==='object';});
     S[k].forEach(function(x){if(typeof x.id!=='string'||!/^[\w-]{1,40}$/.test(x.id))x.id=uid(k.slice(0,2));['date','start','end','until'].forEach(function(f){if(x[f]!=null&&x[f]!==''&&!(typeof x[f]==='string'&&ISO_RE.test(x[f])))x[f]='';});});});
+  S.shul.defaultLang=okLang(S.shul.defaultLang);
   S.donate=Object.assign({},S.donate||{});
   S.urgent=Object.assign({on:false,textHe:'',textEn:'',until:''},S.urgent||{});
   S.display=Object.assign({lang:'he',slideSecs:12,shabbatMode:'still',zmanim:['alot','netz','shmaMGA','shma','tfilla','chatzot','minchaGedola','plag','shkia','tzeit'],showDonate:true,showQr:true,flyerFull:true,textSize:'normal',showZmanim:false,slYz:true,slMem:true,slSp:true,slHal:true,slHol:true,themes:true},S.display||{});
@@ -353,9 +356,15 @@ function render(){
   if(r==='manage'){var mh=document.querySelector('.mgh');if(mh)root.style.setProperty('--mgh-h',mh.offsetHeight+'px');}
 }
 function screenState(){return ui.previewDraft?normalize(clone(ui.previewData||draft)):state;}
-function loadPreview(){try{var pv=JSON.parse(sessionStorage.getItem(PV_KEY)||'null');if(pv&&pv.at&&Date.now()-pv.at<3*3600e3&&pv.d){ui.previewData=pv.d;ui.previewDraft=true;}else sessionStorage.removeItem(PV_KEY);}catch(e){}}
+function loadPreview(){try{var pv=JSON.parse(sessionStorage.getItem(PV_KEY)||'null');if(pv&&typeof pv.at==='number'&&Date.now()-pv.at<30*60e3&&pv.d&&typeof pv.d==='object'){ui.previewData=pv.d;ui.previewDraft=true;}else sessionStorage.removeItem(PV_KEY);}catch(e){}}
 /* Back on the admin page after a preview: take the unpublished edits back, merged onto anything published meanwhile. */
-function takeBackPreview(S,meta){var pv=null;try{pv=JSON.parse(sessionStorage.getItem(PV_KEY)||'null');sessionStorage.removeItem(PV_KEY);}catch(e){}if(!pv||!pv.d||!pv.at||Date.now()-pv.at>3*3600e3)return;try{var d=normalize(clone(pv.d));draft=pv.rev===meta.rev?d:merge3(normalize(clone(pv.b||S)),d,S);}catch(e){}}
+var PV_MAX=30*60e3,ID_RE=/^[\w-]{1,40}$/;
+function takeBackPreview(S,meta){var pv=null;try{pv=JSON.parse(sessionStorage.getItem(PV_KEY)||'null');sessionStorage.removeItem(PV_KEY);}catch(e){}
+  if(!pv||typeof pv.at!=='number'||Date.now()-pv.at>PV_MAX||!pv.d||typeof pv.d!=='object'||Array.isArray(pv.d))return;
+  try{var d=normalize(clone(pv.d));draft=pv.rev===meta.rev?d:merge3(normalize(clone(pv.b&&typeof pv.b==='object'?pv.b:S)),d,S);}catch(e){return;}
+  ui.fromSub={};var fs=pv.s&&typeof pv.s==='object'?pv.s:{};Object.keys(fs).forEach(function(k){var e=fs[k];if(ID_RE.test(k)&&e&&typeof e.sub==='string'&&ID_RE.test(e.sub)&&LISTS.indexOf(e.col)>=0)ui.fromSub[k]={col:e.col,sub:e.sub};});
+  (Array.isArray(pv.u)?pv.u:[]).forEach(function(f){if(typeof f==='string'&&ID_RE.test(f))ui.uploaded[f]=1;});
+  ui.restored=true;}
 function endPreview(){try{sessionStorage.removeItem(PV_KEY);}catch(e){}ui.previewDraft=false;ui.previewData=null;}
 
 function header(){
@@ -709,7 +718,7 @@ function mgHeader(){
   try{var di=dayInfo(jp().iso,S.shul),z=di&&di.zm,now=Date.now();if(z&&z.netz&&z.shkia&&now>z.netz&&now<z.shkia){var f=(now-z.netz)/(z.shkia-z.netz);sun='<i class="sun" style="inset-inline-start:'+(6+f*88).toFixed(1)+'%"></i>';}}catch(e){}
   return '<header class="mgh"><div class="mgh-in"><button class="mgh-brand" data-act="nav" data-to="" aria-label="'+esc(t('site_view'))+'"><b>'+esc(pick(S.shul,'name'))+'</b><span>'+esc(t('mg_brand'))+'</span></button>'+
     (on?'<button class="mgh-sec" data-act="mgnav" aria-expanded="'+(!!ui.navOpen)+'" aria-controls="mg-nav"><span>'+esc(t('tab_'+ui.tab))+'</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.5 6 8.5 10 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>':'')+
-    '<div class="mgh-tools"><div class="lang" role="group" aria-label="language"><button data-act="lang" data-lang="he" aria-pressed="'+(lang==='he')+'">עברית</button><button data-act="lang" data-lang="en" aria-pressed="'+(lang==='en')+'">English</button></div><button class="mgh-link" data-act="nav" data-to="">'+esc(t('site_view'))+'</button></div></div>'+
+    (on?'<span class="mgh-me" title="'+esc(t('signed_in_as',{email:FB.email}))+'" aria-label="'+esc(t('signed_in_as',{email:FB.email}))+'">'+esc((FB.email||'?').charAt(0).toUpperCase())+'</span>':'')+'<div class="mgh-tools"><div class="lang" role="group" aria-label="language"><button data-act="lang" data-lang="he" aria-pressed="'+(lang==='he')+'">עברית</button><button data-act="lang" data-lang="en" aria-pressed="'+(lang==='en')+'">English</button></div><button class="mgh-link" data-act="nav" data-to="">'+esc(t('site_view'))+'</button></div></div>'+
     '<div class="th-line" aria-hidden="true">'+sun+'</div></header>';
 }
 function mgNav(){
@@ -729,11 +738,11 @@ function renderManage(){
 }
 function saveBar(){
   var n=changeCount(),dirty=n>0||!FB.hasDoc;
-  return '<div class="savebar'+(dirty?' dirty':'')+'" id="savebar" data-sig="'+sbSig(n,dirty)+'"><div class="wrap"><span class="sb-state" role="status">'+esc(n?(n===1?t('pub_dirty1'):t('pub_dirty',{n:n})):t('pub_none'))+'</span><span class="sb-acts">'+
+  return '<div class="savebar'+(dirty?' dirty':'')+'" id="savebar" data-sig="'+esc(sbSig(n,dirty))+'"><div class="wrap"><span class="sb-state" role="status">'+esc(n?(n===1?t('pub_dirty1'):t('pub_dirty',{n:n})):t('pub_none'))+'</span><span class="sb-acts">'+
     (n?'<button class="btn sm ghost" data-act="discard">'+esc(t('discard'))+'</button>':'')+'<button class="btn sm ghost" data-act="preview" title="'+esc(t('preview_edits'))+'">'+esc(t('preview_short'))+'</button>'+
     '<button class="btn publish" data-act="publish" '+((!dirty||ui.publishing)?'disabled':'')+'>'+esc(ui.publishing?t('publishing'):t('publish'))+'</button></span></div></div>';
 }
-function sbSig(n,dirty){return [n,dirty?1:0,ui.publishing?1:0,lang].join('-');}
+function sbSig(n,dirty){return [n,dirty?1:0,ui.publishing?1:0,okLang(lang)].join('-');}
 /* Only redraw the bar when what it says changes: redrawing it on every keystroke or blur would swallow a click on its buttons. */
 function updateBar(){var b=document.getElementById('savebar');if(!b)return;var n=changeCount();if(b.dataset.sig===sbSig(n,n>0||!FB.hasDoc))return;b.outerHTML=saveBar();}
 function mgTitle(k,lead){return '<div class="mg-title"><div><h2>'+esc(t('tab_'+k))+'</h2>'+(lead?'<p>'+esc(lead)+'</p>':'')+'</div></div>';}
@@ -962,13 +971,14 @@ function publish(){
   }).then(function(){
     var now=fids(S);dropImages(prevFids.filter(function(f){return now.indexOf(f)<0;}));ui.uploaded={};
     FB.db.collection('log').add({by:FB.email,uid:FB.user.uid,at:firebase.firestore.FieldValue.serverTimestamp(),count:ch.reduce(function(a,c){return a+c[1];},0),sections:ch.map(function(c){return c[0];})}).catch(function(){});
-    toast(t('published'));clearMovedSubs(S);
+    toast(t('published'));clearMovedSubs(S);try{sessionStorage.removeItem(PV_KEY);}catch(e){}
   }).catch(function(err){
     var c=err&&err.code;
     toast(c==='conflict'||c==='aborted'?t('conflict'):(c==='permission-denied'?t('perm_denied'):t('save_failed')));
   }).then(function(){ui.publishing=false;updateBar();});
 }
 function discardDraft(){
+  try{sessionStorage.removeItem(PV_KEY);}catch(e){}
   var keep=fids(state);dropImages(Object.keys(ui.uploaded).filter(function(f){return keep.indexOf(f)<0;}));ui.uploaded={};
   draft=clone(base);
 }
@@ -1017,7 +1027,7 @@ function approveSub(x){
     return FB.db.collection('submissions').doc(x.id).delete();
   });
 }
-function clearMovedSubs(S){var m=ui.fromSub||{};Object.keys(m).forEach(function(itemId){var e=m[itemId];if((S[e.col]||[]).some(function(it){return it.id===itemId;})){FB.db.collection('submissions').doc(e.sub).delete().catch(function(){});delete m[itemId];}});}
+function clearMovedSubs(S){var m=ui.fromSub||{};Object.keys(m).forEach(function(itemId){var e=m[itemId];if(!pendById(e.sub)){delete m[itemId];return;}if((S[e.col]||[]).some(function(it){return it.id===itemId;})){FB.db.collection('submissions').doc(e.sub).delete().catch(function(){});delete m[itemId];}});}
 function submitItem(type,data,name,phone){
   if(!FB.db)return Promise.reject({code:'unavailable'});
   var once=function(){var ts=firebase.firestore.FieldValue.serverTimestamp(),b=FB.db.batch();
@@ -1060,7 +1070,7 @@ $app.addEventListener('click',function(e){
   if(act==='doclang'){var id=b.dataset.id,lg=b.dataset.lang,box=document.getElementById('doc-'+id);ui.docLang[id]=lg;if(box){[].forEach.call(box.querySelectorAll('[data-doclang]'),function(el){el.hidden=el.dataset.doclang!==lg;});[].forEach.call(box.querySelectorAll('[data-act=doclang]'),function(x){x.setAttribute('aria-pressed',String(x.dataset.lang===lg));});}return;}
   if(act==='go'){var s=document.getElementById(b.dataset.to);if(s)s.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});return;}
   if(act==='nav'){ui.previewDraft=false;if(b.dataset.to){location.hash=b.dataset.to;}else{history.replaceState(null,'',location.pathname+location.search);render();window.scrollTo(0,0);}return;}
-  if(act==='lang'){lang=b.dataset.lang;try{localStorage.setItem('shul-lang',lang);}catch(err){}render();return;}
+  if(act==='lang'){lang=okLang(b.dataset.lang);try{localStorage.setItem('shul-lang',lang);}catch(err){}render();return;}
   if(act==='zday'){var n=+b.dataset.n,today=jp().iso;ui.zDate=n===0?today:isoAdd(ui.zDate||today,n);var sec=document.getElementById('sec-zmanim');if(sec)sec.outerHTML=secZmanim(state,jp());return;}
   if(act==='copy'){e.preventDefault();var txt=b.dataset.text;var done=function(){var o=b.textContent;b.textContent=t('copied');setTimeout(function(){b.textContent=o;},1500);};try{navigator.clipboard.writeText(txt).then(done,function(){selectNear(b);});}catch(err){selectNear(b);}return;}
   if(act==='fs'){var de=document.documentElement;if(de.requestFullscreen)de.requestFullscreen().catch(function(){});b.hidden=true;keepAwake();return;}
@@ -1078,7 +1088,7 @@ $app.addEventListener('click',function(e){
   }
   if(act==='rmimg'){var o4=target(b.dataset.col,b.dataset.id);if(o4){o4[b.dataset.k]=null;refreshCard(b.dataset.col,b.dataset.id,true);updateBar();}return;}
   if(act==='publish'){publish();return;}
-  if(act==='preview'){try{sessionStorage.setItem(PV_KEY,JSON.stringify({at:Date.now(),d:draft,b:base,rev:ui.baseRev}));location.href=BASE+'v3/#display';}catch(e){ui.previewDraft=true;location.hash='display';}return;}
+  if(act==='preview'){try{sessionStorage.setItem(PV_KEY,JSON.stringify({at:Date.now(),d:draft,b:base,rev:ui.baseRev,s:ui.fromSub||{},u:Object.keys(ui.uploaded||{})}));location.href=BASE+'v3/#display';}catch(e){ui.previewDraft=true;location.hash='display';}return;}
   if(act==='signin'){signIn(false);return;}
   if(act==='switch'){signIn(true);return;}
   if(act==='signout'){if(FB.auth)FB.auth.signOut().then(function(){stopAdminData();return FB.db.terminate();}).then(function(){return FB.db.clearPersistence();}).catch(function(){}).then(function(){location.reload();});return;}
@@ -1094,6 +1104,7 @@ $app.addEventListener('submit',function(e){if(e.target&&e.target.id==='uadd'){e.
 $app.addEventListener('change',function(e){var el=e.target;if(!el||!el.dataset||!el.dataset.userrole)return;FB.db.collection('admins').doc(el.dataset.userrole).set({role:el.value==='owner'?'owner':'admin'},{merge:true}).then(function(){toast(t('user_updated'));}).catch(function(e2){toast(t('user_fail',{c:e2.code||'error'}));});});
 function selectNear(b){var c=b.parentNode&&b.parentNode.querySelector('code');if(!c)return;var r=document.createRange();r.selectNodeContents(c);var s=window.getSelection();s.removeAllRanges();s.addRange(r);}
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ui.navOpen){ui.navOpen=false;render();var m=document.querySelector('.mgh-sec');if(m)m.focus();}});
+window.addEventListener('pageshow',function(e){if(e.persisted&&route()==='manage'){try{sessionStorage.removeItem(PV_KEY);}catch(err){}}});
 window.addEventListener('hashchange',function(){
   /* The admin page runs without the offline copy, so member details never land in it: reload into it if this tab has one. */
   if(route()==='manage'&&FB.persist){location.reload();return;}
@@ -1131,7 +1142,8 @@ function fbInit(){
   FB.app=firebase.initializeApp(cfg);
   /* App Check (Google reCAPTCHA, invisible): proves requests come from the real site, so scripts can't spam the database. Watch-only until enforced.
      reCAPTCHA is loaded here and App Check is switched on only once it has loaded: if Google's script can't load (offline, a hotspot without data),
-     the database and sign-in carry on without it instead of waiting forever, and it tries again every minute. */
+     the database and sign-in carry on without it instead of waiting forever, and it tries again every minute.
+     When App Check is enforced for Firestore, start Firestore only after this has loaded (with a ~10 s fallback), or the first requests go out without a token. */
   (function ac(){
     if(window.SHUL_EMULATOR||!window.SHUL_APPCHECK_KEY||!firebase.appCheck)return;
     var sc=document.createElement('script');sc.src='https://www.google.com/recaptcha/enterprise.js';sc.async=true;
@@ -1147,7 +1159,7 @@ function fbInit(){
   FB.auth.getRedirectResult().catch(function(e){if(e&&e.code)toast(t('signin_failed',{c:e.code}));});
 }
 function loadSeed(){if(SEED)return Promise.resolve(SEED);return fetch(BASE+'seed/state.json',{cache:'no-cache'}).then(function(r){return r.json();}).catch(function(){return {};}).then(function(j){SEED=j||{};return SEED;});}
-function ready(){if(ui.ready)return;ui.ready=true;if(SKIN&&route()==='display')loadPreview();try{lang=localStorage.getItem('shul-lang')||state.shul.defaultLang||'he';}catch(e){lang=state.shul.defaultLang||'he';}render();jumpToHash();}
+function ready(){if(ui.ready)return;ui.ready=true;if(ui.restored)setTimeout(function(){toast(t('pv_restored'));},400);if(SKIN&&route()==='display')loadPreview();try{lang=okLang(localStorage.getItem('shul-lang')||state.shul.defaultLang);}catch(e){lang=okLang(state.shul.defaultLang);}render();jumpToHash();}
 function onState(snap){
   var d=snap.exists?snap.data():null;
   if(!d){loadSeed().then(function(sd){applyState(normalize(clone(sd)),{rev:0,by:'',at:null},false);});return;}

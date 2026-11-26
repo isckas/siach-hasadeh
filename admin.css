@@ -35,6 +35,7 @@ html.mg-mode .wrap{max-width:1200px;padding-inline:max(20px,env(safe-area-inset-
 .mgh-link:hover{border-color:#fff}
 .mgh :focus-visible{outline-color:var(--sun)}
 .mgh-sec{display:none}
+.mgh-me{display:none}
 .mgh .th-line{position:relative;height:5px;background:linear-gradient(to left,#1B2257 0%,#463C7C 12%,#D48C78 17%,#5A8BD3 25%,#3C70CB 45%,#557FCC 62%,#DDA352 68%,#C4625A 72%,#382A66 78%,#111943 90%)}
 [dir=ltr] .mgh .th-line{background:linear-gradient(to right,#1B2257 0%,#463C7C 12%,#D48C78 17%,#5A8BD3 25%,#3C70CB 45%,#557FCC 62%,#DDA352 68%,#C4625A 72%,#382A66 78%,#111943 90%)}
 .mgh .th-line .sun{position:absolute;bottom:-5px;width:14px;height:14px;border-radius:50%;background:#F6C35C;box-shadow:0 0 10px 3px rgba(246,195,92,.55);transform:translateX(50%)}
@@ -134,6 +135,8 @@ html.mg-mode .gbtn{min-height:48px;padding:0 20px;background:var(--n1);border-co
   .mgh-tools{gap:6px}
   .mgh .lang button{padding:.3em .6em}
   .mgh-link{display:none}
+  .mgh-me{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;font-weight:800;font-size:15px;flex-shrink:0;margin-inline-start:auto}
+  .mgh-me+.mgh-tools{margin-inline-start:0}
   html.mg-mode .mg{grid-template-columns:1fr;padding-block:18px 120px;gap:0}
   html.mg-mode .mg-tabs{display:none;position:fixed;inset:var(--mgh-h,64px) 0 0;z-index:31;overflow:auto;background:var(--block);padding:16px max(20px,env(safe-area-inset-left,0px)) 32px;gap:20px;align-content:start}
   html.mg-mode .mg-tabs.open{display:grid}

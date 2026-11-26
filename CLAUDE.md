@@ -17,11 +17,11 @@ These hold for every session that works on this repository.
 - Pushing to main on this repository is allowed. Don't re-trigger the copy workflow on the shul's account; it runs by itself every hour.
 - Publishing firestore.rules to Firebase changes security settings: ask for an explicit OK each time.
 
-## Security setup (Nov 2026)
-- App Check with reCAPTCHA (Fraud Defense) key 'Siach HaSadeh website' is registered and in watch-only mode. Enforce it for Firestore once the site and the TV show as verified in the App Check metrics. Before enforcing, start Firestore only after reCAPTCHA has loaded (with a ~10 s fallback), or the first requests go out without a token and are refused.
-- The browser API key is restricted to the shul's address, the personal GitHub address, and siach-hasadeh.firebaseapp.com / web.app. A new site address must be added there, to the reCAPTCHA key's domains and to Auth's authorized domains.
-- The site is hidden from search engines (noindex on every page; robots.txt keeps /docs/ out, since PDFs can't carry noindex) until the board decides otherwise.
+## Security setup
+- This file is served publicly with the site. Keep security configuration details (what is enforced, keys, restrictions) out of it; they live in the Firebase and Google Cloud consoles and in the session notes.
+- A new site address must be added to the browser key's website list, the reCAPTCHA key's domains and Auth's authorized domains.
 - The reCAPTCHA badge is hidden on v3, the TV and the admin page, which show Google's notice instead; v1 and v2 show the badge.
+- The site is kept out of search engines (noindex on every page; robots.txt keeps /docs/ out) until the board decides otherwise.
 
 ## Never
 - Type passwords, bank, card or account numbers into any field.
