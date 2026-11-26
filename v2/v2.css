@@ -496,3 +496,6 @@ html.tv-mode,html.tv-mode body{height:100%;overflow:hidden;background:var(--ston
 /* Hebrew + English screen: keep the English beside the Hebrew where a line is short */
 .t-foot .en,.t-dates .en,.t-c h3 .en,.t-a h3 .en,.t-give small .en,.t-num .en,.t-tz span .en{display:inline;margin-inline-start:.5em;font-size:.72em}
 .t-foot .tf-b>span{display:inline-flex;align-items:baseline;gap:.4em;flex-wrap:nowrap}
+
+/* reCAPTCHA (App Check) runs invisibly; its badge is hidden and the notice is shown on the send form instead, as Google allows. */
+.grecaptcha-badge{visibility:hidden!important}

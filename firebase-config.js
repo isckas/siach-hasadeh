@@ -11,3 +11,5 @@ window.SHUL_FIREBASE = {
 /* Built-in owners: can always sign in, edit, and manage the admin list.
    Keep in sync with isBuiltInOwner() in firestore.rules. */
 window.SHUL_OWNERS = ["isaac.kass@gmail.com"];
+/* Public reCAPTCHA site key for App Check (spam protection). Public by design, like the config above. */
+window.SHUL_APPCHECK_KEY = "6LebDDQuAAAAALSerKoVWRKgYuRjvYykb7GgsVNn";

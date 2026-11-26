@@ -436,3 +436,6 @@ html.tv-mode,html.tv-mode body{background:#000;overflow:hidden}
 [data-theme=atzmaut] .th-line{background:#fff}
 [data-theme=shoah] .th-line,[data-theme=zikaron] .th-line,[data-theme=fast] .th-line,[data-theme=yk] .th-line{background:rgba(255,255,255,.22)}
 [data-theme=shoah] .hd-stars,[data-theme=zikaron] .hd-stars{opacity:.35}
+
+/* reCAPTCHA (App Check) runs invisibly; its badge is hidden and the notice is shown on the send form instead, as Google allows. */
+.grecaptcha-badge{visibility:hidden!important}

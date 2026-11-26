@@ -21,8 +21,10 @@ service cloud.firestore {
       allow read: if true;
       allow write: if docId == 'state' && isAdmin()
         && request.resource.data.rev is int
-        // The public doc names the publisher by account id, not email. (Email is still accepted while older pages are cached.)
-        && (request.resource.data.updatedBy == request.auth.uid || request.resource.data.updatedBy == myEmail());
+        // Each publish moves the revision on by exactly one, so a stale copy can't overwrite newer content.
+        && (resource == null || request.resource.data.rev == resource.data.get('rev', 0) + 1)
+        // The public doc names the publisher by account id only; emails stay in the admin-only log.
+        && request.resource.data.updatedBy == request.auth.uid;
     }
     // Flyers are fetched one by one by id; only admins can list them (drafts and unused uploads stay private).
     match /images/{imageId} {
@@ -36,9 +38,15 @@ service cloud.firestore {
     }
     match /admins/{email} {
       allow read: if isAdmin();
-      allow create, update: if isOwner()
+      // "Added by" is always the owner who added them; it can't be set to someone else.
+      allow create: if isOwner()
         && email == email.lower()
-        && request.resource.data.role in ['admin', 'owner'];
+        && request.resource.data.role in ['admin', 'owner']
+        && request.resource.data.get('addedBy', '') == myEmail();
+      allow update: if isOwner()
+        && email == email.lower()
+        && request.resource.data.role in ['admin', 'owner']
+        && (request.resource.data.get('addedBy', '') == resource.data.get('addedBy', '') || request.resource.data.get('addedBy', '') == myEmail());
       allow delete: if isOwner() && email != myEmail();
     }
     // Member submissions (v3): anyone can send one in; only admins can see, approve or delete them.

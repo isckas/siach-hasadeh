@@ -41,6 +41,7 @@ var STR={
   f3_who_refuah:['שם לרפואה','Name for a refuah'], f3_who_refuah_ph:['למשל: יעקב בן שרה','e.g. Yaakov ben Sarah'], f3_until_opt:['עד תאריך (לא חובה)','Until (optional)'],
   f3_who_birthday:['של מי יום ההולדת','Whose birthday'], f3_who_birthday_ph:['למשל: שירה כהן','e.g. Shira Cohen'],
   f3_name:['השם שלך','Your name'], f3_phone:['הטלפון שלך','Your phone'],
+  f3_rc1:['הטופס מוגן על ידי reCAPTCHA של Google, וחלים','This form is protected by Google reCAPTCHA; the Google'], f3_rc_priv:['מדיניות הפרטיות','Privacy Policy'], f3_rc_and:['','and'], f3_rc_terms:['ותנאי השירות של Google','Terms of Service apply'],
   f3_privacy:['זה יופיע באתר ובמסך בית הכנסת אחרי אישור הגבאים. השם והטלפון שלך לא מוצגים; הם רק לגבאים.','This appears on the website and the shul screen once the gabbaim approve it. Your name and phone are not shown; they are for the gabbaim only.'],
   f3_submit:['שליחה לאישור','Send for approval'], f3_sending:['שולח…','Sending…'],
   f3_done_t:['תודה, קיבלנו','Thank you, we have it'], f3_done:['זה יופיע באתר ובמסך אחרי שהגבאים יאשרו.','It will appear on the website and the screen once the gabbaim approve it.'], f3_another:['שליחה נוספת','Send another'],
@@ -414,7 +415,7 @@ function dSend(){
   return '<form class="send" id="send" novalidate><fieldset class="types"><legend>'+E(T('v3_what'))+'</legend><div class="tchips">'+SEND_TYPES.map(function(k){return '<button type="button" data-v3="stype" data-type="'+k+'" aria-pressed="'+(k===ty)+'">'+E(T('typ_'+k))+'</button>';}).join('')+'</div></fieldset>'+f+
     '<div class="row2">'+fld('s-name',T('f3_name'),inp('s-name','text',v.name,'',' maxlength="80" autocomplete="name" required'),1)+fld('s-phone',T('f3_phone'),inp('s-phone','tel',v.phone,'',' maxlength="30" autocomplete="tel" dir="ltr" required'),1)+'</div>'+
     '<label class="hp" aria-hidden="true">Website <input id="s-web" name="website" tabindex="-1" autocomplete="off"></label>'+
-    '<p class="note">'+E(T('f3_privacy'))+'</p>'+(s.err?'<p class="err" role="alert">'+E(T(s.err))+'</p>':'')+
+    '<p class="note">'+E(T('f3_privacy'))+'</p><p class="fine rc">'+E(T('f3_rc1'))+' <a class="lnk sm" href="https://policies.google.com/privacy" target="_blank" rel="noopener">'+E(T('f3_rc_priv'))+'</a> '+E(T('f3_rc_and'))+' <a class="lnk sm" href="https://policies.google.com/terms" target="_blank" rel="noopener">'+E(T('f3_rc_terms'))+'</a>.</p>'+(s.err?'<p class="err" role="alert">'+E(T(s.err))+'</p>':'')+
     '<button type="submit" class="btn-sun wide"'+(s.busy?' disabled':'')+'>'+E(T(s.busy?'f3_sending':'f3_submit'))+'</button></form>';
 }
 function sendVals(){var f=document.getElementById('send');if(!f)return;var v=D.send.v;[].forEach.call(f.querySelectorAll('input,textarea,select'),function(el){if(!el.id||el.id==='s-web')return;var k=el.id.slice(2);v[k]=el.type==='checkbox'?el.checked:el.value;});}

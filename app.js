@@ -1092,7 +1092,10 @@ setInterval(function(){
 function fbInit(){
   var cfg=window.SHUL_FIREBASE;
   if(!window.firebase||!cfg||!cfg.apiKey){FB.checked=true;loadSeed().then(function(sd){state=normalize(clone(sd));base=clone(state);draft=clone(state);ready();});return;}
-  FB.app=firebase.initializeApp(cfg);FB.db=firebase.firestore();FB.auth=firebase.auth();
+  FB.app=firebase.initializeApp(cfg);
+  /* App Check (Google reCAPTCHA, invisible): proves requests come from the real site, so scripts can't spam the database. Watch-only until enforced in the Firebase console. */
+  if(!window.SHUL_EMULATOR&&window.SHUL_APPCHECK_KEY&&firebase.appCheck){try{firebase.appCheck().activate(new firebase.appCheck.ReCaptchaEnterpriseProvider(window.SHUL_APPCHECK_KEY),true);}catch(e){}}
+  FB.db=firebase.firestore();FB.auth=firebase.auth();
   if(window.SHUL_EMULATOR){FB.db.useEmulator(SHUL_EMULATOR.host,SHUL_EMULATOR.firestore);FB.auth.useEmulator('http://'+SHUL_EMULATOR.host+':'+SHUL_EMULATOR.auth,{disableWarnings:true});}
   else if(route()!=='manage'){FB.persist=true;FB.db.enablePersistence({synchronizeTabs:true}).catch(function(){FB.persist=false;});}
   FB.db.collection('site').doc('state').onSnapshot(onState,function(){loadSeed().then(function(sd){if(!ui.ready){state=normalize(clone(sd));base=clone(state);draft=clone(state);ready();}});});

@@ -7,11 +7,20 @@ These hold for every session that works on this repository.
 - The v3 layout is approved. Polish it; don't re-layout it without asking.
 - Leave the look of the v1 page (root) and /v2/ as they are. Fixes to the shared engine (app.js) are fine.
 
+## Priorities
+- Anything security-related is high priority and is done right away, in its own release if needed: rules, keys, settings, fixes for holes. Don't hold it for the next feature release.
+- Features and bug fixes wait for a release: batch them, test, security check, one push.
+
 ## Deploying
 - No small deploys. Work and test locally, then do one push of all the changes together.
 - Before that push, run a security check: an independent review of the code and the Firestore rules, the rules tests and the end-to-end test on the emulator. Don't publish anything with a known hole.
 - Pushing to main on this repository is allowed. Don't re-trigger the copy workflow on the shul's account; it runs by itself every hour.
 - Publishing firestore.rules to Firebase changes security settings: ask for an explicit OK each time.
+
+## Security setup (Nov 2026)
+- App Check with reCAPTCHA (Fraud Defense) key 'Siach HaSadeh website' is registered and in watch-only mode. Enforce it for Firestore once the site and the TV show as verified in the App Check metrics.
+- The browser API key is restricted to the shul's address, the personal GitHub address, and siach-hasadeh.firebaseapp.com / web.app. A new site address must be added there, to the reCAPTCHA key's domains and to Auth's authorized domains.
+- The site is hidden from search engines (noindex + robots.txt) until the board decides otherwise.
 
 ## Never
 - Type passwords, bank, card or account numbers into any field.
@@ -24,4 +33,4 @@ These hold for every session that works on this repository.
 - Holiday themes switch on at sunset the evening before. Chanukah's starts with the first candle.
 
 ## Backlog (v4)
-- Links to the shul's Facebook and Twitter.
+- The v4 list is in V4.md. Add agreed-but-later features there rather than building them now.

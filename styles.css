@@ -413,3 +413,6 @@ section[id^="sec-"]{scroll-margin-top:88px}
 .psub li{display:grid;grid-template-columns:7.5em 1fr;gap:8px;align-items:baseline}
 .psub li small{color:var(--muted,#667)}
 .mg-tabs .count.hot{background:var(--danger);color:#fff;border-radius:999px;padding:0 8px;min-width:22px;text-align:center;font-weight:700}
+
+/* reCAPTCHA (App Check) runs invisibly; its badge is hidden and the notice is shown on the send form instead, as Google allows. */
+.grecaptcha-badge{visibility:hidden!important}
