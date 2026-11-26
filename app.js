@@ -108,6 +108,8 @@ Object.assign(L,{
   f_byear:['שנה עברית (לא חובה)','Hebrew year (optional)'],
   pending_lead:['מה שמתפללים שלחו מהאתר. שום דבר לא מופיע באתר או במסך לפני שמאשרים.','What members sent in from the website. Nothing appears on the website or the screen until it is approved.'],
   pending_none:['אין כרגע שליחות שממתינות לאישור.','Nothing is waiting for approval.'],
+  pend_delall:['מחיקת כל {n} הממתינים','Delete all {n} waiting'], pend_delall2:['לחצו שוב למחיקת הכול','Click again to delete all'], pend_delall_done:['נמחקו {n} שליחות','Deleted {n} items'],
+  another_admin:['מנהל אחר','another admin'], framed:['אפשר לפתוח את דף הניהול רק ישירות, לא בתוך אתר אחר.','The admin page only opens directly, not inside another site.'],
   pend_approve:['אישור ופרסום','Approve and publish'], pend_edit:['עריכה לפני אישור','Edit first'], pend_reject:['דחייה','Reject'], pend_reject2:['לחצו שוב לדחייה','Click again to reject'],
   pend_from:['נשלח על ידי','Sent by'], pend_approved:['אושר ופורסם באתר ובמסך','Approved and published'], pend_rejected:['נדחה ונמחק','Rejected and deleted'],
   pend_moved:['הועבר לעריכה. בסיום לוחצים "שמירה ופרסום".','Moved into your edits. Press Save & publish when you are done.'], pend_fail:['הפעולה לא הצליחה ({c})','That didn\'t work ({c})'],
@@ -127,13 +129,17 @@ function both(k,vars){return esc(t(k,vars,'he'))+'<span class="en">'+esc(t(k,var
 function pick(o,b,lg){if(!o)return '';lg=lg||lang;var a=o[b+(lg==='he'?'He':'En')],c=o[b+(lg==='he'?'En':'He')];return (a&&String(a).trim())?a:(c||'');}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function clone(o){return JSON.parse(JSON.stringify(o));}
+var ISO_RE=/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
 function uid(p){return (p||'x')+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 function safeUrl(u){u=String(u||'').trim();return /^https?:\/\//i.test(u)?u:'';}
 
 function normalize(S){
   S.v=S.v||1;
   S.shul=Object.assign({nameHe:'שיח השדה',nameEn:'Siach HaSadeh',lat:31.7795,lng:35.3015,candleMins:30,havdalahMode:'tzeit',havdalahMins:40,defaultLang:'he'},S.shul||{});
-  ['times','notices','sponsors','mazal','refuah','yahrzeit','docs','simchas','memorial','birthdays'].forEach(function(k){if(!Array.isArray(S[k]))S[k]=[];});
+  ['times','notices','sponsors','mazal','refuah','yahrzeit','docs','simchas','memorial','birthdays'].forEach(function(k){if(!Array.isArray(S[k]))S[k]=[];
+    /* Item ids go into HTML ids and date fields into Date(): anything malformed is replaced so it can't break or inject into a page. */
+    S[k]=S[k].filter(function(x){return x&&typeof x==='object';});
+    S[k].forEach(function(x){if(typeof x.id!=='string'||!/^[\w-]{1,40}$/.test(x.id))x.id=uid(k.slice(0,2));['date','start','end','until'].forEach(function(f){if(x[f]!=null&&x[f]!==''&&!(typeof x[f]==='string'&&ISO_RE.test(x[f])))x[f]='';});});});
   S.donate=Object.assign({},S.donate||{});
   S.urgent=Object.assign({on:false,textHe:'',textEn:'',until:''},S.urgent||{});
   S.display=Object.assign({lang:'he',slideSecs:12,shabbatMode:'still',zmanim:['alot','netz','shmaMGA','shma','tfilla','chatzot','minchaGedola','plag','shkia','tzeit'],showDonate:true,showQr:true,flyerFull:true,textSize:'normal',showZmanim:false,slYz:true,slMem:true,slSp:true,slHal:true,slHol:true,themes:true},S.display||{});
@@ -272,7 +278,7 @@ function sponsorsFor(S,iso){var wk=weekInfo(iso,S.shul);return S.sponsors.filter
 var MAZAL_DAYS=14;
 function mazalEnd(m){return m.end||(m.start?isoAdd(m.start,MAZAL_DAYS):'');}
 function mazalFor(S,iso){return S.mazal.filter(function(m){var e=mazalEnd(m);return !m.hidden&&(!m.start||iso>=m.start)&&(!e||iso<=e);});}
-function simchasFor(S,iso,days){var last=days?isoAdd(iso,days):'';return S.simchas.filter(function(x){return !x.hidden&&x.date&&x.date>=iso&&(!last||x.date<=last);}).sort(function(a,b){return a.date<b.date?-1:1;});}
+function simchasFor(S,iso,days){var last=days?isoAdd(iso,days):'';return S.simchas.filter(function(x){return !x.hidden&&typeof x.date==='string'&&ISO_RE.test(x.date)&&x.date>=iso&&(!last||x.date<=last);}).sort(function(a,b){return a.date<b.date?-1:1;});}
 function shiurimOn(S,dow){return S.times.filter(function(e){return !e.hidden&&e.group==='shiur'&&(dow==null||(e.days||[]).indexOf(dow)>=0);});}
 function refuahFor(S,iso){return S.refuah.filter(function(r){return !r.hidden&&(!r.until||r.until>=iso);});}
 function yahrzeitIso(y,fromIso){
@@ -322,6 +328,7 @@ function render(){
   var r=route(),root=document.documentElement;
   clearTimeout(ui.slideTimer);ui.slideTimer=null;
   if(!ui.ready){root.classList.remove('tv-mode');$app.innerHTML=SKIN&&SKIN.loading?SKIN.loading(API):'<div class="loading">'+SPRIG+'<span>'+esc(t('loading'))+'</span></div>';return;}
+  if(r==='manage'&&window.top!==window.self){$app.innerHTML='<p class="empty">'+esc(t('framed'))+'</p>';return;}
   if(SKIN){
     if(r==='manage'){location.replace(BASE+'#manage');return;}
     root.classList.toggle('tv-mode',r==='display');
@@ -677,7 +684,7 @@ function fmtWhen(d){if(!d)return '';try{return new Intl.DateTimeFormat(lang==='h
 function metaPanel(){
   var m=FB.meta,lines='';
   if(!FB.hasDoc)return '<div class="banner"><span>'+esc(t('not_in_db'))+'</span></div>';
-  if(m.by)lines+='<p class="muted small">'+esc(t('last_saved',{who:m.by,when:fmtWhen(m.at)}))+'</p>';
+  if(m.by)lines+='<p class="muted small">'+esc(t('last_saved',{who:whoIs(m.by),when:fmtWhen(m.at)}))+'</p>';
   if(FB.log.length)lines+='<div class="panel"><h3>'+esc(t('recent'))+'</h3><ul class="list">'+FB.log.map(function(l){return '<li><span class="k">'+esc(l.by||'')+' · '+esc(fmtWhen(l.at))+'</span>'+esc(t('log_line',{n:l.count||0,what:(l.sections||[]).map(function(x){return t('tab_'+(x==='mazal'||x==='refuah'||x==='yahrzeit'||x==='simchas'||x==='birthdays'?'community':x==='display'?'screen':x))}).filter(function(v,i,a){return a.indexOf(v)===i;}).join(', ')}))+'</li>';}).join('')+'</ul></div>';
   return lines;
 }
@@ -778,7 +785,7 @@ var SCREEN_F=[{k:'lang',l:'f_dlang',type:'select',opts:[['he','dl_he'],['en','dl
 function fieldDir(k){return /He$/.test(k)?'rtl':(/En$/.test(k)||/(Link|Url|url|phone|Phone|email|whatsapp|lat|lng)$/.test(k)?'ltr':'auto');}
 function fields(col,id,obj,F){
   return F.filter(function(f){return !f.show||f.show(obj);}).map(function(f){
-    var k=f.k,lab=t(f.l||('f_'+k)),v=obj[k],a='data-col="'+col+'" data-id="'+esc(id)+'" data-k="'+k+'"',fid='f-'+col+'-'+(id||'x')+'-'+k,cls='f'+(f.full||f.type==='textarea'?' full':'');
+    var k=f.k,lab=t(f.l||('f_'+k)),v=obj[k],a='data-col="'+col+'" data-id="'+esc(id)+'" data-k="'+k+'"',fid='f-'+col+'-'+esc(id||'x')+'-'+k,cls='f'+(f.full||f.type==='textarea'?' full':'');
     switch(f.type){
       case 'textarea':return '<label class="'+cls+'"><span>'+esc(lab)+'</span><textarea id="'+fid+'"'+(f.tall?' class="tall"':'')+' dir="'+fieldDir(k)+'" '+a+'>'+esc(v||'')+'</textarea></label>';
       case 'select':return '<label class="'+cls+'"><span>'+esc(lab)+'</span><select id="'+fid+'" '+a+(f.re?' data-re="1"':'')+'>'+f.opts.map(function(o){return '<option value="'+esc(o[0])+'"'+(String(v)===String(o[0])?' selected':'')+'>'+esc(t(o[1]))+'</option>';}).join('')+'</select></label>';
@@ -897,7 +904,7 @@ function handleImage(el,obj,col,id,k){
   ui.busy[id]=1;refreshCard(col,id,true);
   encodeImage(f).then(function(r){
     var fid=uid('i');
-    return FB.db.collection('images').doc(fid).set({data:r.data,w:r.w,h:r.h,by:FB.email,at:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
+    return FB.db.collection('images').doc(fid).set({data:r.data,w:r.w,h:r.h,by:FB.user.uid,at:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
       IMGDATA[fid]=r.data;ui.uploaded[fid]=1;obj[k]={fid:fid,w:r.w,h:r.h};
     });
   }).catch(function(err){toast(err&&err.message==='toobig'?t('img_toobig'):t('img_fail'));})
@@ -916,12 +923,12 @@ function publish(){
     return tx.get(ref).then(function(snap){
       var cur=snap.exists?(snap.data().rev||0):0;
       if(cur!==baseRev){var e=new Error('conflict');e.code='conflict';throw e;}
-      var doc=clone(S);delete doc.updated;doc.rev=cur+1;doc.updatedBy=FB.email;doc.updatedAt=firebase.firestore.FieldValue.serverTimestamp();
+      var doc=clone(S);delete doc.updated;doc.rev=cur+1;doc.updatedBy=FB.user.uid;doc.updatedAt=firebase.firestore.FieldValue.serverTimestamp();
       tx.set(ref,doc);
     });
   }).then(function(){
     var now=fids(S);dropImages(prevFids.filter(function(f){return now.indexOf(f)<0;}));ui.uploaded={};
-    FB.db.collection('log').add({by:FB.email,at:firebase.firestore.FieldValue.serverTimestamp(),count:ch.reduce(function(a,c){return a+c[1];},0),sections:ch.map(function(c){return c[0];})}).catch(function(){});
+    FB.db.collection('log').add({by:FB.email,uid:FB.user.uid,at:firebase.firestore.FieldValue.serverTimestamp(),count:ch.reduce(function(a,c){return a+c[1];},0),sections:ch.map(function(c){return c[0];})}).catch(function(){});
     toast(t('published'));clearMovedSubs(S);
   }).catch(function(err){
     var c=err&&err.code;
@@ -957,30 +964,40 @@ function subLines(x){
 }
 function pendingTab(){
   var list=FB.pending;
-  return mgTitle('pending',t('pending_lead'))+(list.length?list.map(function(x){
+  return mgTitle('pending',t('pending_lead'))+(list.length>1?'<div class="ed-actions" style="justify-content:flex-start;margin-bottom:12px"><button class="btn sm danger" data-pdelall="1">'+esc(t('pend_delall',{n:list.length}))+'</button></div>':'')+(list.length?list.map(function(x){
     return '<div class="panel pend" id="pend-'+esc(x.id)+'"><div class="pend-h"><span class="pill">'+esc(t('typ_'+x.type))+'</span><span class="muted small">'+esc(fmtWhen(x.at))+'</span></div>'+subLines(x)+
       '<p class="muted small">'+esc(t('pend_from'))+': <b>'+esc(x.name)+'</b>'+(x.phone?' · <a href="tel:'+esc(x.phone.replace(/[^\d+]/g,''))+'" dir="ltr">'+esc(x.phone)+'</a>':'')+'</p>'+
       '<div class="ed-actions" style="justify-content:flex-start"><button class="btn primary sm" data-pact="approve" data-id="'+esc(x.id)+'">'+esc(t('pend_approve'))+'</button><button class="btn sm" data-pact="edit" data-id="'+esc(x.id)+'">'+esc(t('pend_edit'))+'</button><button class="btn sm danger" data-pact="reject" data-id="'+esc(x.id)+'">'+esc(t('pend_reject'))+'</button></div></div>';
   }).join(''):'<p class="empty">'+esc(t('pending_none'))+'</p>');
 }
+function whoIs(by){if(!by)return '';if(by.indexOf('@')>0)return by;if(FB.user&&by===FB.user.uid)return FB.email;var l=FB.log.filter(function(x){return x.uid===by;})[0];return l?l.by:t('another_admin');}
 function pendById(id){return FB.pending.filter(function(x){return x.id===id;})[0];}
 function approveSub(x){
   var cv=subToItem(x),ref=FB.db.collection('site').doc('state');
   return FB.db.runTransaction(function(tx){return tx.get(ref).then(function(snap){
     var d=snap.exists?snap.data():{},list=Array.isArray(d[cv.col])?d[cv.col].slice():[];list.unshift(cv.item);
-    var upd={};upd[cv.col]=list;upd.rev=(d.rev||0)+1;upd.updatedBy=FB.email;upd.updatedAt=firebase.firestore.FieldValue.serverTimestamp();
-    if(snap.exists)tx.update(ref,upd);else{var full=normalize(clone(draft));full[cv.col]=list;full.rev=upd.rev;full.updatedBy=FB.email;full.updatedAt=upd.updatedAt;tx.set(ref,full);}
+    var upd={};upd[cv.col]=list;upd.rev=(d.rev||0)+1;upd.updatedBy=FB.user.uid;upd.updatedAt=firebase.firestore.FieldValue.serverTimestamp();
+    if(snap.exists)tx.update(ref,upd);else{var full=normalize(clone(draft));full[cv.col]=list;full.rev=upd.rev;full.updatedBy=FB.user.uid;full.updatedAt=upd.updatedAt;tx.set(ref,full);}
   });}).then(function(){
-    FB.db.collection('log').add({by:FB.email,at:firebase.firestore.FieldValue.serverTimestamp(),count:1,sections:[cv.col]}).catch(function(){});
+    FB.db.collection('log').add({by:FB.email,uid:FB.user.uid,at:firebase.firestore.FieldValue.serverTimestamp(),count:1,sections:[cv.col]}).catch(function(){});
     return FB.db.collection('submissions').doc(x.id).delete();
   });
 }
 function clearMovedSubs(S){var m=ui.fromSub||{};Object.keys(m).forEach(function(itemId){var e=m[itemId];if((S[e.col]||[]).some(function(it){return it.id===itemId;})){FB.db.collection('submissions').doc(e.sub).delete().catch(function(){});delete m[itemId];}});}
 function submitItem(type,data,name,phone){
   if(!FB.db)return Promise.reject({code:'unavailable'});
-  return FB.db.collection('submissions').add({type:type,data:data,name:name,phone:phone,lang:lang,status:'pending',at:firebase.firestore.FieldValue.serverTimestamp()});
+  var once=function(){var ts=firebase.firestore.FieldValue.serverTimestamp(),b=FB.db.batch();
+    b.set(FB.db.collection('submissions').doc(),{type:type,data:data,name:name,phone:phone,lang:lang,status:'pending',at:ts});
+    b.set(FB.db.collection('meta').doc('throttle'),{last:ts});return b.commit();};
+  return once().catch(function(e){if(!e||e.code!=='permission-denied')throw e;return new Promise(function(r){setTimeout(r,21000);}).then(once);});
 }
 $app.addEventListener('click',function(e){
+  var da=e.target.closest('[data-pdelall]');
+  if(da&&FB.role){
+    if(ui.armed!==da){if(ui.armed)disarm();ui.armed=da;da.dataset.label=da.textContent;da.textContent=t('pend_delall2');da.classList.add('armed');da._t=setTimeout(disarm,3500);return;}
+    clearTimeout(da._t);ui.armed=null;da.disabled=true;var ids=FB.pending.map(function(x){return x.id;}),bt=FB.db.batch();ids.forEach(function(id){bt.delete(FB.db.collection('submissions').doc(id));});
+    bt.commit().then(function(){toast(t('pend_delall_done',{n:ids.length}));},function(err){da.disabled=false;toast(t('pend_fail',{c:(err&&err.code)||'error'}));});return;
+  }
   var b=e.target.closest('[data-pact]');if(!b||!FB.role)return;var act=b.dataset.pact,x=pendById(b.dataset.id);if(!x)return;
   if(act==='approve'){b.disabled=true;approveSub(x).then(function(){toast(t('pend_approved'));},function(err){b.disabled=false;toast(t('pend_fail',{c:(err&&err.code)||'error'}));});return;}
   if(act==='edit'){var cv=subToItem(x);draft[cv.col].unshift(cv.item);ui.open[cv.item.id]=1;ui.fromSub=ui.fromSub||{};ui.fromSub[cv.item.id]={col:cv.col,sub:x.id};ui.tab=SUB_TAB[cv.col]||'community';render();window.scrollTo(0,0);toast(t('pend_moved'));return;}
@@ -1029,7 +1046,7 @@ $app.addEventListener('click',function(e){
   if(act==='preview'){ui.previewDraft=true;location.hash='display';return;}
   if(act==='signin'){signIn(false);return;}
   if(act==='switch'){signIn(true);return;}
-  if(act==='signout'){if(FB.auth)FB.auth.signOut();return;}
+  if(act==='signout'){if(FB.auth)FB.auth.signOut().then(function(){stopAdminData();return FB.db.terminate();}).then(function(){return FB.db.clearPersistence();}).catch(function(){}).then(function(){location.reload();});return;}
   if(act==='rmuser'){
     if(ui.armed!==b){if(ui.armed)disarm();ui.armed=b;b.dataset.label=b.textContent;b.textContent=t('rm_user2');b.classList.add('armed');b._t=setTimeout(disarm,3500);return;}
     clearTimeout(b._t);ui.armed=null;var em=b.dataset.email;
@@ -1041,7 +1058,11 @@ function disarm(){var b=ui.armed;if(!b)return;b.textContent=b.dataset.label||b.t
 $app.addEventListener('submit',function(e){if(e.target&&e.target.id==='uadd'){e.preventDefault();addUser(document.getElementById('u-email').value,document.getElementById('u-role').value);}});
 $app.addEventListener('change',function(e){var el=e.target;if(!el||!el.dataset||!el.dataset.userrole)return;FB.db.collection('admins').doc(el.dataset.userrole).set({role:el.value==='owner'?'owner':'admin'},{merge:true}).then(function(){toast(t('user_updated'));}).catch(function(e2){toast(t('user_fail',{c:e2.code||'error'}));});});
 function selectNear(b){var c=b.parentNode&&b.parentNode.querySelector('code');if(!c)return;var r=document.createRange();r.selectNodeContents(c);var s=window.getSelection();s.removeAllRanges();s.addRange(r);}
-window.addEventListener('hashchange',function(){if(route()!=='display')ui.previewDraft=false;render();if(!jumpToHash())window.scrollTo(0,0);});
+window.addEventListener('hashchange',function(){
+  /* The admin page runs without the offline copy, so member details never land in it: reload into it if this tab has one. */
+  if(route()==='manage'&&FB.persist){location.reload();return;}
+  if(route()==='manage'&&FB.role)watchAdminData();else if(route()!=='manage'&&FB.watching){stopAdminData();}
+if(route()!=='display')ui.previewDraft=false;render();if(!jumpToHash())window.scrollTo(0,0);});
 document.addEventListener('toggle',function(e){var d=e.target;if(d&&d.classList&&d.classList.contains('doc'))ui.docOpen[d.id.slice(4)]=d.open;},true);
 function jumpToHash(){var h=(location.hash||'').slice(1);if(SKIN)return SKIN.jump?SKIN.jump(h):false;if(h!=='docs'&&h!=='minutes')return false;var el=document.getElementById('sec-docs');if(!el)return false;var first=el.querySelector('details.doc');if(first&&!first.open){first.open=true;}el.scrollIntoView({block:'start'});return true;}
 var GLOGO='<svg class="glogo" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>';
@@ -1073,7 +1094,7 @@ function fbInit(){
   if(!window.firebase||!cfg||!cfg.apiKey){FB.checked=true;loadSeed().then(function(sd){state=normalize(clone(sd));base=clone(state);draft=clone(state);ready();});return;}
   FB.app=firebase.initializeApp(cfg);FB.db=firebase.firestore();FB.auth=firebase.auth();
   if(window.SHUL_EMULATOR){FB.db.useEmulator(SHUL_EMULATOR.host,SHUL_EMULATOR.firestore);FB.auth.useEmulator('http://'+SHUL_EMULATOR.host+':'+SHUL_EMULATOR.auth,{disableWarnings:true});}
-  else FB.db.enablePersistence({synchronizeTabs:true}).catch(function(){});
+  else if(route()!=='manage'){FB.persist=true;FB.db.enablePersistence({synchronizeTabs:true}).catch(function(){FB.persist=false;});}
   FB.db.collection('site').doc('state').onSnapshot(onState,function(){loadSeed().then(function(sd){if(!ui.ready){state=normalize(clone(sd));base=clone(state);draft=clone(state);ready();}});});
   FB.auth.onAuthStateChanged(onUser);
   FB.auth.getRedirectResult().catch(function(e){if(e&&e.code)toast(t('signin_failed',{c:e.code}));});
@@ -1091,7 +1112,7 @@ function applyState(S,meta,hasDoc){
   var dirty=changeCount(base,draft)>0;
   state=S;FB.meta=meta;FB.hasDoc=hasDoc;
   if(!dirty){draft=clone(S);base=clone(S);ui.baseRev=meta.rev;}
-  else if(meta.rev!==ui.baseRev){draft=merge3(base,draft,S);base=clone(S);ui.baseRev=meta.rev;if(meta.by&&meta.by!==FB.email)setTimeout(function(){toast(t('merged',{who:meta.by}));},50);}
+  else if(meta.rev!==ui.baseRev){draft=merge3(base,draft,S);base=clone(S);ui.baseRev=meta.rev;if(meta.by&&meta.by!==FB.email&&!(FB.user&&meta.by===FB.user.uid))setTimeout(function(){toast(t('merged',{who:whoIs(meta.by)}));},50);}
   if(!ui.ready){ready();return;}
   var r=route();
   if(r==='manage'){if(document.getElementById('mg-body')){refreshPanel();updateBar();}else render();}
@@ -1099,19 +1120,21 @@ function applyState(S,meta,hasDoc){
   else render();
 }
 function onUser(user){
-  FB.subs.forEach(function(u){try{u();}catch(e){}});FB.subs=[];FB.admins=[];FB.log=[];FB.pending=[];
+  stopAdminData();
   FB.user=user||null;FB.email=user&&user.email?user.email.toLowerCase():'';FB.role='';FB.checked=false;
   if(!user){FB.checked=true;rerenderAuth();return;}
   var done=function(role){FB.role=role;FB.checked=true;if(role)watchAdminData();rerenderAuth();};
   if(OWNERS.indexOf(FB.email)>=0){done('owner');return;}
   FB.db.collection('admins').doc(FB.email).get().then(function(s){done(s.exists?(s.data().role==='owner'?'owner':'admin'):'');},function(){done('');});
 }
+function stopAdminData(){FB.subs.forEach(function(u){try{u();}catch(e){}});FB.subs=[];FB.admins=[];FB.log=[];FB.pending=[];FB.watching=false;}
 function watchAdminData(){
+  if(FB.watching||route()!=='manage')return;FB.watching=true;
   FB.subs.push(FB.db.collection('admins').onSnapshot(function(q){FB.admins=q.docs.map(function(d){var x=d.data();return {email:d.id,role:x.role||'admin',addedBy:x.addedBy||''};}).sort(function(a,b){return a.email<b.email?-1:1;});
     var me=FB.admins.filter(function(a){return a.email===FB.email;})[0];
     if(OWNERS.indexOf(FB.email)<0){var nr=me?(me.role==='owner'?'owner':'admin'):'';if(nr!==FB.role){FB.role=nr;rerenderAuth();return;}}
     if(route()==='manage'&&ui.tab==='users')refreshPanel();},function(e){if(e&&e.code==='permission-denied'&&OWNERS.indexOf(FB.email)<0){FB.role='';rerenderAuth();}}));
-  FB.subs.push(FB.db.collection('log').orderBy('at','desc').limit(8).onSnapshot(function(q){FB.log=q.docs.map(function(d){var x=d.data();return {by:x.by,at:x.at&&x.at.toDate?x.at.toDate():null,count:x.count,sections:x.sections};});
+  FB.subs.push(FB.db.collection('log').orderBy('at','desc').limit(8).onSnapshot(function(q){FB.log=q.docs.map(function(d){var x=d.data();return {by:x.by,uid:x.uid||'',at:x.at&&x.at.toDate?x.at.toDate():null,count:x.count,sections:x.sections};});
     if(route()==='manage'&&ui.tab==='overview')refreshPanel();},function(){}));
   FB.subs.push(FB.db.collection('submissions').orderBy('at','desc').limit(100).onSnapshot(function(q){FB.pending=q.docs.map(function(d){var x=d.data();return {id:d.id,type:x.type,data:x.data||{},name:x.name||'',phone:x.phone||'',lang:x.lang||'he',at:x.at&&x.at.toDate?x.at.toDate():null};});
     if(route()==='manage'){var c=document.querySelector('[data-tab="pending"] .count');if(c){c.textContent=FB.pending.length;c.classList.toggle('hot',FB.pending.length>0);}if(ui.tab==='pending'||ui.tab==='overview')refreshPanel();}},function(){}));

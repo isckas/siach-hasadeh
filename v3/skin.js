@@ -418,7 +418,7 @@ function dSend(){
     '<button type="submit" class="btn-sun wide"'+(s.busy?' disabled':'')+'>'+E(T(s.busy?'f3_sending':'f3_submit'))+'</button></form>';
 }
 function sendVals(){var f=document.getElementById('send');if(!f)return;var v=D.send.v;[].forEach.call(f.querySelectorAll('input,textarea,select'),function(el){if(!el.id||el.id==='s-web')return;var k=el.id.slice(2);v[k]=el.type==='checkbox'?el.checked:el.value;});}
-function hyearNum(s){s=String(s||'').trim();if(!s)return '';var n;if(/^\d+$/.test(s))n=+s;else{try{n=Hc().gematriyaStrToNum(s.replace(/[״"׳']/g,''));}catch(e){n=0;}}if(n&&n<1000)n+=5000;return n>=5000&&n<=6000?String(n):'';}
+function hyearNum(s){s=String(s||'').trim();if(!s)return '';var n;if(/^\d+$/.test(s))n=+s;else{try{n=Hc().gematriyaStrToNum(s.replace(/[״"׳']/g,''));}catch(e){n=0;}}if(n&&n<1000)n+=5000;return n>=5000&&n<6000?String(n):'';}
 function gregToH(){
   var g=document.getElementById('s-greg'),af=document.getElementById('s-after'),out=document.getElementById('s-greg-res'),H=Hc();if(!g||!g.value||!H)return;
   try{var hd=new H.HDate(A.civil(g.value));if(af&&af.checked)hd=hd.next();var m=hd.getMonth(),leap=H.HDate.isLeapYear(hd.getFullYear()),mv=m===12?(leap?'12L':'12'):String(m);
@@ -433,7 +433,7 @@ function doSend(){
   [].forEach.call(document.querySelectorAll('#send [aria-invalid]'),function(el){el.removeAttribute('aria-invalid');});
   miss.forEach(function(k){var el=document.getElementById('s-'+k);if(el)el.setAttribute('aria-invalid','true');});
   s.miss=miss;if(miss.length){s.err='f3_req';return refreshSend(miss[0]);}
-  if(String(v.phone).replace(/\D/g,'').length<9){s.err='f3_phone_bad';s.miss=['phone'];return refreshSend('phone');}
+  if(!/^[0-9+() -]{9,30}$/.test(String(v.phone).trim())||String(v.phone).replace(/\D/g,'').length<9){s.err='f3_phone_bad';s.miss=['phone'];return refreshSend('phone');}
   var last=0;try{last=+localStorage.getItem(SENT_KEY)||0;}catch(e){}
   if(Date.now()-last<60000){s.err='f3_wait';return refreshSend();}
   if(web&&web.value){s.done=true;return refreshSend();}

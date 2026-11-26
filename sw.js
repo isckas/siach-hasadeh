@@ -3,7 +3,7 @@
    - Each later load tries the network first (so updates arrive), and falls back
      to the saved copy when there is no connection or it is too slow.
    - Firestore keeps its own offline copy of the content, so it is not touched here. */
-var VERSION = 'shul-v11';
+var VERSION = 'shul-v12';
 var SHELL = [
   './',
   'index.html',
@@ -21,10 +21,12 @@ var SHELL = [
   'seed/flyer-2.jpg',
   'v2/',
   'v2/index.html',
+  'v2/base.js',
   'v2/skin.js',
   'v2/v2.css',
   'v3/',
   'v3/index.html',
+  'v3/base.js',
   'v3/art.js',
   'v3/skin.js',
   'v3/v3.css',

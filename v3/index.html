@@ -2,6 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://apis.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://www.sefaria.org; frame-src https://siach-hasadeh.firebaseapp.com https://accounts.google.com https://apis.google.com; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>בית הכנסת שיח השדה · Siach HaSadeh Synagogue</title>
 <meta name="description" content="בית כנסת שיח השדה, צמח השדה, מעלה אדומים: זמני תפילות, שיעורים, הודעות, הקהילה ותרומות. Siach HaSadeh Synagogue, Ma'ale Adumim: prayer times, shiurim, notices, community and donations.">
@@ -18,7 +19,7 @@
 <body>
 <div id="app"></div>
 <noscript><p style="padding:24px;font-family:sans-serif">האתר דורש JavaScript · This site needs JavaScript.</p></noscript>
-<script>window.SHUL_BASE='../';</script>
+<script src="base.js"></script>
 <script src="../vendor/hebcal-core-6.14.4.min.js"></script>
 <script src="../vendor/hebcal-leyning-10.1.0.min.js"></script>
 <script src="../vendor/qrcode-generator-1.4.4.js"></script>
