@@ -7,13 +7,9 @@ var G='#E6B65A',G2='#B88430';
 function svg(body,label){return '<svg class="emb" viewBox="0 0 200 200" role="img" aria-label="'+(label||'')+'">'+body+'</svg>';}
 
 var ART={
-  /* Rosh Hashana: shofar and pomegranate, white and gold */
+  /* Rosh Hashana: a curved ram's-horn shofar (open bell, growth ridges, darker mouthpiece) and a pomegranate */
   rh:svg(
-    '<path d="M22 154C52 136 90 108 124 66L156 38c7-5 18 3 13 11l-22 32c-30 40-74 72-116 90z" fill="'+G+'"/>'+
-    '<path d="M152 40l20 26" stroke="'+G2+'" stroke-width="6" stroke-linecap="round"/>'+
-    '<path d="M58 138l11 14M86 117l11 13M110 96l11 12" stroke="'+G2+'" stroke-width="3.5" stroke-linecap="round"/>'+
-    '<circle cx="132" cy="150" r="30" fill="#C2402F"/><path d="M121 121l4-11 7 8 7-8 4 11z" fill="#9C2C20"/>'+
-    '<ellipse cx="121" cy="142" rx="7" ry="11" fill="#fff" opacity=".2"/>','shofar'),
+    '<path d="M11.1 54.2 12.9 63.1 15.1 71.5 17.8 79.6 20.8 87.1 24.3 94.2 28.2 100.9 32.4 107 36.9 112.7 41.8 117.8 47 122.3 52.4 126.3 58.1 129.7 63.9 132.5 69.9 134.7 Q79.8 124.5 79.8 110.3 L79.8 110.3 76.7 108.2 73.6 105.8 70.8 103.1 68.1 100.1 65.5 96.7 63.2 92.9 61.1 88.9 59.1 84.4 57.4 79.6 55.9 74.4 54.7 68.8 53.8 62.9 53.2 56.5 52.9 49.8Z" fill="#F2D9A0"/><path d="M69.9 134.7 76 136.3 82.2 137.3 88.4 137.6 94.6 137.4 100.7 136.6 106.8 135.1 112.7 133.2 118.6 130.6 124.2 127.6 129.8 124 Q128.3 115.2 121.2 109.8 L121.2 109.8 116.4 111.9 111.7 113.5 107.2 114.6 102.8 115.2 98.5 115.4 94.4 115.1 90.5 114.4 86.8 113.4 83.2 112 79.8 110.3 Q79.8 124.5 69.9 134.7Z" fill="#E2B462"/><path d="M129.8 124 135.2 119.9 140.4 115.3 145.4 110.2 150.3 104.6 155 98.5 159.4 91.9 163.7 84.7 167.8 77.1 171.6 68.9 175.2 60.2 178.6 51 181.8 41.2 A4 4 0 0 1 174.2 38.8 L174.2 38.8 170.8 48.1 167 56.7 163.1 64.8 158.9 72.2 154.5 79 149.9 85.2 145.3 90.8 140.5 95.7 135.7 100.1 130.8 103.9 126 107.1 121.2 109.8 Q128.3 115.2 129.8 124Z" fill="#B98038"/><path d="M24.3 94.2Q43.8 93.5 57.4 79.6M47 122.3Q62 115.4 68.1 100.1M69.9 134.7Q79.8 124.5 79.8 110.3M100.7 136.6Q103.9 125.5 98.5 115.4M129.8 124Q128.3 115.2 121.2 109.8M150.3 104.6Q147.2 98.2 140.5 95.7" fill="none" stroke="#A06A26" stroke-width="3"/><path d="M172.6 69.4L162 64.3" stroke="#6E4A1C" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="32" cy="52" rx="23" ry="10.1" transform="rotate(174.1 32 52)" fill="#F7E6BE"/><ellipse cx="32.1" cy="53.2" rx="17" ry="6.3" transform="rotate(174.1 32.1 53.2)" fill="#5A3A14"/><circle cx="148" cy="154" r="21" fill="#C2402F"/><path d="M140 136l3-9 5 6 5-6 3 9z" fill="#9C2C20"/><ellipse cx="140" cy="148.8" rx="5" ry="8" fill="#fff" opacity=".2"/>','shofar and pomegranate'),
 
   /* Sukkot: the sukkah with schach, lulav and etrog */
   sukkot:svg(
