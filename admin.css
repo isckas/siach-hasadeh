@@ -147,3 +147,7 @@ html.mg-mode .gbtn{min-height:48px;padding:0 20px;background:var(--n1);border-co
   html.mg-mode .btn.publish{padding:0 16px}
 }
 @media (prefers-reduced-motion:reduce){.mgh-sec svg{transition:none}}
+
+/* Google's reCAPTCHA notice (the badge itself is hidden on this page) */
+.rc-note{font-size:12px;line-height:1.4;color:var(--mute);margin:8px 0 0}
+.rc-note a{color:inherit;text-decoration:underline;text-underline-offset:2px}

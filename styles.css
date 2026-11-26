@@ -414,5 +414,5 @@ section[id^="sec-"]{scroll-margin-top:88px}
 .psub li small{color:var(--muted,#667)}
 .mg-tabs .count.hot{background:var(--danger);color:#fff;border-radius:999px;padding:0 8px;min-width:22px;text-align:center;font-weight:700}
 
-/* reCAPTCHA (App Check) runs invisibly; its badge is hidden and the notice is shown on the send form instead, as Google allows. */
-.grecaptcha-badge{visibility:hidden!important}
+/* reCAPTCHA (App Check) runs invisibly. Its badge shows on this website; on the TV and the admin page it is hidden and the admin page shows Google's notice instead. */
+html.tv-mode .grecaptcha-badge,html.mg-mode .grecaptcha-badge{visibility:hidden!important}

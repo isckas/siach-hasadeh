@@ -22,7 +22,7 @@ service cloud.firestore {
       allow write: if docId == 'state' && isAdmin()
         && request.resource.data.rev is int
         // Each publish moves the revision on by exactly one, so a stale copy can't overwrite newer content.
-        && (resource == null || request.resource.data.rev == resource.data.get('rev', 0) + 1)
+        && (resource == null || !(resource.data.get('rev', 0) is number) || request.resource.data.rev == resource.data.get('rev', 0) + 1)
         // The public doc names the publisher by account id only; emails stay in the admin-only log.
         && request.resource.data.updatedBy == request.auth.uid;
     }

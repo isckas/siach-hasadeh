@@ -99,6 +99,7 @@ var L={
 Object.assign(L,{
   screen_addr:['כתובת המסך','Screen address'], screen_addr_d:['זו הכתובת לפתוח בדפדפן של מסך הטלוויזיה. היא לא מופיעה באתר הציבורי.','Open this address in the TV screen\'s browser. It is not shown on the public website.'],
   ov_slides_now:['שקופיות במסך עכשיו','Slides on the screen now'],
+  rc_a:['האתר מוגן על ידי reCAPTCHA, וחלים עליו','This site is protected by reCAPTCHA and the Google'], rc_priv:['מדיניות הפרטיות','Privacy Policy'], rc_and:['ו','and'], rc_terms:['תנאי השירות של Google','Terms of Service'], rc_end:['.',' apply.'],
   mg_brand:['ניהול האתר והמסך','Site & screen manager'], mg_sections:['מדורים','Sections'], mg_close:['סגירה','Close'],
   grp_times:['תפילות ושיעורים','Prayers & shiurim'], grp_board:['לוח המודעות','Notice board'], grp_comm:['קהילה','Community'], grp_shul:['בית הכנסת','The shul'], grp_team:['צוות','Team'],
   pub_none:['הכל מפורסם','Everything is published'], preview_short:['תצוגה מקדימה','Preview'], pub_dirty1:['שינוי אחד עוד לא פורסם','1 change not published yet'], pub_dirty:['{n} שינויים עוד לא פורסמו','{n} changes not published yet'],
@@ -715,13 +716,13 @@ function mgNav(){
   var pend=FB.pending.length,urg=draft.urgent&&draft.urgent.on;
   var btn=function(k){if(k==='users'&&!FB.role)return '';return '<button data-act="tab" data-tab="'+k+'" aria-current="'+(ui.tab===k)+'"><span>'+esc(t('tab_'+k))+'</span>'+(k==='pending'?'<span class="count'+(pend?' hot':'')+'">'+pend+'</span>':(k==='urgent'&&urg?'<span class="dot" title="'+esc(t('ov_urgent_on'))+'"></span>':''))+'</button>';};
   return '<nav class="mg-tabs'+(ui.navOpen?' open':'')+'" id="mg-nav" aria-label="'+esc(t('mg_sections'))+'">'+TAB_GROUPS.map(function(g){return '<div class="mg-grp">'+(g[0]?'<span class="mg-gh">'+esc(t(g[0]))+'</span>':'')+g[1].map(btn).join('')+'</div>';}).join('')+
-    '<div class="whoami"><span title="'+esc(FB.email)+'">'+esc(t('signed_in_as',{email:FB.email}))+'</span><button class="linkbtn" data-act="signout">'+esc(t('signout'))+'</button></div></nav>';
+    '<div class="whoami"><span title="'+esc(FB.email)+'">'+esc(t('signed_in_as',{email:FB.email}))+'</span><button class="linkbtn" data-act="signout">'+esc(t('signout'))+'</button><p class="rc-note">'+rcNote()+'</p></div></nav>';
 }
 function renderManage(){
   var body;
   if(!FB.app)body='<div class="panel gate"><h3>'+esc(t('signin_title'))+'</h3><p>'+esc(t('no_fb'))+'</p></div>';
   else if(!FB.checked)body='<p class="empty" style="padding:40px 0">'+esc(t('checking'))+'</p>';
-  else if(!FB.user)body='<div class="panel gate"><h3>'+esc(t('signin_title'))+'</h3><p>'+esc(t('signin_body'))+'</p><button class="btn primary gbtn" data-act="signin">'+GLOGO+esc(t('signin_btn'))+'</button></div>';
+  else if(!FB.user)body='<div class="panel gate"><h3>'+esc(t('signin_title'))+'</h3><p>'+esc(t('signin_body'))+'</p><button class="btn primary gbtn" data-act="signin">'+GLOGO+esc(t('signin_btn'))+'</button><p class="rc-note">'+rcNote()+'</p></div>';
   else if(!FB.role)body='<div class="panel gate"><h3>'+esc(t('not_admin_title'))+'</h3><p>'+esc(t('not_admin_body',{email:FB.email}))+'</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-act="switch">'+esc(t('other_account'))+'</button><button class="btn" data-act="signout">'+esc(t('signout'))+'</button></div></div>';
   else body='<div class="mg'+(ui.navOpen?' nav-open':'')+'">'+mgNav()+'<section class="mg-body" id="mg-body">'+tabBody()+'</section></div>'+saveBar();
   return mgHeader()+'<div class="wrap">'+body+'</div><div class="toast" aria-live="polite"><div id="toast" hidden></div></div>';
@@ -1002,6 +1003,7 @@ function pendingTab(){
       '<div class="ed-actions" style="justify-content:flex-start"><button class="btn primary sm" data-pact="approve" data-id="'+esc(x.id)+'">'+esc(t('pend_approve'))+'</button><button class="btn sm" data-pact="edit" data-id="'+esc(x.id)+'">'+esc(t('pend_edit'))+'</button><button class="btn sm danger" data-pact="reject" data-id="'+esc(x.id)+'">'+esc(t('pend_reject'))+'</button></div></div>';
   }).join(''):'<p class="empty">'+esc(t('pending_none'))+'</p>');
 }
+function rcNote(lg){var T2=function(k){return t(k,null,lg);};return esc(T2('rc_a'))+' <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">'+esc(T2('rc_priv'))+'</a> '+esc(T2('rc_and'))+(T2('rc_and')==='ו'?'':' ')+'<a href="https://policies.google.com/terms" target="_blank" rel="noopener">'+esc(T2('rc_terms'))+'</a>'+esc(T2('rc_end'));}
 function whoIs(by){if(!by)return '';if(by.indexOf('@')>0)return by;if(FB.user&&by===FB.user.uid)return FB.email;var l=FB.log.filter(function(x){return x.uid===by;})[0];return l?l.by:t('another_admin');}
 function pendById(id){return FB.pending.filter(function(x){return x.id===id;})[0];}
 function approveSub(x){
@@ -1127,8 +1129,16 @@ function fbInit(){
   var cfg=window.SHUL_FIREBASE;
   if(!window.firebase||!cfg||!cfg.apiKey){FB.checked=true;loadSeed().then(function(sd){state=normalize(clone(sd));base=clone(state);draft=clone(state);ready();});return;}
   FB.app=firebase.initializeApp(cfg);
-  /* App Check (Google reCAPTCHA, invisible): proves requests come from the real site, so scripts can't spam the database. Watch-only until enforced in the Firebase console. */
-  if(!window.SHUL_EMULATOR&&window.SHUL_APPCHECK_KEY&&firebase.appCheck){try{firebase.appCheck().activate(new firebase.appCheck.ReCaptchaEnterpriseProvider(window.SHUL_APPCHECK_KEY),true);}catch(e){}}
+  /* App Check (Google reCAPTCHA, invisible): proves requests come from the real site, so scripts can't spam the database. Watch-only until enforced.
+     reCAPTCHA is loaded here and App Check is switched on only once it has loaded: if Google's script can't load (offline, a hotspot without data),
+     the database and sign-in carry on without it instead of waiting forever, and it tries again every minute. */
+  (function ac(){
+    if(window.SHUL_EMULATOR||!window.SHUL_APPCHECK_KEY||!firebase.appCheck)return;
+    var sc=document.createElement('script');sc.src='https://www.google.com/recaptcha/enterprise.js';sc.async=true;
+    sc.onload=function(){if(window.grecaptcha&&grecaptcha.enterprise){try{firebase.appCheck().activate(new firebase.appCheck.ReCaptchaEnterpriseProvider(window.SHUL_APPCHECK_KEY),true);}catch(e){}}};
+    sc.onerror=function(){sc.remove();setTimeout(ac,60000);};
+    document.head.appendChild(sc);
+  })();
   FB.db=firebase.firestore();FB.auth=firebase.auth();
   if(window.SHUL_EMULATOR){FB.db.useEmulator(SHUL_EMULATOR.host,SHUL_EMULATOR.firestore);FB.auth.useEmulator('http://'+SHUL_EMULATOR.host+':'+SHUL_EMULATOR.auth,{disableWarnings:true});}
   else if(route()!=='manage'){FB.persist=true;FB.db.enablePersistence({synchronizeTabs:true}).catch(function(){FB.persist=false;});}
@@ -1204,7 +1214,7 @@ window.addEventListener('online',function(){
 if('serviceWorker' in navigator&&window.isSecureContext&&!window.SHUL_EMULATOR){window.addEventListener('load',function(){navigator.serviceWorker.register(BASE+'sw.js').catch(function(){});});}
 
 /* ---------- for a second design (v2/skin.js): read-only helpers over the same data ---------- */
-var API={
+var API={rcNote:rcNote,
   get state(){return state;},screenState:screenState,get lang(){return lang;},get ready(){return ui.ready;},get role(){return FB.role;},base:BASE,ui:ui,render:render,
   addStrings:function(o){for(var k in o)L[k]=o[k];},t:t,pick:pick,esc:esc,jp:jp,isoAdd:isoAdd,isoDow:isoDow,hm:hm,minsOf:minsOf,fmtShort:fmtShort,fmtDate:fmtDate,gregLong:gregLong,locale:locale,DOW:DOW,
   dayInfo:dayInfo,weekInfo:weekInfo,hebDate:hebDate,parshaText:parshaText,seasonal:seasonal,isShabbatNow:isShabbatNow,clockOk:clockOk,ZKEYS:ZKEYS,zText:zText,

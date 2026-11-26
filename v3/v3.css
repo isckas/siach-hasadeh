@@ -437,8 +437,13 @@ html.tv-mode,html.tv-mode body{background:#000;overflow:hidden}
 [data-theme=shoah] .th-line,[data-theme=zikaron] .th-line,[data-theme=fast] .th-line,[data-theme=yk] .th-line{background:rgba(255,255,255,.22)}
 [data-theme=shoah] .hd-stars,[data-theme=zikaron] .hd-stars{opacity:.35}
 
-/* reCAPTCHA (App Check) runs invisibly; its badge is hidden and the notice is shown on the send form instead, as Google allows. */
+/* reCAPTCHA (App Check) runs invisibly; its badge is hidden and Google's notice is shown in the footer bar and on the send form instead, as Google allows. */
 .grecaptcha-badge{visibility:hidden!important}
+.rc-note{font-size:12px;line-height:1.35;color:var(--ink2)}
+.rc-note a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.fine.rc{font-size:13px}
+.rc-m{display:none}
+@media (max-width:700px){.rc-m{display:block;margin:4px 16px 96px;text-align:center}}
 
 /* Preview of an admin's unpublished edits on the board (opened from the admin page) */
 .pv-bar{position:fixed;top:0;inset-inline:0;z-index:50;display:flex;align-items:center;justify-content:center;gap:16px;padding:8px 16px;background:#F2B94B;color:#2A1C00;font-family:'Assistant',system-ui,sans-serif;font-weight:800;font-size:16px}
