@@ -359,7 +359,10 @@ function screenState(){return ui.previewDraft?normalize(clone(ui.previewData||dr
 function loadPreview(){try{var pv=JSON.parse(sessionStorage.getItem(PV_KEY)||'null');if(pv&&typeof pv.at==='number'&&Date.now()-pv.at<30*60e3&&pv.d&&typeof pv.d==='object'){ui.previewData=pv.d;ui.previewDraft=true;}else sessionStorage.removeItem(PV_KEY);}catch(e){}}
 /* Back on the admin page after a preview: take the unpublished edits back, merged onto anything published meanwhile. */
 var PV_MAX=30*60e3,ID_RE=/^[\w-]{1,40}$/;
+/* Only when the admin came straight back from this site's board preview (its "Back to editing" button), not from any other page. */
+function fromOurPreview(){try{var r=new URL(document.referrer);return r.origin===location.origin&&r.pathname===location.pathname.replace(/[^/]*$/,'')+'v3/';}catch(e){return false;}}
 function takeBackPreview(S,meta){var pv=null;try{pv=JSON.parse(sessionStorage.getItem(PV_KEY)||'null');sessionStorage.removeItem(PV_KEY);}catch(e){}
+  if(!fromOurPreview())return;
   if(!pv||typeof pv.at!=='number'||Date.now()-pv.at>PV_MAX||!pv.d||typeof pv.d!=='object'||Array.isArray(pv.d))return;
   try{var d=normalize(clone(pv.d));draft=pv.rev===meta.rev?d:merge3(normalize(clone(pv.b&&typeof pv.b==='object'?pv.b:S)),d,S);}catch(e){return;}
   ui.fromSub={};var fs=pv.s&&typeof pv.s==='object'?pv.s:{};Object.keys(fs).forEach(function(k){var e=fs[k];if(ID_RE.test(k)&&e&&typeof e.sub==='string'&&ID_RE.test(e.sub)&&LISTS.indexOf(e.col)>=0)ui.fromSub[k]={col:e.col,sub:e.sub};});
