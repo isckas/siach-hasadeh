@@ -407,3 +407,8 @@ section[id^="sec-"]{scroll-margin-top:88px}
 .tv-clockbad svg{width:8vmin;height:8vmin;color:var(--tv-sage)}
 .tv-clockbad h1{font-family:var(--f-display);font-size:5vmin;color:var(--tv-ink)}
 .tv-clockbad p{font-size:2.6vmin;color:var(--tv-mute)}
+/* v3: Pending tab */
+.pend{display:grid;gap:8px}
+.pend-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.psub li{display:grid;grid-template-columns:7.5em 1fr;gap:8px;align-items:baseline}
+.psub li small{color:var(--muted,#667)}

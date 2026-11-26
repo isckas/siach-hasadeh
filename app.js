@@ -12,7 +12,7 @@ var base=clone(state);         /* the version the board member's draft was start
 var draft=clone(state);        /* the board member's unsaved edits */
 var ui={tab:'overview',open:{},docLang:{},docOpen:{},previewDraft:false,publishing:false,ready:false,baseRev:0,zDate:'',slide:0,slideTimer:null,lastMinute:-1,stillFlag:null,armed:null,busy:{},uploaded:{}};
 /* Firebase: database, Google sign-in, admin role */
-var FB={app:null,db:null,auth:null,user:null,email:'',role:'',checked:false,hasDoc:false,meta:{rev:0,by:'',at:null},admins:[],log:[],subs:[]};
+var FB={app:null,db:null,auth:null,user:null,email:'',role:'',checked:false,hasDoc:false,meta:{rev:0,by:'',at:null},admins:[],log:[],subs:[],pending:[]};
 var OWNERS=(window.SHUL_OWNERS||[]).map(function(e){return String(e).toLowerCase();});
 var lang=(function(){try{return localStorage.getItem('shul-lang')||state.shul.defaultLang||'he';}catch(e){return state.shul.defaultLang||'he';}})();
 
@@ -94,6 +94,29 @@ var L={
   last_saved:['נשמר לאחרונה ע״י {who}, {when}','Last saved by {who}, {when}'], recent:['שינויים אחרונים','Recent changes'], log_line:['{n} שינויים: {what}','{n} changes: {what}'], signed_in_as:['מחובר/ת כ־{email}','Signed in as {email}'],
   mazal_hint:['ברכות מזל טוב יורדות אוטומטית שבועיים אחרי תאריך הפרסום. אפשר לשנות את התאריך ידנית.','Mazal Tov notices come down automatically two weeks after the posted date. You can change the date by hand.']
 };
+/* v3 additions: memorial wall, birthdays, member submissions, screen switches */
+Object.assign(L,{
+  tab_pending:['ממתינים לאישור','Pending'], tab_memorial:['לוח הזיכרון','Memorial wall'],
+  sub_birthdays:['ימי הולדת','Birthdays'], birthdays_hint:['לפי התאריך העברי, ומוצגים מחדש כל שנה בשבוע של יום ההולדת.','By the Hebrew date; shown again every year in the week of the birthday.'],
+  add_birthday:['הוספת יום הולדת','Add a birthday'], add_memorial:['הוספת הנצחה','Add a dedication'],
+  memorial_hint:['הנצחות בתשלום, מוצגות במסך בלבד. מוסיפים אחרי שהמשפחה שילמה. התגיות "היום", "חודש הפטירה" ו"השנה הראשונה" מחושבות לבד מהתאריך.','Paid dedications, shown on the screen only. Add one once the family has paid. The "today", "month of passing" and "first year" labels are worked out from the date.'],
+  f_bb:['בן / בת','Ben / bat'], bb_ben:['בן','ben'], bb_bat:['בת','bat'],
+  f_parentHe:['שם האב או האם (עברית)','Parent\'s name (Hebrew)'], f_parentEn:['שם האב או האם (אנגלית)','Parent\'s name (English)'],
+  f_dedByHe:['הונצח על ידי (עברית)','Dedicated by (Hebrew)'], f_dedByEn:['הונצח על ידי (אנגלית)','Dedicated by (English)'],
+  f_lineHe:['שורה נוספת (לא חובה, עברית)','Extra line (optional, Hebrew)'], f_lineEn:['שורה נוספת (לא חובה, אנגלית)','Extra line (optional, English)'],
+  f_memStart:['מוצג מתאריך','Show from'], f_memEnd:['עד תאריך (ריק = קבוע)','Until (empty = permanent)'],
+  f_byear:['שנה עברית (לא חובה)','Hebrew year (optional)'],
+  pending_lead:['מה שמתפללים שלחו מהאתר. שום דבר לא מופיע באתר או במסך לפני שמאשרים.','What members sent in from the website. Nothing appears on the website or the screen until it is approved.'],
+  pending_none:['אין כרגע שליחות שממתינות לאישור.','Nothing is waiting for approval.'],
+  pend_approve:['אישור ופרסום','Approve and publish'], pend_edit:['עריכה לפני אישור','Edit first'], pend_reject:['דחייה','Reject'], pend_reject2:['לחצו שוב לדחייה','Click again to reject'],
+  pend_from:['נשלח על ידי','Sent by'], pend_approved:['אושר ופורסם באתר ובמסך','Approved and published'], pend_rejected:['נדחה ונמחק','Rejected and deleted'],
+  pend_moved:['הועבר לעריכה. בסיום לוחצים "פרסום".','Moved into your edits. Press Publish when you are done.'], pend_fail:['הפעולה לא הצליחה ({c})','That didn\'t work ({c})'],
+  ov_pending:['ממתינים לאישור','Waiting for approval'],
+  typ_mazal:['מזל טוב','Mazal tov'], typ_simcha:['שמחה','Simcha'], typ_yahrzeit:['יארצייט','Yahrzeit'], typ_refuah:['רפואה שלמה','Refuah shleimah'], typ_birthday:['יום הולדת','Birthday'],
+  pk_text:['נוסח','Message'], pk_start:['מתאריך','From'], pk_end:['עד תאריך','Until'], pk_date:['תאריך','Date'], pk_title:['מה','What'], pk_details:['שעה ומקום','Time and place'], pk_who:['שם','Name'], pk_hdate:['תאריך עברי','Hebrew date'], pk_rel:['קרבה','Relationship'], pk_until:['עד תאריך','Until'],
+  f_slYz:['שקופית "יארצייט השבוע"','"This week\'s yahrzeits" slide'], f_slMem:['שקופית "לוח הזיכרון"','"Memorial wall" slide'], f_slSp:['שקופית "השבוע בחסות"','"This week\'s sponsors" slide'], f_slHal:['שקופית "הלכה יומית"','"Halacha Yomit" slide'], f_slHol:['מסכי חגים, צומות וספירת העומר','Holiday, fast and Omer screens'], f_themes:['עיצוב חגים שמתחלף לבד (באתר ובמסך, גרסה 3)','Holiday themes that switch on by themselves (website and screen, version 3)'],
+  st_perm:['קבוע','Permanent']
+});
 var DOW={he:['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'],en:['Sun','Mon','Tue','Wed','Thu','Fri','Sat']};
 var HMONTHS=[['7','תשרי','Tishrei'],['8','חשוון','Cheshvan'],['9','כסלו','Kislev'],['10','טבת','Tevet'],['11','שבט','Shevat'],['12','אדר','Adar'],['12L','אדר א׳','Adar I'],['13','אדר ב׳','Adar II'],['1','ניסן','Nisan'],['2','אייר','Iyar'],['3','סיוון','Sivan'],['4','תמוז','Tamuz'],['5','אב','Av'],['6','אלול','Elul']];
 var ZKEYS=['alot','misheyakir','netz','shmaMGA','shma','tfillaMGA','tfilla','chatzot','minchaGedola','minchaKetana','plag','shkia','tzeit'];
@@ -110,10 +133,10 @@ function safeUrl(u){u=String(u||'').trim();return /^https?:\/\//i.test(u)?u:'';}
 function normalize(S){
   S.v=S.v||1;
   S.shul=Object.assign({nameHe:'שיח השדה',nameEn:'Siach HaSadeh',lat:31.7795,lng:35.3015,candleMins:30,havdalahMode:'tzeit',havdalahMins:40,defaultLang:'he'},S.shul||{});
-  ['times','notices','sponsors','mazal','refuah','yahrzeit','docs','simchas'].forEach(function(k){if(!Array.isArray(S[k]))S[k]=[];});
+  ['times','notices','sponsors','mazal','refuah','yahrzeit','docs','simchas','memorial','birthdays'].forEach(function(k){if(!Array.isArray(S[k]))S[k]=[];});
   S.donate=Object.assign({},S.donate||{});
   S.urgent=Object.assign({on:false,textHe:'',textEn:'',until:''},S.urgent||{});
-  S.display=Object.assign({lang:'he',slideSecs:12,shabbatMode:'still',zmanim:['alot','netz','shmaMGA','shma','tfilla','chatzot','minchaGedola','plag','shkia','tzeit'],showDonate:true,showQr:true,flyerFull:true,textSize:'normal',showZmanim:false},S.display||{});
+  S.display=Object.assign({lang:'he',slideSecs:12,shabbatMode:'still',zmanim:['alot','netz','shmaMGA','shma','tfilla','chatzot','minchaGedola','plag','shkia','tzeit'],showDonate:true,showQr:true,flyerFull:true,textSize:'normal',showZmanim:false,slYz:true,slMem:true,slSp:true,slHal:true,slHol:true,themes:true},S.display||{});
   return S;
 }
 
@@ -628,8 +651,8 @@ var wakeLock=null;
 function keepAwake(){try{if(navigator.wakeLock&&!wakeLock)navigator.wakeLock.request('screen').then(function(w){wakeLock=w;w.addEventListener('release',function(){wakeLock=null;});}).catch(function(){});}catch(e){}}
 
 /* ---------- board manager ---------- */
-var TABS=['overview','times','shiurim','notices','sponsors','community','docs','donate','urgent','shul','screen','users'];
-var LISTS=['times','notices','sponsors','mazal','refuah','yahrzeit','docs','simchas'],SECTS=['donate','urgent','shul','display'];
+var TABS=['overview','pending','times','shiurim','notices','sponsors','community','memorial','docs','donate','urgent','shul','screen','users'];
+var LISTS=['times','notices','sponsors','mazal','refuah','yahrzeit','docs','simchas','memorial','birthdays'],SECTS=['donate','urgent','shul','display'];
 function changes(B,D){B=B||base;D=D||draft;var out=[];
   LISTS.forEach(function(k){var a={},b={},n=0;B[k].forEach(function(x){a[x.id]=JSON.stringify(x);});D[k].forEach(function(x){b[x.id]=JSON.stringify(x);});Object.keys(b).forEach(function(id){if(a[id]!==b[id])n++;});Object.keys(a).forEach(function(id){if(!(id in b))n++;});if(n)out.push([k,n]);});
   SECTS.forEach(function(k){var o=B[k],d=D[k],n=0;Object.keys(Object.assign({},o,d)).forEach(function(f){if(JSON.stringify(o[f])!==JSON.stringify(d[f]))n++;});if(n)out.push([k,n]);});
@@ -653,7 +676,7 @@ function metaPanel(){
   var m=FB.meta,lines='';
   if(!FB.hasDoc)return '<div class="banner"><span>'+esc(t('not_in_db'))+'</span></div>';
   if(m.by)lines+='<p class="muted small">'+esc(t('last_saved',{who:m.by,when:fmtWhen(m.at)}))+'</p>';
-  if(FB.log.length)lines+='<div class="panel"><h3>'+esc(t('recent'))+'</h3><ul class="list">'+FB.log.map(function(l){return '<li><span class="k">'+esc(l.by||'')+' · '+esc(fmtWhen(l.at))+'</span>'+esc(t('log_line',{n:l.count||0,what:(l.sections||[]).map(function(x){return t('tab_'+(x==='mazal'||x==='refuah'||x==='yahrzeit'||x==='simchas'?'community':x==='display'?'screen':x))}).filter(function(v,i,a){return a.indexOf(v)===i;}).join(', ')}))+'</li>';}).join('')+'</ul></div>';
+  if(FB.log.length)lines+='<div class="panel"><h3>'+esc(t('recent'))+'</h3><ul class="list">'+FB.log.map(function(l){return '<li><span class="k">'+esc(l.by||'')+' · '+esc(fmtWhen(l.at))+'</span>'+esc(t('log_line',{n:l.count||0,what:(l.sections||[]).map(function(x){return t('tab_'+(x==='mazal'||x==='refuah'||x==='yahrzeit'||x==='simchas'||x==='birthdays'?'community':x==='display'?'screen':x))}).filter(function(v,i,a){return a.indexOf(v)===i;}).join(', ')}))+'</li>';}).join('')+'</ul></div>';
   return lines;
 }
 function renderManage(){
@@ -663,8 +686,8 @@ function renderManage(){
   else if(!FB.user)body='<div class="panel gate"><h3>'+esc(t('signin_title'))+'</h3><p>'+esc(t('signin_body'))+'</p><button class="btn primary gbtn" data-act="signin">'+GLOGO+esc(t('signin_btn'))+'</button></div>';
   else if(!FB.role)body='<div class="panel gate"><h3>'+esc(t('not_admin_title'))+'</h3><p>'+esc(t('not_admin_body',{email:FB.email}))+'</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-act="switch">'+esc(t('other_account'))+'</button><button class="btn" data-act="signout">'+esc(t('signout'))+'</button></div></div>';
   else{
-    var counts={times:draft.times.filter(function(e){return e.group!=='shiur';}).length,shiurim:draft.times.filter(function(e){return e.group==='shiur';}).length,notices:draft.notices.length,sponsors:draft.sponsors.length,community:draft.mazal.length+draft.refuah.length+draft.yahrzeit.length+draft.simchas.length};
-    body='<div class="mg"><nav class="mg-tabs" aria-label="manager">'+TABS.map(function(k){return '<button data-act="tab" data-tab="'+k+'" aria-current="'+(ui.tab===k)+'"><span>'+esc(t('tab_'+k))+'</span>'+(counts[k]!=null?'<span class="count">'+counts[k]+'</span>':(k==='urgent'&&draft.urgent.on?'<span class="count" style="color:var(--danger)">●</span>':''))+'</button>';}).join('')+'<div class="whoami"><span title="'+esc(FB.email)+'">'+esc(t('signed_in_as',{email:FB.email}))+'</span><button class="linkbtn" data-act="signout">'+esc(t('signout'))+'</button></div></nav>'+
+    var counts={times:draft.times.filter(function(e){return e.group!=='shiur';}).length,shiurim:draft.times.filter(function(e){return e.group==='shiur';}).length,notices:draft.notices.length,sponsors:draft.sponsors.length,community:draft.mazal.length+draft.refuah.length+draft.yahrzeit.length+draft.simchas.length+draft.birthdays.length,memorial:draft.memorial.length,pending:FB.pending.length};
+    body='<div class="mg"><nav class="mg-tabs" aria-label="manager">'+TABS.map(function(k){return '<button data-act="tab" data-tab="'+k+'" aria-current="'+(ui.tab===k)+'"><span>'+esc(t('tab_'+k))+'</span>'+(counts[k]!=null?'<span class="count"'+(k==='pending'&&counts[k]?' style="background:var(--danger);color:#fff"':'')+'>'+counts[k]+'</span>':(k==='urgent'&&draft.urgent.on?'<span class="count" style="color:var(--danger)">●</span>':''))+'</button>';}).join('')+'<div class="whoami"><span title="'+esc(FB.email)+'">'+esc(t('signed_in_as',{email:FB.email}))+'</span><button class="linkbtn" data-act="signout">'+esc(t('signout'))+'</button></div></nav>'+
       '<section class="mg-body" id="mg-body">'+tabBody()+'</section></div>'+saveBar();
   }
   return header()+'<div class="wrap">'+body+'</div><div class="toast" aria-live="polite"><div id="toast" hidden></div></div>';
@@ -685,7 +708,9 @@ function tabBody(){
     case 'shiurim':return mgTitle('shiurim',t('shiurim_hint'))+listEditor('times',D.times.filter(function(e){return e.group==='shiur';}),TIME_F,sumTime,'add_shiur','shiur');
     case 'notices':return mgTitle('notices',t('img_hint'))+listEditor('notices',D.notices,NOTICE_F,sumNotice,'add_notice');
     case 'sponsors':return mgTitle('sponsors')+listEditor('sponsors',D.sponsors,SPONSOR_F,sumSponsor,'add_sponsor');
-    case 'community':return mgTitle('community')+'<div class="subhead">'+esc(t('sub_mazal'))+'</div><p class="muted small">'+esc(t('mazal_hint'))+'</p>'+listEditor('mazal',D.mazal,MAZAL_F,sumMazal,'add_mazal')+'<div class="subhead">'+esc(t('sub_yahrzeit'))+'</div><p class="muted small">'+esc(t('yahrzeit_hint'))+'</p>'+listEditor('yahrzeit',D.yahrzeit,YZ_F,sumYz,'add_yahrzeit')+'<div class="subhead">'+esc(t('sub_refuah'))+'</div>'+listEditor('refuah',D.refuah,REFUAH_F,sumRefuah,'add_refuah')+'<div class="subhead">'+esc(t('sub_simchas'))+'</div><p class="muted small">'+esc(t('simchas_hint'))+'</p>'+listEditor('simchas',D.simchas,SIMCHA_F,sumSimcha,'add_simcha');
+    case 'community':return mgTitle('community')+'<div class="subhead">'+esc(t('sub_mazal'))+'</div><p class="muted small">'+esc(t('mazal_hint'))+'</p>'+listEditor('mazal',D.mazal,MAZAL_F,sumMazal,'add_mazal')+'<div class="subhead">'+esc(t('sub_yahrzeit'))+'</div><p class="muted small">'+esc(t('yahrzeit_hint'))+'</p>'+listEditor('yahrzeit',D.yahrzeit,YZ_F,sumYz,'add_yahrzeit')+'<div class="subhead">'+esc(t('sub_birthdays'))+'</div><p class="muted small">'+esc(t('birthdays_hint'))+'</p>'+listEditor('birthdays',D.birthdays,BDAY_F,sumBday,'add_birthday')+'<div class="subhead">'+esc(t('sub_refuah'))+'</div>'+listEditor('refuah',D.refuah,REFUAH_F,sumRefuah,'add_refuah')+'<div class="subhead">'+esc(t('sub_simchas'))+'</div><p class="muted small">'+esc(t('simchas_hint'))+'</p>'+listEditor('simchas',D.simchas,SIMCHA_F,sumSimcha,'add_simcha');
+    case 'pending':return pendingTab();
+    case 'memorial':return mgTitle('memorial',t('memorial_hint'))+listEditor('memorial',D.memorial,MEM_F,sumMem,'add_memorial');
     case 'donate':return mgTitle('donate',t('donate_hint'))+'<div class="panel"><div class="ed-body" style="padding:0">'+fields('donate','',D.donate,DONATE_F)+'</div></div>';
     case 'urgent':return mgTitle('urgent',t('urgent_hint'))+'<div class="panel"><div class="ed-body" style="padding:0">'+fields('urgent','',D.urgent,URGENT_F)+'</div></div>';
     case 'shul':return mgTitle('shul',t('shul_hint'))+'<div class="panel"><div class="ed-body" style="padding:0">'+fields('shul','',D.shul,SHUL_F)+'</div></div>';
@@ -701,7 +726,7 @@ function overview(){
   var wkEnd=isoAdd(iso,6),exp=0;['notices','sponsors','mazal'].forEach(function(k){D[k].forEach(function(x){var e=k==='mazal'?mazalEnd(x):x.end;if(e&&e>=iso&&e<=wkEnd)exp++;});});
   var url=siteUrl(D);
   return mgTitle('overview',t('m_lead'))+metaPanel()+
-    '<div class="stat"><div><b class="tn">'+slides+'</b><span>'+esc(t('ov_screen'))+' · '+esc(t('ov_slides'))+'</span></div><div><b class="tn">'+act+'</b><span>'+esc(t('ov_notices'))+'</span></div><div><b class="tn">'+exp+'</b><span>'+esc(t('ov_expiring'))+'</span></div></div>'+
+    '<div class="stat"><div><b class="tn"'+(FB.pending.length?' style="color:var(--danger)"':'')+'>'+FB.pending.length+'</b><span>'+esc(t('ov_pending'))+'</span></div><div><b class="tn">'+slides+'</b><span>'+esc(t('ov_screen'))+' · '+esc(t('ov_slides'))+'</span></div><div><b class="tn">'+act+'</b><span>'+esc(t('ov_notices'))+'</span></div><div><b class="tn">'+exp+'</b><span>'+esc(t('ov_expiring'))+'</span></div></div>'+
     '<div class="panel"><h3>'+esc(t('ov_quick'))+'</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="quick" data-col="notices">+ '+esc(t('add_notice'))+'</button><button class="btn" data-act="quick" data-col="sponsors">+ '+esc(t('add_sponsor'))+'</button><button class="btn" data-act="quick" data-col="mazal">+ '+esc(t('add_mazal'))+'</button><button class="btn" data-act="quick" data-col="simchas">+ '+esc(t('add_simcha'))+'</button><button class="btn" data-act="quick" data-col="times" data-group="shiur">+ '+esc(t('add_shiur'))+'</button><button class="btn" data-act="tab" data-tab="urgent">'+esc(t('tab_urgent'))+'</button><button class="btn" data-act="clean">'+esc(t('ov_clean'))+'</button></div></div>'+
     '<div class="panel"><h3>'+esc(t('ov_setup'))+'</h3><p style="margin-bottom:10px">'+esc(t('screen_hint'))+'</p>'+(url?copyRow(url+'#display'):'<p class="muted small">'+esc(t('ov_link_missing'))+'</p>')+'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn" data-act="nav" data-to="display">'+esc(t('open_screen'))+'</button><button class="btn" data-act="preview">'+esc(t('preview_edits'))+'</button></div></div>';
 }
@@ -741,10 +766,12 @@ var MAZAL_F=[{k:'textHe',type:'textarea'},{k:'textEn',type:'textarea'},{k:'start
 var SIMCHA_F=[{k:'date',type:'date'},{k:'titleHe',type:'text'},{k:'titleEn',type:'text'},{k:'detailsHe',type:'text'},{k:'detailsEn',type:'text'},{k:'hidden',type:'check',full:1}];
 var REFUAH_F=[{k:'name',type:'text'},{k:'until',type:'date'},{k:'hidden',type:'check',full:1}];
 var YZ_F=[{k:'nameHe',type:'text'},{k:'nameEn',type:'text'},{k:'hday',type:'number'},{k:'hmonth',type:'hmonth'},{k:'hyear',type:'number'},{k:'relHe',l:'f_relHe',type:'text'},{k:'relEn',l:'f_relEn',type:'text'},{k:'hidden',type:'check',full:1}];
+var MEM_F=[{k:'nameHe',type:'text'},{k:'bb',l:'f_bb',type:'select',opts:[['ben','bb_ben'],['bat','bb_bat']],re:1},{k:'parentHe',l:'f_parentHe',type:'text'},{k:'nameEn',type:'text'},{k:'parentEn',l:'f_parentEn',type:'text'},{k:'hday',type:'number'},{k:'hmonth',type:'hmonth'},{k:'hyear',type:'number'},{k:'byHe',l:'f_dedByHe',type:'text'},{k:'byEn',l:'f_dedByEn',type:'text'},{k:'lineHe',l:'f_lineHe',type:'text'},{k:'lineEn',l:'f_lineEn',type:'text'},{k:'start',l:'f_memStart',type:'date'},{k:'end',l:'f_memEnd',type:'date'},{k:'hidden',type:'check',full:1}];
+var BDAY_F=[{k:'name',type:'text'},{k:'hday',type:'number'},{k:'hmonth',type:'hmonth'},{k:'hidden',type:'check',full:1}];
 var DONATE_F=[{k:'leadHe',type:'textarea'},{k:'leadEn',type:'textarea'},{k:'bitPhone',type:'tel'},{k:'bitLink',type:'url'},{k:'payboxPhone',type:'tel'},{k:'payboxLink',type:'url'},{k:'otherLink',type:'url'},{k:'otherLabelHe',type:'text'},{k:'otherLabelEn',type:'text'},{k:'bankHe',type:'textarea'},{k:'bankEn',type:'textarea'},{k:'noteHe',l:'f_dnoteHe',type:'text'},{k:'noteEn',l:'f_dnoteEn',type:'text'},{k:'tzTitleHe',type:'text'},{k:'tzTitleEn',type:'text'},{k:'tzTextHe',type:'text'},{k:'tzTextEn',type:'text'},{k:'tzLink',type:'url',full:1}];
 var URGENT_F=[{k:'on',type:'check',full:1},{k:'textHe',type:'textarea'},{k:'textEn',type:'textarea'},{k:'until',type:'date'}];
 var SHUL_F=[{k:'nameHe',l:'f_shulName',type:'text'},{k:'nameEn',type:'text'},{k:'taglineHe',type:'text'},{k:'taglineEn',type:'text'},{k:'addressHe',type:'text'},{k:'addressEn',type:'text'},{k:'directionsHe',type:'text'},{k:'directionsEn',type:'text'},{k:'aboutHe',type:'textarea'},{k:'aboutEn',type:'textarea'},{k:'rabbiHe',type:'text'},{k:'rabbiEn',type:'text'},{k:'gabbaiHe',type:'text'},{k:'gabbaiEn',type:'text'},{k:'nusachHe',type:'text'},{k:'nusachEn',type:'text'},{k:'phone',type:'tel'},{k:'email',type:'email'},{k:'whatsapp',type:'url'},{k:'siteUrl',type:'url',full:1},{k:'candleMins',type:'number'},{k:'havdalahMode',type:'select',opts:[['tzeit','hv_tzeit'],['mins','hv_mins']],re:1},{k:'havdalahMins',type:'number',show:function(x){return x.havdalahMode==='mins';}},{k:'defaultLang',type:'select',opts:[['he','dl_he'],['en','dl_en']]},{k:'lat',type:'number'},{k:'lng',type:'number'}];
-var SCREEN_F=[{k:'lang',l:'f_dlang',type:'select',opts:[['he','dl_he'],['en','dl_en'],['both','dl_both']]},{k:'textSize',type:'select',opts:[['normal','ts_normal'],['large','ts_large'],['xl','ts_xl']]},{k:'slideSecs',type:'number'},{k:'shabbatMode',type:'select',opts:[['still','sm_still'],['normal','sm_normal']],full:1},{k:'showZmanim',type:'check',full:1},{k:'zmanim',type:'zm',full:1},{k:'showDonate',type:'check'},{k:'showQr',type:'check'},{k:'flyerFull',type:'check',full:1}];
+var SCREEN_F=[{k:'lang',l:'f_dlang',type:'select',opts:[['he','dl_he'],['en','dl_en'],['both','dl_both']]},{k:'textSize',type:'select',opts:[['normal','ts_normal'],['large','ts_large'],['xl','ts_xl']]},{k:'slideSecs',type:'number'},{k:'shabbatMode',type:'select',opts:[['still','sm_still'],['normal','sm_normal']],full:1},{k:'showZmanim',type:'check',full:1},{k:'zmanim',type:'zm',full:1},{k:'showDonate',type:'check'},{k:'showQr',type:'check'},{k:'flyerFull',type:'check',full:1},{k:'slYz',type:'check'},{k:'slMem',type:'check'},{k:'slSp',type:'check'},{k:'slHal',type:'check'},{k:'slHol',type:'check',full:1},{k:'themes',type:'check',full:1}];
 
 function fieldDir(k){return /He$/.test(k)?'rtl':(/En$/.test(k)||/(Link|Url|url|phone|Phone|email|whatsapp|lat|lng)$/.test(k)?'ltr':'auto');}
 function fields(col,id,obj,F){
@@ -782,6 +809,10 @@ function sumSimcha(x,iso){return {title:pick(x,'title'),sub:(x.date?fmtDate(x.da
 function sumRefuah(x,iso){return {title:x.name,sub:x.until?t('until',{d:fmtShort(x.until)}):'',st:status({hidden:x.hidden,until:x.until},iso)};}
 function sumYz(x,iso){var m=HMONTHS.filter(function(h){return h[0]===String(x.hmonth);})[0];var r=yahrzeitIso(x,iso);return {title:pick(x,'name'),sub:(x.hday||'')+' '+(m?(lang==='he'?m[1]:m[2]):''),st:x.hidden?['off','st_hidden']:(r?['warn','this_week']:null)};}
 
+function hmName(v){var m=HMONTHS.filter(function(h){return h[0]===String(v);})[0];return m?(lang==='he'?m[1]:m[2]):'';}
+function memName(x,lg){lg=lg||lang;var he=lg==='he'||!x.nameEn,n=he?(x.nameHe||x.nameEn):x.nameEn,p=he?(x.parentHe||x.parentEn):(x.parentEn||x.parentHe),bb=x.bb==='bat'?(he?'בת':'bat'):(he?'בן':'ben');return (n||'')+(p?' '+bb+' '+p:'')+(n?(he?' ז״ל':' z"l'):'');}
+function sumMem(x,iso){return {title:memName(x),sub:(x.hday||'')+' '+hmName(x.hmonth)+(x.hyear?' '+x.hyear:'')+(pick(x,'by')?' · '+pick(x,'by'):''),st:x.hidden?['off','st_hidden']:(x.start&&iso<x.start?['warn','st_soon',{d:fmtShort(x.start)}]:(x.end&&iso>x.end?['bad','st_past']:(x.end?['','st_on']:['','st_perm'])))};}
+function sumBday(x){return {title:x.name,sub:(x.hday||'')+' '+hmName(x.hmonth),st:x.hidden?['off','st_hidden']:null};}
 var DEFAULTS={
   times:function(){return {group:'weekday',nameHe:'',nameEn:'',days:[0,1,2,3,4],mode:'fixed',time:'',base:'sunset',offset:-15,round:'down5',noteHe:'',noteEn:'',teacherHe:'',teacherEn:'',hidden:false};},
   notices:function(){var i=jp().iso;return {kind:'timed',titleHe:'',titleEn:'',bodyHe:'',bodyEn:'',image:null,start:i,end:isoAdd(i,14),days:[],web:true,screen:true,shabbat:false,secs:'',hidden:false};},
@@ -790,10 +821,12 @@ var DEFAULTS={
   refuah:function(){return {name:'',until:'',hidden:false};},
   simchas:function(){return {date:isoAdd(jp().iso,7),titleHe:'',titleEn:'',detailsHe:'',detailsEn:'',hidden:false};},
   docs:function(){return {titleHe:'',titleEn:'',date:jp().iso,link:'',bodyHe:'',bodyEn:'',hidden:false};},
-  yahrzeit:function(){return {nameHe:'',nameEn:'',hday:'',hmonth:'',hyear:'',relHe:'',relEn:'',hidden:false};}
+  yahrzeit:function(){return {nameHe:'',nameEn:'',hday:'',hmonth:'',hyear:'',relHe:'',relEn:'',hidden:false};},
+  memorial:function(){return {nameHe:'',bb:'ben',parentHe:'',nameEn:'',parentEn:'',hday:'',hmonth:'',hyear:'',byHe:'',byEn:'',lineHe:'',lineEn:'',start:jp().iso,end:'',hidden:false};},
+  birthdays:function(){return {name:'',hday:'',hmonth:'',hidden:false};}
 };
 function target(col,id){if(!col)return null;if(!id)return draft[col];var arr=draft[col];if(!Array.isArray(arr))return null;for(var i=0;i<arr.length;i++)if(arr[i].id===id)return arr[i];return null;}
-var SCHEMA={times:[TIME_F,sumTime],notices:[NOTICE_F,sumNotice],sponsors:[SPONSOR_F,sumSponsor],mazal:[MAZAL_F,sumMazal],refuah:[REFUAH_F,sumRefuah],yahrzeit:[YZ_F,sumYz],docs:[DOC_F,sumDoc],simchas:[SIMCHA_F,sumSimcha]};
+var SCHEMA={times:[TIME_F,sumTime],notices:[NOTICE_F,sumNotice],sponsors:[SPONSOR_F,sumSponsor],mazal:[MAZAL_F,sumMazal],refuah:[REFUAH_F,sumRefuah],yahrzeit:[YZ_F,sumYz],docs:[DOC_F,sumDoc],simchas:[SIMCHA_F,sumSimcha],memorial:[MEM_F,sumMem],birthdays:[BDAY_F,sumBday]};
 function refreshCard(col,id,body){
   var it=target(col,id),sc=SCHEMA[col];if(!it||!sc)return;var iso=jp().iso;
   var s=document.getElementById('sum-'+id);if(s)s.innerHTML=summaryHtml(sc[1](it,iso));
@@ -887,7 +920,7 @@ function publish(){
   }).then(function(){
     var now=fids(S);dropImages(prevFids.filter(function(f){return now.indexOf(f)<0;}));ui.uploaded={};
     FB.db.collection('log').add({by:FB.email,at:firebase.firestore.FieldValue.serverTimestamp(),count:ch.reduce(function(a,c){return a+c[1];},0),sections:ch.map(function(c){return c[0];})}).catch(function(){});
-    toast(t('published'));
+    toast(t('published'));clearMovedSubs(S);
   }).catch(function(err){
     var c=err&&err.code;
     toast(c==='conflict'||c==='aborted'?t('conflict'):(c==='permission-denied'?t('perm_denied'):t('save_failed')));
@@ -897,6 +930,73 @@ function discardDraft(){
   var keep=fids(state);dropImages(Object.keys(ui.uploaded).filter(function(f){return keep.indexOf(f)<0;}));ui.uploaded={};
   draft=clone(base);
 }
+
+/* ---------- member submissions (v3) ---------- */
+var SUB_TYPES={mazal:'mazal',simcha:'simchas',yahrzeit:'yahrzeit',refuah:'refuah',birthday:'birthdays'};
+var SUB_TAB={mazal:'community',simchas:'community',yahrzeit:'community',refuah:'community',birthdays:'community'};
+function heb(s){return /[֐-׿]/.test(String(s||''));}
+function subToItem(x){
+  var d=x.data||{},col=SUB_TYPES[x.type],it={id:uid(col.charAt(0)),hidden:false},side=function(k,v){if(!v)return;it[k+(heb(v)?'He':'En')]=v;};
+  if(x.type==='mazal'){var st=d.start||jp().iso;side('text',d.text);it.start=st;it.end=d.end||isoAdd(st,MAZAL_DAYS);}
+  else if(x.type==='simcha'){it.date=d.date||'';side('title',d.title);side('details',d.details);}
+  else if(x.type==='yahrzeit'){side('name',d.who);it.hday=+d.hday||'';it.hmonth=String(d.hmonth||'');it.hyear=+d.hyear||'';side('rel',d.rel);}
+  else if(x.type==='refuah'){it.name=d.who||'';it.until=d.until||'';}
+  else if(x.type==='birthday'){it.name=d.who||'';it.hday=+d.hday||'';it.hmonth=String(d.hmonth||'');}
+  ['textHe','textEn','titleHe','titleEn','detailsHe','detailsEn','nameHe','nameEn','relHe','relEn'].forEach(function(k){if(!(k in it)&&DEFAULTS[col]&&k in DEFAULTS[col]())it[k]='';});
+  return {col:col,item:Object.assign(DEFAULTS[col](),it)};
+}
+function subLines(x){
+  var d=x.data||{},rows=[];
+  var add=function(k,v){if(v!==''&&v!=null)rows.push('<li><small>'+esc(t('pk_'+k))+'</small><span>'+esc(v)+'</span></li>');};
+  add('who',d.who);add('text',d.text);add('title',d.title);add('details',d.details);add('date',d.date?fmtDate(d.date):'');
+  if(d.hday||d.hmonth)add('hdate',[d.hday,hmName(d.hmonth),d.hyear].filter(Boolean).join(' '));
+  add('rel',d.rel);add('start',d.start?fmtDate(d.start):'');add('end',d.end?fmtDate(d.end):'');add('until',d.until?fmtDate(d.until):'');
+  return '<ul class="list psub">'+rows.join('')+'</ul>';
+}
+function pendingTab(){
+  var list=FB.pending;
+  return mgTitle('pending',t('pending_lead'))+(list.length?list.map(function(x){
+    return '<div class="panel pend" id="pend-'+esc(x.id)+'"><div class="pend-h"><span class="pill">'+esc(t('typ_'+x.type))+'</span><span class="muted small">'+esc(fmtWhen(x.at))+'</span></div>'+subLines(x)+
+      '<p class="muted small">'+esc(t('pend_from'))+': <b>'+esc(x.name)+'</b>'+(x.phone?' · <a href="tel:'+esc(x.phone.replace(/[^\d+]/g,''))+'" dir="ltr">'+esc(x.phone)+'</a>':'')+'</p>'+
+      '<div class="ed-actions" style="justify-content:flex-start"><button class="btn primary sm" data-pact="approve" data-id="'+esc(x.id)+'">'+esc(t('pend_approve'))+'</button><button class="btn sm" data-pact="edit" data-id="'+esc(x.id)+'">'+esc(t('pend_edit'))+'</button><button class="btn sm danger" data-pact="reject" data-id="'+esc(x.id)+'">'+esc(t('pend_reject'))+'</button></div></div>';
+  }).join(''):'<p class="empty">'+esc(t('pending_none'))+'</p>');
+}
+function pendById(id){return FB.pending.filter(function(x){return x.id===id;})[0];}
+function approveSub(x){
+  var cv=subToItem(x),ref=FB.db.collection('site').doc('state');
+  return FB.db.runTransaction(function(tx){return tx.get(ref).then(function(snap){
+    var d=snap.exists?snap.data():{},list=Array.isArray(d[cv.col])?d[cv.col].slice():[];list.unshift(cv.item);
+    var upd={};upd[cv.col]=list;upd.rev=(d.rev||0)+1;upd.updatedBy=FB.email;upd.updatedAt=firebase.firestore.FieldValue.serverTimestamp();
+    if(snap.exists)tx.update(ref,upd);else{var full=normalize(clone(draft));full[cv.col]=list;full.rev=upd.rev;full.updatedBy=FB.email;full.updatedAt=upd.updatedAt;tx.set(ref,full);}
+  });}).then(function(){
+    FB.db.collection('log').add({by:FB.email,at:firebase.firestore.FieldValue.serverTimestamp(),count:1,sections:[cv.col]}).catch(function(){});
+    return FB.db.collection('submissions').doc(x.id).delete();
+  });
+}
+function clearMovedSubs(S){var m=ui.fromSub||{};Object.keys(m).forEach(function(itemId){var e=m[itemId];if((S[e.col]||[]).some(function(it){return it.id===itemId;})){FB.db.collection('submissions').doc(e.sub).delete().catch(function(){});delete m[itemId];}});}
+function submitItem(type,data,name,phone){
+  if(!FB.db)return Promise.reject({code:'unavailable'});
+  return FB.db.collection('submissions').add({type:type,data:data,name:name,phone:phone,lang:lang,status:'pending',at:firebase.firestore.FieldValue.serverTimestamp()});
+}
+$app.addEventListener('click',function(e){
+  var b=e.target.closest('[data-pact]');if(!b||!FB.role)return;var act=b.dataset.pact,x=pendById(b.dataset.id);if(!x)return;
+  if(act==='approve'){b.disabled=true;approveSub(x).then(function(){toast(t('pend_approved'));},function(err){b.disabled=false;toast(t('pend_fail',{c:(err&&err.code)||'error'}));});return;}
+  if(act==='edit'){var cv=subToItem(x);draft[cv.col].unshift(cv.item);ui.open[cv.item.id]=1;ui.fromSub=ui.fromSub||{};ui.fromSub[cv.item.id]={col:cv.col,sub:x.id};ui.tab=SUB_TAB[cv.col]||'community';render();window.scrollTo(0,0);toast(t('pend_moved'));return;}
+  if(act==='reject'){
+    if(ui.armed!==b){if(ui.armed)disarm();ui.armed=b;b.dataset.label=b.textContent;b.textContent=t('pend_reject2');b.classList.add('armed');b._t=setTimeout(disarm,3500);return;}
+    clearTimeout(b._t);ui.armed=null;FB.db.collection('submissions').doc(x.id).delete().then(function(){toast(t('pend_rejected'));},function(err){toast(t('pend_fail',{c:(err&&err.code)||'error'}));});return;
+  }
+});
+/* Hebrew-date helpers for the memorial wall and birthdays */
+function hMonthNum(v,hy){v=String(v||'');var leap=H&&H.HDate.isLeapYear(hy);if(v==='12L')return leap?12:12;if(v==='13')return leap?13:12;if(v==='12')return leap?13:12;return +v;}
+function hdateIn(day,mv,hy){if(!H||!day||!mv)return null;try{var m=hMonthNum(mv,hy),dim=H.HDate.daysInMonth(m,hy);return new H.HDate(Math.min(+day,dim),m,hy);}catch(e){return null;}}
+function isoOfH(hd){var g=hd.greg();return g.getFullYear()+'-'+String(g.getMonth()+1).padStart(2,'0')+'-'+String(g.getDate()).padStart(2,'0');}
+function birthdaysFor(S,iso,days){
+  if(!H)return [];var out=[],last=isoAdd(iso,(days||7)-1),cur=new H.HDate(civil(iso)).getFullYear();
+  S.birthdays.forEach(function(b){if(b.hidden)return;for(var hy=cur-1;hy<=cur+1;hy++){var hd=hdateIn(b.hday,b.hmonth,hy);if(!hd)continue;var i=isoOfH(hd);if(i>=iso&&i<=last){out.push({b:b,iso:i,hd:hd});break;}}});
+  return out.sort(function(a,c){return a.iso<c.iso?-1:1;});
+}
+function memorialFor(S,iso){return S.memorial.filter(function(m){return !m.hidden&&(m.nameHe||m.nameEn)&&(!m.start||iso>=m.start)&&(!m.end||iso<=m.end);});}
 
 /* ---------- events ---------- */
 $app.addEventListener('input',onField);
@@ -997,7 +1097,7 @@ function applyState(S,meta,hasDoc){
   else render();
 }
 function onUser(user){
-  FB.subs.forEach(function(u){try{u();}catch(e){}});FB.subs=[];FB.admins=[];FB.log=[];
+  FB.subs.forEach(function(u){try{u();}catch(e){}});FB.subs=[];FB.admins=[];FB.log=[];FB.pending=[];
   FB.user=user||null;FB.email=user&&user.email?user.email.toLowerCase():'';FB.role='';FB.checked=false;
   if(!user){FB.checked=true;rerenderAuth();return;}
   var done=function(role){FB.role=role;FB.checked=true;if(role)watchAdminData();rerenderAuth();};
@@ -1011,6 +1111,8 @@ function watchAdminData(){
     if(route()==='manage'&&ui.tab==='users')refreshPanel();},function(e){if(e&&e.code==='permission-denied'&&OWNERS.indexOf(FB.email)<0){FB.role='';rerenderAuth();}}));
   FB.subs.push(FB.db.collection('log').orderBy('at','desc').limit(8).onSnapshot(function(q){FB.log=q.docs.map(function(d){var x=d.data();return {by:x.by,at:x.at&&x.at.toDate?x.at.toDate():null,count:x.count,sections:x.sections};});
     if(route()==='manage'&&ui.tab==='overview')refreshPanel();},function(){}));
+  FB.subs.push(FB.db.collection('submissions').orderBy('at','desc').limit(100).onSnapshot(function(q){FB.pending=q.docs.map(function(d){var x=d.data();return {id:d.id,type:x.type,data:x.data||{},name:x.name||'',phone:x.phone||'',lang:x.lang||'he',at:x.at&&x.at.toDate?x.at.toDate():null};});
+    if(route()==='manage'){var c=document.querySelector('[data-tab="pending"] .count');if(c){c.textContent=FB.pending.length;c.style.cssText=FB.pending.length?'background:var(--danger);color:#fff':'';}if(ui.tab==='pending'||ui.tab==='overview')refreshPanel();}},function(){}));
 }
 function rerenderAuth(){if(!ui.ready)return;if(route()!=='display')render();}
 function signIn(choose){
@@ -1046,7 +1148,8 @@ var API={
   dayInfo:dayInfo,weekInfo:weekInfo,hebDate:hebDate,parshaText:parshaText,seasonal:seasonal,isShabbatNow:isShabbatNow,clockOk:clockOk,ZKEYS:ZKEYS,zText:zText,
   dayTimes:dayTimes,entryTime:entryTime,ruleText:ruleText,daysLabel:daysLabel,nextTefillah:nextTefillah,inText:inText,weekdayList:weekdayList,shabbatList:shabbatList,shiurList:shiurList,shiurimOn:shiurimOn,
   noticeOn:noticeOn,sponsorsFor:sponsorsFor,mazalFor:mazalFor,simchasFor:simchasFor,refuahFor:refuahFor,yahrzeitsFor:yahrzeitsFor,urgentText:urgentText,docsFor:docsFor,docHtml:docHtml,docLink:docLink,
-  imgAttr:imgAttr,imgUrl:imgUrl,preload:preload,qrSvg:qrSvg,safeUrl:safeUrl,siteUrl:siteUrl,TSCALE:TSCALE,keepAwake:keepAwake
+  imgAttr:imgAttr,imgUrl:imgUrl,preload:preload,qrSvg:qrSvg,safeUrl:safeUrl,siteUrl:siteUrl,TSCALE:TSCALE,keepAwake:keepAwake,
+  HMONTHS:HMONTHS,yahrzeitIso:yahrzeitIso,birthdaysFor:birthdaysFor,memorialFor:memorialFor,memName:memName,hdateIn:hdateIn,isoOfH:isoOfH,civil:civil,submit:submitItem,get canSubmit(){return !!FB.db;},toast:toast
 };
 window.SHUL_API=API;
 

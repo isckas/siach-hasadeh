@@ -3,6 +3,7 @@ rules_version = '2';
 //  * Everyone (website visitors, the shul TV) can READ the site content and flyers. No login.
 //  * Only admins can WRITE content. Admins sign in with Google.
 //  * Only owners can add/remove admins. The built-in owner below can never be locked out.
+//  * Anyone can send in a community item (submissions); it stays private until an admin approves it.
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() {
@@ -36,6 +37,26 @@ service cloud.firestore {
         && email == email.lower()
         && request.resource.data.role in ['admin', 'owner'];
       allow delete: if isOwner() && email != myEmail();
+    }
+    // Member submissions (v3): anyone can send one in; only admins can see, approve or delete them.
+    function str(v, max) { return v is string && v.size() <= max; }
+    function okData(d) {
+      return d.keys().hasOnly(['text','start','end','date','title','details','who','hday','hmonth','hyear','rel','until'])
+        && (!('text' in d) || str(d.text, 600)) && (!('start' in d) || str(d.start, 10)) && (!('end' in d) || str(d.end, 10))
+        && (!('date' in d) || str(d.date, 10)) && (!('title' in d) || str(d.title, 160)) && (!('details' in d) || str(d.details, 200))
+        && (!('who' in d) || str(d.who, 120)) && (!('hday' in d) || str(d.hday, 2)) && (!('hmonth' in d) || str(d.hmonth, 3))
+        && (!('hyear' in d) || str(d.hyear, 6)) && (!('rel' in d) || str(d.rel, 80)) && (!('until' in d) || str(d.until, 10));
+    }
+    match /submissions/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['type','data','name','phone','lang','status','at'])
+        && request.resource.data.type in ['mazal','simcha','yahrzeit','refuah','birthday']
+        && request.resource.data.status == 'pending'
+        && request.resource.data.at == request.time
+        && request.resource.data.lang in ['he','en']
+        && str(request.resource.data.name, 80) && request.resource.data.name.size() > 1
+        && str(request.resource.data.phone, 30)
+        && request.resource.data.data is map && okData(request.resource.data.data);
+      allow read, delete: if isAdmin();
     }
     match /log/{id} {
       allow read: if isAdmin();
