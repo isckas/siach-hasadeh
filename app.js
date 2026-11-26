@@ -84,7 +84,7 @@ var L={
   daily:['כל יום','Daily'], none:['—','—'],
   f_nstart:['מתאריך (לא חובה)','From (optional)'], f_nend:['תאריך הסרה (לא חובה — ריק = ללא הגבלה)','Take down after (optional — blank = no end date)'], f_mstart:['תאריך פרסום','Posted on'], f_mend:['יורד אוטומטית אחרי (שבועיים)','Comes down after (2 weeks)'],
   signin_title:['כניסת חברי ועד','Board sign-in'], signin_body:['הכניסה מיועדת למנהלי האתר בלבד. האתר הציבורי והמסך בבית הכנסת לא דורשים כניסה.','Sign-in is only for the site\'s admins. The public website and the shul screen need no login.'], signin_btn:['כניסה עם Google','Sign in with Google'], signout:['יציאה','Sign out'], other_account:['כניסה עם חשבון אחר','Use a different account'], signin_failed:['הכניסה נכשלה ({c}). נסו שוב.','Sign-in failed ({c}). Try again.'],
-  not_admin_title:['החשבון הזה לא ברשימת המנהלים','This account isn\'t on the admin list'], not_admin_body:['{email} לא מורשה לנהל את האתר. בקשו מבעל האתר להוסיף את הכתובת בלשונית "משתמשים".','{email} can\'t manage the site. Ask the owner to add this address under "Users".'],
+  not_admin_title:['החשבון הזה לא ברשימת המנהלים','This account isn\'t on the admin list'], not_admin_body:['{email} לא מורשה לנהל את האתר. בקשו מאחד הבעלים להוסיף את הכתובת בלשונית "מנהלי האתר".','{email} can\'t manage the site. Ask an owner to add this address under "Admins".'],
   no_fb:['האתר עדיין לא מחובר ל-Firebase.','This site isn\'t connected to Firebase yet.'], loading:['טוען…','Loading…'],
   tab_users:['מנהלי האתר','Admins'], users_lead:['רק מי שמופיע כאן יכול להיכנס עם Google ולערוך. בעלים יכולים גם להוסיף ולהסיר מנהלים. אין משתמשים רגילים — כל השאר רואים את האתר בלי כניסה.','Only people listed here can sign in with Google and edit. Owners can also add and remove admins. There are no regular users: everyone else sees the site without signing in.'],
   role_owner:['בעלים','Owner'], role_admin:['מנהל','Admin'], role_builtin:['בעלים קבוע','Built-in owner'], role_owner_d:['עורך תוכן ומנהל משתמשים','Edits content and manages users'], role_admin_d:['עורך תוכן','Edits content'],
@@ -335,7 +335,7 @@ function qrSvg(text){
 var SPRIG='<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 30V9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M16 21c-4.6-.4-8-3.6-8.6-8.4 4.7.3 8.2 3.6 8.6 8.4z" fill="currentColor" opacity=".9"/><path d="M16 15.5c3.9-.5 6.8-3.6 7-7.7-4 .4-6.9 3.5-7 7.7z" fill="currentColor" opacity=".7"/><path d="M16 26c4.3-.1 7.6-2.4 9-6.2-4.3-.4-7.8 2-9 6.2z" fill="currentColor" opacity=".55"/><circle cx="16" cy="7" r="1.7" fill="currentColor"/></svg>';
 
 /* ---------- routing & render ---------- */
-function route(){var h=(location.hash||'').slice(1);return (h==='display'||h==='manage')?h:'home';}
+function route(){var h=(location.hash||'').slice(1);if(h==='manage'||h.indexOf('manage/')===0)return 'manage';return h==='display'?h:'home';}
 function render(){
   var r=route(),root=document.documentElement;
   clearTimeout(ui.slideTimer);ui.slideTimer=null;
@@ -343,7 +343,7 @@ function render(){
   if(!ui.ready){root.classList.remove('tv-mode');$app.innerHTML=SKIN&&SKIN.loading?SKIN.loading(API):'<div class="loading">'+SPRIG+'<span>'+esc(t('loading'))+'</span></div>';return;}
   if(r==='manage'&&window.top!==window.self){$app.innerHTML='<p class="empty">'+esc(t('framed'))+'</p>';return;}
   if(SKIN){
-    if(r==='manage'){location.replace(BASE+'#manage');return;}
+    if(r==='manage'){location.replace(BASE+'#manage'+(hashTab()?'/'+hashTab():''));return;}
     root.classList.toggle('tv-mode',r==='display');
     if(r==='display'){var S2=screenState(),dl2=S2.display.lang;ui.stillFlag=S2.display.shabbatMode==='still'&&isShabbatNow(S2.shul);root.lang=dl2==='en'?'en':'he';root.dir=dl2==='en'?'ltr':'rtl';}
     else{root.lang=lang;root.dir=lang==='he'?'rtl':'ltr';}
@@ -353,10 +353,10 @@ function render(){
   if(r==='display'){var S=screenState();var dl=S.display.lang;root.lang=dl==='en'?'en':'he';root.dir=dl==='en'?'ltr':'rtl';$app.innerHTML=renderDisplay(S);fitSide();startScroll();startSlides(S);keepAwake();armFs();return;}
   root.lang=lang;root.dir=lang==='he'?'rtl':'ltr';root.classList.toggle('mg-mode',r==='manage');
   $app.innerHTML=(r==='manage'?renderManage():renderHome());
-  if(r==='manage'){var mh=document.querySelector('.mgh');if(mh)root.style.setProperty('--mgh-h',mh.offsetHeight+'px');}
+  if(r==='manage'){var mh=document.querySelector('.mgh');if(mh)root.style.setProperty('--mgh-h',mh.offsetHeight+'px');if(FB.role)syncTabHash();}
 }
 function screenState(){return ui.previewDraft?normalize(clone(ui.previewData||draft)):state;}
-function loadPreview(){try{var pv=JSON.parse(sessionStorage.getItem(PV_KEY)||'null');if(pv&&typeof pv.at==='number'&&Date.now()-pv.at<30*60e3&&pv.d&&typeof pv.d==='object'){ui.previewData=pv.d;ui.previewDraft=true;}else sessionStorage.removeItem(PV_KEY);}catch(e){}}
+function loadPreview(){try{var pv=JSON.parse(sessionStorage.getItem(PV_KEY)||'null');if(pv&&typeof pv.at==='number'&&Date.now()-pv.at<30*60e3&&pv.d&&typeof pv.d==='object'){ui.previewData=pv.d;ui.previewDraft=true;ui.previewTab=typeof pv.t==='string'&&/^[a-z]{1,12}$/.test(pv.t)?pv.t:'';}else sessionStorage.removeItem(PV_KEY);}catch(e){}}
 /* Back on the admin page after a preview: take the unpublished edits back, merged onto anything published meanwhile. */
 var PV_MAX=30*60e3,ID_RE=/^[\w-]{1,40}$/;
 /* Only when the admin came straight back from this site's board preview (its "Back to editing" button), not from any other page. */
@@ -689,6 +689,9 @@ function keepAwake(){try{if(navigator.wakeLock&&!wakeLock)navigator.wakeLock.req
 /* ---------- board manager ---------- */
 var TABS=['overview','pending','times','shiurim','notices','sponsors','community','memorial','docs','donate','urgent','shul','screen','users'];
 var TAB_GROUPS=[['',['overview','pending']],['grp_times',['times','shiurim']],['grp_board',['notices','sponsors','urgent']],['grp_comm',['community','memorial']],['grp_shul',['docs','donate','shul','screen']],['grp_team',['users']]];
+/* Each section has its own address (#manage/notices), so a link (the admins' how-to guide) can open it, and a refresh stays put. */
+function hashTab(){var m=/^#manage\/([a-z]+)\/?$/.exec(location.hash||'');if(!m)return '';for(var i=0;i<TAB_GROUPS.length;i++)if(TAB_GROUPS[i][1].indexOf(m[1])>=0)return m[1];return '';}
+function syncTabHash(){var want='#manage'+(ui.tab&&ui.tab!=='overview'?'/'+ui.tab:'');if(location.hash!==want){try{history.replaceState(history.state,'',location.pathname+location.search+want);}catch(e){}}}
 var LISTS=['times','notices','sponsors','mazal','refuah','yahrzeit','docs','simchas','memorial','birthdays'],SECTS=['donate','urgent','shul','display'];
 function changes(B,D){B=B||base;D=D||draft;var out=[];
   LISTS.forEach(function(k){var a={},b={},n=0;B[k].forEach(function(x){a[x.id]=JSON.stringify(x);});D[k].forEach(function(x){b[x.id]=JSON.stringify(x);});Object.keys(b).forEach(function(id){if(a[id]!==b[id])n++;});Object.keys(a).forEach(function(id){if(!(id in b))n++;});if(n)out.push([k,n]);});
@@ -1077,7 +1080,7 @@ $app.addEventListener('click',function(e){
   if(act==='zday'){var n=+b.dataset.n,today=jp().iso;ui.zDate=n===0?today:isoAdd(ui.zDate||today,n);var sec=document.getElementById('sec-zmanim');if(sec)sec.outerHTML=secZmanim(state,jp());return;}
   if(act==='copy'){e.preventDefault();var txt=b.dataset.text;var done=function(){var o=b.textContent;b.textContent=t('copied');setTimeout(function(){b.textContent=o;},1500);};try{navigator.clipboard.writeText(txt).then(done,function(){selectNear(b);});}catch(err){selectNear(b);}return;}
   if(act==='fs'){var de=document.documentElement;if(de.requestFullscreen)de.requestFullscreen().catch(function(){});b.hidden=true;keepAwake();return;}
-  if(act==='endpreview'){ui.previewDraft=false;location.href=BASE+'#manage';return;}
+  if(act==='endpreview'){ui.previewDraft=false;location.href=BASE+'#manage'+(ui.previewTab?'/'+ui.previewTab:'');return;}
   if(act==='tab'){ui.tab=b.dataset.tab;ui.navOpen=false;render();window.scrollTo(0,0);return;}
   if(act==='mgnav'){ui.navOpen=!ui.navOpen;render();if(ui.navOpen){var f=document.querySelector('.mg-tabs [aria-current="true"]');if(f)f.focus();}return;}
   if(act==='add'||act==='quick'){var col=b.dataset.col,it=DEFAULTS[col]();it.id=uid(col.charAt(0));if(b.dataset.group){it.group=b.dataset.group;if(it.group==='shiur'){it.days=[0,1,2,3,4];it.nameHe='';it.nameEn='';}}draft[col].unshift(it);ui.open[it.id]=1;if(act==='quick')ui.tab=(col==='mazal'||col==='simchas'?'community':(it.group==='shiur'?'shiurim':col));render();if(act==='quick')window.scrollTo(0,0);return;}
@@ -1091,7 +1094,7 @@ $app.addEventListener('click',function(e){
   }
   if(act==='rmimg'){var o4=target(b.dataset.col,b.dataset.id);if(o4){o4[b.dataset.k]=null;refreshCard(b.dataset.col,b.dataset.id,true);updateBar();}return;}
   if(act==='publish'){publish();return;}
-  if(act==='preview'){try{sessionStorage.setItem(PV_KEY,JSON.stringify({at:Date.now(),d:draft,b:base,rev:ui.baseRev,s:ui.fromSub||{},u:Object.keys(ui.uploaded||{})}));location.href=BASE+'v3/#display';}catch(e){ui.previewDraft=true;location.hash='display';}return;}
+  if(act==='preview'){try{sessionStorage.setItem(PV_KEY,JSON.stringify({at:Date.now(),d:draft,b:base,rev:ui.baseRev,s:ui.fromSub||{},u:Object.keys(ui.uploaded||{}),t:ui.tab}));location.href=BASE+'v3/#display';}catch(e){ui.previewDraft=true;location.hash='display';}return;}
   if(act==='signin'){signIn(false);return;}
   if(act==='switch'){signIn(true);return;}
   if(act==='signout'){if(FB.auth)FB.auth.signOut().then(function(){stopAdminData();return FB.db.terminate();}).then(function(){return FB.db.clearPersistence();}).catch(function(){}).then(function(){location.reload();});return;}
@@ -1112,6 +1115,7 @@ window.addEventListener('hashchange',function(){
   /* The admin page runs without the offline copy, so member details never land in it: reload into it if this tab has one. */
   if(route()==='manage'&&FB.persist){location.reload();return;}
   if(route()==='manage'&&FB.role)watchAdminData();else if(route()!=='manage'&&FB.watching){stopAdminData();}
+  if(route()==='manage'){ui.tab=hashTab()||'overview';ui.navOpen=false;}
 if(route()!=='display'){if(ui.previewData)endPreview();else ui.previewDraft=false;}render();if(!jumpToHash())window.scrollTo(0,0);});
 document.addEventListener('toggle',function(e){var d=e.target;if(d&&d.classList&&d.classList.contains('doc'))ui.docOpen[d.id.slice(4)]=d.open;},true);
 function jumpToHash(){var h=(location.hash||'').slice(1);if(SKIN)return SKIN.jump?SKIN.jump(h):false;if(h!=='docs'&&h!=='minutes')return false;var el=document.getElementById('sec-docs');if(!el)return false;var first=el.querySelector('details.doc');if(first&&!first.open){first.open=true;}el.scrollIntoView({block:'start'});return true;}
@@ -1242,6 +1246,7 @@ window.SHUL_API=API;
 
 /* ---------- boot ---------- */
 if(window.SHUL_EMULATOR)window.T={ui:ui,render:render,get draft(){return draft;},get state(){return state;},setLang:function(l){lang=l;render();}};/* test hook, local emulator only */
+if(route()==='manage'&&hashTab())ui.tab=hashTab();
 render();
 fbInit();
 setTimeout(function(){if(!ui.ready)loadSeed().then(function(sd){if(!ui.ready){state=normalize(clone(sd));base=clone(state);draft=clone(state);ready();}});},4000);
