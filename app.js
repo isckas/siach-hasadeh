@@ -691,7 +691,7 @@ var TABS=['overview','pending','times','shiurim','notices','sponsors','community
 var TAB_GROUPS=[['',['overview','pending']],['grp_times',['times','shiurim']],['grp_board',['notices','sponsors','urgent']],['grp_comm',['community','memorial']],['grp_shul',['docs','donate','shul','screen']],['grp_team',['users']]];
 /* Each section has its own address (#manage/notices), so a link (the admins' how-to guide) can open it, and a refresh stays put. */
 function hashTab(){var m=/^#manage\/([a-z]+)\/?$/.exec(location.hash||'');if(!m)return '';for(var i=0;i<TAB_GROUPS.length;i++)if(TAB_GROUPS[i][1].indexOf(m[1])>=0)return m[1];return '';}
-function syncTabHash(){var want='#manage'+(ui.tab&&ui.tab!=='overview'?'/'+ui.tab:'');if(location.hash!==want){try{history.replaceState(history.state,'',location.pathname+location.search+want);}catch(e){}}}
+function syncTabHash(){var want='#manage'+(ui.tab&&ui.tab!=='overview'?'/'+ui.tab:'');if(location.hash!==want){try{history.replaceState(history.state,'',want);}catch(e){}}}
 var LISTS=['times','notices','sponsors','mazal','refuah','yahrzeit','docs','simchas','memorial','birthdays'],SECTS=['donate','urgent','shul','display'];
 function changes(B,D){B=B||base;D=D||draft;var out=[];
   LISTS.forEach(function(k){var a={},b={},n=0;B[k].forEach(function(x){a[x.id]=JSON.stringify(x);});D[k].forEach(function(x){b[x.id]=JSON.stringify(x);});Object.keys(b).forEach(function(id){if(a[id]!==b[id])n++;});Object.keys(a).forEach(function(id){if(!(id in b))n++;});if(n)out.push([k,n]);});
@@ -1041,18 +1041,30 @@ function submitItem(type,data,name,phone){
     b.set(FB.db.collection('meta').doc('throttle'),{last:ts});return b.commit();};
   return once().catch(function(e){if(!e||e.code!=='permission-denied')throw e;return new Promise(function(r){setTimeout(r,21000);}).then(once);});
 }
+/* Click-jacking guard for actions that change live data (approve, reject, delete all, publish, admin changes): a click right after the page
+   loads, the window gets focus or comes back into view, or the address changes doesn't count, nor does a "click again" that follows the first
+   click too fast. Another site that opens this page can't time a double-click onto one of these buttons. */
+var calmAt=Date.now();function unsettle(){calmAt=Date.now();}
+['focus','pageshow','hashchange'].forEach(function(v){window.addEventListener(v,unsettle);});document.addEventListener('visibilitychange',function(){if(!document.hidden)unsettle();});
+function settled(e){return !!(e&&e.isTrusted)&&Date.now()-calmAt>700;}
+function armNow(b){b._armAt=Date.now();}
+function armedLong(b){return Date.now()-(b._armAt||0)>=500;}
 $app.addEventListener('click',function(e){
   var da=e.target.closest('[data-pdelall]');
   if(da&&FB.role){
-    if(ui.armed!==da){if(ui.armed)disarm();ui.armed=da;da.dataset.label=da.textContent;da.textContent=t('pend_delall2');da.classList.add('armed');da._t=setTimeout(disarm,3500);return;}
+    if(!settled(e))return;
+    if(ui.armed!==da){if(ui.armed)disarm();ui.armed=da;armNow(da);da.dataset.label=da.textContent;da.textContent=t('pend_delall2');da.classList.add('armed');da._t=setTimeout(disarm,3500);return;}
+    if(!armedLong(da))return;
     clearTimeout(da._t);ui.armed=null;da.disabled=true;var ids=FB.pending.map(function(x){return x.id;}),bt=FB.db.batch();ids.forEach(function(id){bt.delete(FB.db.collection('submissions').doc(id));});
     bt.commit().then(function(){toast(t('pend_delall_done',{n:ids.length}));},function(err){da.disabled=false;toast(t('pend_fail',{c:(err&&err.code)||'error'}));});return;
   }
   var b=e.target.closest('[data-pact]');if(!b||!FB.role)return;var act=b.dataset.pact,x=pendById(b.dataset.id);if(!x)return;
+  if(act!=='edit'&&!settled(e))return;
   if(act==='approve'){b.disabled=true;approveSub(x).then(function(){toast(t('pend_approved'));},function(err){b.disabled=false;toast(t('pend_fail',{c:(err&&err.code)||'error'}));});return;}
   if(act==='edit'){var cv=subToItem(x);draft[cv.col].unshift(cv.item);ui.open[cv.item.id]=1;ui.fromSub=ui.fromSub||{};ui.fromSub[cv.item.id]={col:cv.col,sub:x.id};ui.tab=SUB_TAB[cv.col]||'community';render();window.scrollTo(0,0);toast(t('pend_moved'));return;}
   if(act==='reject'){
-    if(ui.armed!==b){if(ui.armed)disarm();ui.armed=b;b.dataset.label=b.textContent;b.textContent=t('pend_reject2');b.classList.add('armed');b._t=setTimeout(disarm,3500);return;}
+    if(ui.armed!==b){if(ui.armed)disarm();ui.armed=b;armNow(b);b.dataset.label=b.textContent;b.textContent=t('pend_reject2');b.classList.add('armed');b._t=setTimeout(disarm,3500);return;}
+    if(!armedLong(b))return;
     clearTimeout(b._t);ui.armed=null;FB.db.collection('submissions').doc(x.id).delete().then(function(){toast(t('pend_rejected'));},function(err){toast(t('pend_fail',{c:(err&&err.code)||'error'}));});return;
   }
 });
@@ -1093,13 +1105,15 @@ $app.addEventListener('click',function(e){
     updateBar();return;
   }
   if(act==='rmimg'){var o4=target(b.dataset.col,b.dataset.id);if(o4){o4[b.dataset.k]=null;refreshCard(b.dataset.col,b.dataset.id,true);updateBar();}return;}
-  if(act==='publish'){publish();return;}
-  if(act==='preview'){try{sessionStorage.setItem(PV_KEY,JSON.stringify({at:Date.now(),d:draft,b:base,rev:ui.baseRev,s:ui.fromSub||{},u:Object.keys(ui.uploaded||{}),t:ui.tab}));location.href=BASE+'v3/#display';}catch(e){ui.previewDraft=true;location.hash='display';}return;}
+  if(act==='publish'){if(settled(e))publish();return;}
+  if(act==='preview'){try{sessionStorage.setItem(PV_KEY,JSON.stringify({at:Date.now(),d:draft,b:base,rev:ui.baseRev,s:ui.fromSub||{},u:Object.keys(ui.uploaded||{}),t:ui.tab}));location.href=BASE+'v3/#display';}catch(e){ui.previewDraft=true;ui.previewTab=ui.tab;location.hash='display';}return;}
   if(act==='signin'){signIn(false);return;}
   if(act==='switch'){signIn(true);return;}
   if(act==='signout'){if(FB.auth)FB.auth.signOut().then(function(){stopAdminData();return FB.db.terminate();}).then(function(){return FB.db.clearPersistence();}).catch(function(){}).then(function(){location.reload();});return;}
   if(act==='rmuser'){
-    if(ui.armed!==b){if(ui.armed)disarm();ui.armed=b;b.dataset.label=b.textContent;b.textContent=t('rm_user2');b.classList.add('armed');b._t=setTimeout(disarm,3500);return;}
+    if(!settled(e))return;
+    if(ui.armed!==b){if(ui.armed)disarm();ui.armed=b;armNow(b);b.dataset.label=b.textContent;b.textContent=t('rm_user2');b.classList.add('armed');b._t=setTimeout(disarm,3500);return;}
+    if(!armedLong(b))return;
     clearTimeout(b._t);ui.armed=null;var em=b.dataset.email;
     FB.db.collection('admins').doc(em).delete().then(function(){toast(t('user_removed',{email:em}));}).catch(function(e2){toast(t('user_fail',{c:e2.code||'error'}));});return;
   }
@@ -1107,7 +1121,7 @@ $app.addEventListener('click',function(e){
 });
 function disarm(){var b=ui.armed;if(!b)return;b.textContent=b.dataset.label||b.textContent;b.classList.remove('armed');if(b.dataset.act==='discard')b.classList.remove('danger');ui.armed=null;}
 $app.addEventListener('submit',function(e){if(e.target&&e.target.id==='uadd'){e.preventDefault();addUser(document.getElementById('u-email').value,document.getElementById('u-role').value);}});
-$app.addEventListener('change',function(e){var el=e.target;if(!el||!el.dataset||!el.dataset.userrole)return;FB.db.collection('admins').doc(el.dataset.userrole).set({role:el.value==='owner'?'owner':'admin'},{merge:true}).then(function(){toast(t('user_updated'));}).catch(function(e2){toast(t('user_fail',{c:e2.code||'error'}));});});
+$app.addEventListener('change',function(e){var el=e.target;if(!el||!el.dataset||!el.dataset.userrole)return;if(!settled(e)){refreshPanel();return;}FB.db.collection('admins').doc(el.dataset.userrole).set({role:el.value==='owner'?'owner':'admin'},{merge:true}).then(function(){toast(t('user_updated'));}).catch(function(e2){toast(t('user_fail',{c:e2.code||'error'}));});});
 function selectNear(b){var c=b.parentNode&&b.parentNode.querySelector('code');if(!c)return;var r=document.createRange();r.selectNodeContents(c);var s=window.getSelection();s.removeAllRanges();s.addRange(r);}
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ui.navOpen){ui.navOpen=false;render();var m=document.querySelector('.mgh-sec');if(m)m.focus();}});
 window.addEventListener('pageshow',function(e){if(e.persisted&&route()==='manage'){try{sessionStorage.removeItem(PV_KEY);}catch(err){}}});
@@ -1195,7 +1209,7 @@ function onUser(user){
 }
 function stopAdminData(){FB.subs.forEach(function(u){try{u();}catch(e){}});FB.subs=[];FB.admins=[];FB.log=[];FB.pending=[];FB.watching=false;}
 function watchAdminData(){
-  if(FB.watching||route()!=='manage')return;FB.watching=true;
+  if(FB.watching||route()!=='manage'||FB.persist||window.top!==window.self)return;FB.watching=true;
   FB.subs.push(FB.db.collection('admins').onSnapshot(function(q){FB.admins=q.docs.map(function(d){var x=d.data();return {email:d.id,role:x.role||'admin',addedBy:x.addedBy||''};}).sort(function(a,b){return a.email<b.email?-1:1;});
     var me=FB.admins.filter(function(a){return a.email===FB.email;})[0];
     if(OWNERS.indexOf(FB.email)<0){var nr=me?(me.role==='owner'?'owner':'admin'):'';if(nr!==FB.role){FB.role=nr;rerenderAuth();return;}}
