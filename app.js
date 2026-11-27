@@ -139,6 +139,8 @@ function both(k,vars){return esc(t(k,vars,'he'))+'<span class="en">'+esc(t(k,var
 function pick(o,b,lg){if(!o)return '';lg=lg||lang;var a=o[b+(lg==='he'?'He':'En')],c=o[b+(lg==='he'?'En':'He')];return (a&&String(a).trim())?a:(c||'');}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function clone(o){return JSON.parse(JSON.stringify(o));}
+/* Text form for comparing content: fields sorted, so the same content compares equal whatever order the database hands its fields back in. */
+function canon(v){if(Array.isArray(v))return '['+v.map(canon).join(',')+']';if(v&&typeof v==='object')return '{'+Object.keys(v).sort().map(function(k){return JSON.stringify(k)+':'+canon(v[k]);}).join(',')+'}';return JSON.stringify(v===undefined?null:v);}
 var ISO_RE=/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
 function uid(p){return (p||'x')+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 function safeUrl(u){u=String(u||'').trim();return /^https?:\/\//i.test(u)?u:'';}
@@ -694,21 +696,21 @@ function hashTab(){var m=/^#manage\/([a-z]+)\/?$/.exec(location.hash||'');if(!m)
 function syncTabHash(){var want='#manage'+(ui.tab&&ui.tab!=='overview'?'/'+ui.tab:'');if(location.hash!==want){try{history.replaceState(history.state,'',want);}catch(e){}}}
 var LISTS=['times','notices','sponsors','mazal','refuah','yahrzeit','docs','simchas','memorial','birthdays'],SECTS=['donate','urgent','shul','display'];
 function changes(B,D){B=B||base;D=D||draft;var out=[];
-  LISTS.forEach(function(k){var a={},b={},n=0;B[k].forEach(function(x){a[x.id]=JSON.stringify(x);});D[k].forEach(function(x){b[x.id]=JSON.stringify(x);});Object.keys(b).forEach(function(id){if(a[id]!==b[id])n++;});Object.keys(a).forEach(function(id){if(!(id in b))n++;});if(n)out.push([k,n]);});
-  SECTS.forEach(function(k){var o=B[k],d=D[k],n=0;Object.keys(Object.assign({},o,d)).forEach(function(f){if(JSON.stringify(o[f])!==JSON.stringify(d[f]))n++;});if(n)out.push([k,n]);});
+  LISTS.forEach(function(k){var a={},b={},n=0;B[k].forEach(function(x){a[x.id]=canon(x);});D[k].forEach(function(x){b[x.id]=canon(x);});Object.keys(b).forEach(function(id){if(a[id]!==b[id])n++;});Object.keys(a).forEach(function(id){if(!(id in b))n++;});if(n)out.push([k,n]);});
+  SECTS.forEach(function(k){var o=B[k],d=D[k],n=0;Object.keys(Object.assign({},o,d)).forEach(function(f){if(canon(o[f])!==canon(d[f]))n++;});if(n)out.push([k,n]);});
   return out;}
 function changeCount(B,D){return changes(B,D).reduce(function(a,c){return a+c[1];},0);}
 /* Three-way merge: another admin's save (theirs) plus this admin's unsaved edits (relative to base). */
 function merge3(B,mine,theirs){
   var out=clone(theirs);
   LISTS.forEach(function(k){
-    var b={};B[k].forEach(function(x){b[x.id]=JSON.stringify(x);});
+    var b={};B[k].forEach(function(x){b[x.id]=canon(x);});
     var m={};mine[k].forEach(function(x){m[x.id]=1;});
     var list=out[k].filter(function(x){return !(x.id in b)||(x.id in m);});
-    mine[k].forEach(function(x){var js=JSON.stringify(x);if(js===b[x.id])return;var j=-1;for(var i=0;i<list.length;i++)if(list[i].id===x.id){j=i;break;}if(j>=0)list[j]=clone(x);else list.unshift(clone(x));});
+    mine[k].forEach(function(x){var js=canon(x);if(js===b[x.id])return;var j=-1;for(var i=0;i<list.length;i++)if(list[i].id===x.id){j=i;break;}if(j>=0)list[j]=clone(x);else list.unshift(clone(x));});
     out[k]=list;
   });
-  SECTS.forEach(function(k){Object.keys(mine[k]).forEach(function(f){if(JSON.stringify(mine[k][f])!==JSON.stringify(B[k][f]))out[k][f]=clone(mine[k][f]);});});
+  SECTS.forEach(function(k){Object.keys(mine[k]).forEach(function(f){if(canon(mine[k][f])!==canon(B[k][f]))out[k][f]=clone(mine[k][f]);});});
   return out;
 }
 function fmtWhen(d){if(!d)return '';try{return new Intl.DateTimeFormat(lang==='he'?'he-IL':'en-GB',{timeZone:TZ,day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'}).format(d);}catch(e){return '';}}
