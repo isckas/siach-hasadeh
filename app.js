@@ -1,6 +1,8 @@
 
 (function(){
 'use strict';
+/* The shul's own address always opens over a secure connection (sign-in and the offline copy need it). */
+if(location.protocol==='http:'&&/(^|\.)siachhasadeh\.org$/.test(location.hostname)){location.replace('https://'+location.host+location.pathname+location.search+location.hash);return;}
 var TZ='Asia/Jerusalem';
 var H=window.hebcal||null;
 var BASE=window.SHUL_BASE||'';  /* path back to the site root when a second design lives in a subfolder (v2/) */
