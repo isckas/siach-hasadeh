@@ -260,13 +260,14 @@ html.tv-mode,html.tv-mode body{background:#000;overflow:hidden}
 .ta{margin-inline-start:24px;background:var(--block);border-radius:8px;padding:26px 32px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--edge),inset 0 0 0 7px var(--block),inset 0 0 0 8px var(--edge2)}
 .ta-in{--u:calc(var(--fa)*var(--ts));height:100%;display:flex;flex-direction:column;gap:calc(14px*var(--u))}
 .clock{white-space:nowrap;font-size:calc(150px*var(--u));font-weight:800;line-height:.9;letter-spacing:-3px;color:var(--dark)}
-.nxc{background:var(--dark);color:#fff;border-radius:10px;padding:calc(16px*var(--u)) 22px calc(18px*var(--u))}
-.nxc small{display:block;font-size:calc(20px*var(--u));font-weight:700;color:rgba(255,255,255,.85)}
-/* name and time share a line when they fit; otherwise the time drops under the name. Neither ever leaves the box. */
-.nxc-r{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;column-gap:12px;row-gap:0}
-.nxc-r span{min-width:0;overflow-wrap:break-word;font-size:calc(52px*var(--u));font-weight:800;line-height:1.05}
-.nxc-r b{flex:none;white-space:nowrap;font-size:calc(80px*var(--u));font-weight:800;line-height:1;color:var(--gold)}
-.nxc em{font-style:normal;font-size:calc(22px*var(--u));font-weight:700;color:rgba(255,255,255,.9)}
+.nxc{background:var(--dark);color:#fff;border-radius:10px;padding:calc(16px*var(--u)) 22px calc(18px*var(--u));
+  /* one layout for every name: label, then the name across the full width, then the time with the countdown balancing it on the other side */
+  display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"k k" "n n" "t m";column-gap:18px;align-items:baseline}
+.nxc small{grid-area:k;display:block;font-size:calc(20px*var(--u));font-weight:700;color:rgba(255,255,255,.85)}
+.nxc-r{display:contents}
+.nxc-r span{grid-area:n;min-width:0;margin-top:calc(2px*var(--u));font-size:calc(46px*var(--u));font-weight:800;line-height:1.1;overflow-wrap:break-word;text-wrap:balance}
+.nxc-r b{grid-area:t;white-space:nowrap;margin-top:calc(6px*var(--u));font-size:calc(84px*var(--u));font-weight:800;line-height:.95;color:var(--gold)}
+.nxc em{grid-area:m;justify-self:end;text-align:end;font-style:normal;font-size:calc(22px*var(--u));font-weight:700;line-height:1.25;color:rgba(255,255,255,.9)}
 .ta h3{margin:calc(6px*var(--u)) 0 0;font-size:calc(24px*var(--u));font-weight:800;color:var(--ink2)}
 .tr{list-style:none;margin:0;padding:0}
 .tr li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:calc(8px*var(--u)) 0;border-bottom:1px solid var(--line);font-size:calc(28px*var(--u));font-weight:700}
