@@ -259,18 +259,19 @@ html.tv-mode,html.tv-mode body{background:#000;overflow:hidden}
 /* times column */
 .ta{margin-inline-start:24px;background:var(--block);border-radius:8px;padding:26px 32px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--edge),inset 0 0 0 7px var(--block),inset 0 0 0 8px var(--edge2)}
 .ta-in{--u:calc(var(--fa)*var(--ts));height:100%;display:flex;flex-direction:column;gap:calc(14px*var(--u))}
-.clock{font-size:calc(150px*var(--u));font-weight:800;line-height:.9;letter-spacing:-3px;color:var(--dark)}
+.clock{white-space:nowrap;font-size:calc(150px*var(--u));font-weight:800;line-height:.9;letter-spacing:-3px;color:var(--dark)}
 .nxc{background:var(--dark);color:#fff;border-radius:10px;padding:calc(16px*var(--u)) 22px calc(18px*var(--u))}
 .nxc small{display:block;font-size:calc(20px*var(--u));font-weight:700;color:rgba(255,255,255,.85)}
-.nxc-r{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
-.nxc-r span{font-size:calc(52px*var(--u));font-weight:800;line-height:1.05}
-.nxc-r b{font-size:calc(80px*var(--u));font-weight:800;line-height:1;color:var(--gold)}
+/* name and time share a line when they fit; otherwise the time drops under the name. Neither ever leaves the box. */
+.nxc-r{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;column-gap:12px;row-gap:0}
+.nxc-r span{min-width:0;overflow-wrap:break-word;font-size:calc(52px*var(--u));font-weight:800;line-height:1.05}
+.nxc-r b{flex:none;white-space:nowrap;font-size:calc(80px*var(--u));font-weight:800;line-height:1;color:var(--gold)}
 .nxc em{font-style:normal;font-size:calc(22px*var(--u));font-weight:700;color:rgba(255,255,255,.9)}
 .ta h3{margin:calc(6px*var(--u)) 0 0;font-size:calc(24px*var(--u));font-weight:800;color:var(--ink2)}
 .tr{list-style:none;margin:0;padding:0}
 .tr li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:calc(8px*var(--u)) 0;border-bottom:1px solid var(--line);font-size:calc(28px*var(--u));font-weight:700}
 .tr li:last-child{border-bottom:0}.tr li.past{opacity:.42}
-.tr li span{display:flex;flex-direction:column}.tr li small{font-size:calc(20px*var(--u));font-weight:600;color:var(--ink2)}
+.tr li span{display:flex;flex-direction:column;min-width:0;overflow-wrap:break-word}.tr li b{flex:none;white-space:nowrap}.tr li small{font-size:calc(20px*var(--u));font-weight:600;color:var(--ink2)}
 .tr li.next{font-weight:800}.tr li.next b{color:var(--hl)}
 .tchips{margin:auto 0 0;display:flex;flex-wrap:wrap;gap:8px}
 .tchips span{font-size:calc(18px*var(--u));font-weight:700;padding:4px 12px;border-radius:999px;background:var(--tint);color:var(--ink2)}
@@ -280,7 +281,7 @@ html.tv-mode,html.tv-mode body{background:#000;overflow:hidden}
 .tc{margin-inline-end:24px;display:flex;flex-direction:column;gap:16px;min-height:0}
 .tcomm{flex:1;min-height:0;background:var(--block);border-radius:8px;padding:24px 28px;display:flex;flex-direction:column;gap:12px;box-shadow:inset 0 0 0 1px var(--edge),inset 0 0 0 7px var(--block),inset 0 0 0 8px var(--edge2)}
 .tcomm h2{margin:0;font-size:calc(32px*var(--ts));font-weight:800}
-.tscv{flex:1;min-height:0;overflow:hidden}
+.tscv{flex:1;min-height:0;overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 10px,#000 calc(100% - 28px),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 10px,#000 calc(100% - 28px),transparent 100%)}  /* the scrolling list fades at its edges instead of cutting a line in half */
 .tcg{padding:10px 0}.tcg+.tcg{border-top:1px solid var(--line)}
 .tcg h3{margin:0;font-size:calc(19px*var(--ts));font-weight:800;color:var(--link2)}
 .tcg p{margin:4px 0 0;font-size:calc(23px*var(--ts));line-height:1.4}
@@ -322,9 +323,10 @@ html.tv-mode,html.tv-mode body{background:#000;overflow:hidden}
 .s-next{margin-top:auto;border-top:2px solid var(--line);padding-top:20px;display:flex;flex-direction:column;gap:12px}
 .s-next .kick{font-size:calc(22px*var(--f))}
 .s-next>div{display:flex;gap:14px}.s-next span{flex:1;background:var(--tint);border-radius:10px;padding:16px 22px;font-size:calc(28px*var(--f));font-weight:700}
-.sl.img{padding:24px;display:grid;place-items:center}.sl.img img{max-width:100%;max-height:100%;object-fit:contain;border-radius:6px}
+/* flyers: the whole flyer always shows, scaled down to the slide, never cropped */
+.sl.img{padding:24px;display:flex;align-items:center;justify-content:center}.sl.img img{display:block;max-width:100%;max-height:100%;min-width:0;min-height:0;object-fit:contain;border-radius:6px}
 .sl.split .fc{display:grid;grid-template-columns:1fr 1fr;align-items:center}
-.sl.split{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center}.sl.split img{max-width:100%;max-height:100%;object-fit:contain}
+.sl.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:32px;align-items:center}.sl.split img{display:block;max-width:100%;max-height:100%;min-height:0;object-fit:contain;justify-self:center}
 .sl.split .fc h2{font-size:calc(54px*var(--f));margin:0}.sl.split .fc .body{font-size:calc(32px*var(--f))}
 .tv3.wide .ts{grid-column:1/-1;margin:0 24px}.tv3.wide .ta,.tv3.wide .tc{display:none}
 /* yahrzeits */
