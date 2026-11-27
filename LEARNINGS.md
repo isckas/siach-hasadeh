@@ -11,6 +11,9 @@ Every piece of feedback from the owner, newest first, with what changed because 
 - Anything security-related is done right away; features and fixes go out in one tested release.
 
 ## 2026-11-27
+- **Screens installed at the shul.** The TVs are LG webOS 2026 models (Nano 4K, NU830B), not the planned TCL, so the setup guide needs the LG menu names (everything is under Settings → All Settings → System; "Home Auto Launch" is now "Power On Screen").
+- **The box darkened the board.** Google TV runs in dark mode and Fully Kiosk's Dark Mode followed it, so the box's browser recoloured the board: dark cards, light text and blank QR codes (white dots on white). Fix on each box: Fully → Other Settings → Dark Mode **Off**, then restart Fully. Graphics Acceleration Mode stays on Hardware. The board itself should also tell devices not to darken it (V4.md, Fixes).
+- **Check on the real device.** Desktop screenshots didn't show the darkening; the TV setup checklist ends with a look at the board on the TV itself (cream cards, readable QR codes).
 - **v3 is stable and frozen** (branch stable-v3 on GitHub, the live code at siachhasadeh.org). No more revisions to v3; agreed changes go to V4.md.
 - **Visitor analytics** wanted for v4.
 - **Kiddush invitation** should show only when a Kiddush is planned (v4; see V4.md).
