@@ -374,7 +374,7 @@ function dContact(S){
     '<div class="btns"><a class="btn-ink" target="_blank" rel="noopener" href="https://waze.com/ul?ll='+(+s.lat)+','+(+s.lng)+'&amp;navigate=yes">'+E(T('waze'))+'</a><a class="btn-line" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query='+q+'">'+E(T('gmaps'))+'</a></div>'+
     (A.pick(s,'about')?'<h3>'+E(T('about'))+'</h3><p class="pre">'+E(A.pick(s,'about'))+'</p>':'')+
     ((people.length||s.phone||s.email||wa)?'<ul class="kv">'+people.map(function(p){return '<li><small>'+E(T(p[0]))+'</small><span>'+E(p[1])+'</span></li>';}).join('')+(s.phone?'<li><small>'+E(T('phone'))+'</small>'+cp(s.phone)+'</li>':'')+(s.email?'<li><small>'+E(T('email'))+'</small>'+cp(s.email)+'</li>':'')+(wa?'<li><a class="btn-line" href="'+E(wa)+'" target="_blank" rel="noopener">'+E(T('whatsapp'))+'</a></li>':'')+'</ul>':'')+
-    '<div class="dr-links"><a class="lnk" href="'+E(A.base)+'#manage">'+E(A.role?T('v3_manage'):T('v3_board'))+'</a><span class="fine">'+E(T('v3_old'))+': <a class="lnk" href="'+E(A.base)+'">'+E(T('v3_v1'))+'</a>, <a class="lnk" href="'+E(A.base)+'v2/">'+E(T('v3_v2'))+'</a></span></div>';
+    '<div class="dr-links"><a class="lnk" href="'+E(A.base)+'#manage">'+E(A.role?T('v3_manage'):T('v3_board'))+'</a></div>';
 }
 function dNotices(S){var P=A.jp(),list=noticeList(S,P.iso,P.dow);return list.length?'<div class="ntc-list">'+list.map(function(n){return noticeHtml(n,true);}).join('')+'</div>':'<p class="empty">'+E(T('no_notices'))+'</p>';}
 function dGive(S){

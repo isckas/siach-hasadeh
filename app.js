@@ -342,6 +342,7 @@ var SPRIG='<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 30V9" fill="
 function route(){var h=(location.hash||'').slice(1);if(h==='manage'||h.indexOf('manage/')===0)return 'manage';return h==='display'?h:'home';}
 function render(){
   var r=route(),root=document.documentElement;
+  if(!SKIN&&r!=='manage'){location.replace('v3/'+(location.hash||''));return;}  /* v1 is retired: the root page is only the admin page */
   clearTimeout(ui.slideTimer);ui.slideTimer=null;
   if(!ui.ready&&r==='manage'&&!SKIN){root.classList.add('mg-mode');$app.innerHTML='<div class="mg-loading" role="status"><span>'+esc(t('loading'))+'</span></div>';return;}
   if(!ui.ready){root.classList.remove('tv-mode');$app.innerHTML=SKIN&&SKIN.loading?SKIN.loading(API):'<div class="loading">'+SPRIG+'<span>'+esc(t('loading'))+'</span></div>';return;}

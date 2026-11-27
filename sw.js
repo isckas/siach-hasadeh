@@ -3,10 +3,11 @@
    - Each later load tries the network first (so updates arrive), and falls back
      to the saved copy when there is no connection or it is too slow.
    - Firestore keeps its own offline copy of the content, so it is not touched here. */
-var VERSION = 'shul-v19';
+var VERSION = 'shul-v20';
 var SHELL = [
   './',
   'index.html',
+  'go.js',
   'app.js',
   'styles.css',
   'admin.css',
@@ -21,11 +22,6 @@ var SHELL = [
   'seed/state.json',
   'seed/flyer-1.jpg',
   'seed/flyer-2.jpg',
-  'v2/',
-  'v2/index.html',
-  'v2/base.js',
-  'v2/skin.js',
-  'v2/v2.css',
   'v3/',
   'v3/index.html',
   'v3/base.js',
@@ -96,6 +92,6 @@ self.addEventListener('fetch', function (e) {
   var url = new URL(req.url);
   if (FONT_HOSTS.indexOf(url.hostname) >= 0) { e.respondWith(cacheFirst(req)); return; }
   if (url.origin !== self.location.origin) return; /* Firebase, Google sign-in: leave alone */
-  if (req.mode === 'navigate') { e.respondWith(networkFirst(req, /\/v3\//.test(url.pathname) ? 'v3/index.html' : (/\/v2\//.test(url.pathname) ? 'v2/index.html' : 'index.html'))); return; }
+  if (req.mode === 'navigate') { e.respondWith(networkFirst(req, /\/v3\//.test(url.pathname) ? 'v3/index.html' : 'index.html')); return; }
   e.respondWith(networkFirst(req));
 });
