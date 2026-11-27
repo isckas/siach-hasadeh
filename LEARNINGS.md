@@ -11,6 +11,7 @@ Every piece of feedback from the owner, newest first, with what changed because 
 - Anything security-related is done right away; features and fixes go out in one tested release.
 
 ## 2026-11-27
+- **Kiddush invitation** should show only when a Kiddush is planned (v4; see V4.md).
 - **v3 everywhere.** The new domain showed the old v1 page. v3 is the website, the screen and the admin look; every internal link points to v3. v1 and v2 are retired and taken offline (/ and /v2/ open v3).
 - **Main address: siachhasadeh.org.** Bought at Cloudflare; served from the isckas GitHub repo for now, one switch to the shul's account later.
 - **TV next-tefillah card.** The time stuck out of the navy box, and later a long name was squeezed into a narrow stacked column. Now: label and countdown on the top line, the name across the full width, the time below. Layouts must stay balanced at every text size and name length.
