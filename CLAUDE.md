@@ -8,6 +8,8 @@ These hold for every session that works on this repository.
 - Use the design skill (frontend-design) for every visual change, however small.
 - The v3 layout is approved. Polish it; don't re-layout it without asking.
 - TV cards must use their space evenly: no narrow stacked columns, nothing that leaves a box, every flyer shown whole.
+- Fewest taps: every action, above all donating, takes as few taps as possible. A QR code or button goes straight to the payment or page it names, never through an in-between page.
+- Two QR codes on the TV always sit in separate places, never next to each other, each with its own label.
 
 ## Definition of done (every change, before reporting it as done)
 The owner should never have to find a problem first. Before saying something is done:

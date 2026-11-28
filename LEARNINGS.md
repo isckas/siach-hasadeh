@@ -10,6 +10,11 @@ Every piece of feedback from the owner, newest first, with what changed because 
 - Use APIs where they are reachable; don't ask for secret tokens to be pasted into chat for one-off setup.
 - Anything security-related is done right away; features and fixes go out in one tested release.
 
+## 2026-11-28
+- **Fewest taps, especially for donations.** Yossi turned down a single "Donate" QR code that opens the website's donation section: it adds a step. Every QR code and button goes straight to what it names. Now a standing rule in CLAUDE.md.
+- **The two donation QR codes stay two,** but in separate places on the TV, each with its own label (v4).
+- **v4 ideas:** a light-ink printable weekly schedule (agreed: built from live data with the phone's or computer's own print window), membership dues tracking (research continuing), one permanent address without a version number in it.
+
 ## 2026-11-27
 - **Screens installed at the shul.** The TVs are LG webOS 2026 models (Nano 4K, NU830B), not the planned TCL, so the setup guide needs the LG menu names (everything is under Settings → All Settings → System; "Home Auto Launch" is now "Power On Screen").
 - **The box darkened the board.** Google TV runs in dark mode and Fully Kiosk's Dark Mode followed it, so the box's browser recoloured the board: dark cards, light text and blank QR codes (white dots on white). Fix on each box: Fully → Other Settings → Dark Mode **Off**, then restart Fully. Graphics Acceleration Mode stays on Hardware. The board itself should also tell devices not to darken it (V4.md, Fixes).
